@@ -1,19 +1,18 @@
-name: Deploy to GitHub Pages
-
 on:
   push:
     branches:
-      - main
+      - "main" # change to the branch you wish to deploy from
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
-
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
-
-    - name: Build and deploy Storybook
-      uses: peaceiris/actions-gh-pages@v3
+    - id: build-publish
+      uses: bitovi/github-actions-storybook-to-github-pages@v1.0.3
       with:
-        publish_dir: ./storybook
+        path: storybook-static # change to your build folder
