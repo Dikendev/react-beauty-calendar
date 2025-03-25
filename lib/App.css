@@ -1,0 +1,174 @@
+#root {
+    margin: 0 auto;
+    text-align: center;
+}
+
+.react-resizable {
+    position: relative;
+}
+
+.react-resizable:hover .react-resizable-handle-s {
+    display: inline;
+}
+
+.dragging-effect {
+    border: 2px solid rgba(255, 21, 0, 0.682);
+}
+
+.show-handle.react-resizable .react-resizable-handle-s {
+    display: inline;
+}
+
+.react-resizable.slot-resizable > .react-resizable-handle {
+    width: 100%;
+    height: 100%;
+}
+
+.react-resizable.slot-resizable > .react-resizable-handle.react-resizable-handle-se {
+    cursor: default;
+    background-image: none;
+}
+
+.react-resizable.slot-resizable > .react-resizable-handle.react-resizable-handle-se:hover {
+    cursor: default;
+    background-image: none;
+}
+
+/* background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2IDYiIHN0eWxlPSJiYWNrZ3JvdW5kLWNvbG9yOiNmZmZmZmYwMCIgeD0iMHB4IiB5PSIwcHgiIHdpZHRoPSI2cHgiIGhlaWdodD0iNnB4Ij48ZyBvcGFjaXR5PSIwLjMwMiI+PHBhdGggZD0iTSA2IDYgTCAwIDYgTCAwIDQuMiBMIDQgNC4yIEwgNC4yIDQuMiBMIDQuMiAwIEwgNiAwIEwgNiA2IEwgNiA2IFoiIGZpbGw9IiMwMDAwMDAiLz48L2c+PC9zdmc+"); */
+
+/* opacity='0.302' */
+/* 
+<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M5 10H19M14 19L12 21L10 19M14 5L12 3L10 5M5 14H19" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg> */
+/* 
+<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="#ffffff"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M5 14H19M5 10H19" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg> */
+
+/* %23ff0000 red*/
+.react-resizable-handle {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    background-repeat: no-repeat;
+    background-origin: content-box;
+    box-sizing: border-box;
+       background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cg id='SVGRepo_bgCarrier' stroke-width='0'%3E%3C/g%3E%3Cg id='SVGRepo_tracerCarrier' stroke-linecap='round' stroke-linejoin='round'%3E%3C/g%3E%3Cg id='SVGRepo_iconCarrier'%3E %3Cpath d='M5 14H19M5 10H19' stroke='%23fff' stroke-width='1' stroke-linecap='round' stroke-linejoin='round'%3E%3C/path%3E %3C/g%3E%3C/svg%3E");
+    background-position: bottom right;
+    /* padding: 0 0 0 0; */
+}
+
+.react-resizable-handle-sw {
+    bottom: 0;
+    left: 0;
+    cursor: sw-resize;
+    transform: rotate(90deg);
+}
+
+.react-resizable-handle-se {
+    bottom: 0;
+    left: 0;
+    cursor: se-resize;
+    z-index: 100;
+}
+
+.react-resizable-handle-nw {
+    top: 0;
+    left: 0;
+    cursor: nw-resize;
+    transform: rotate(180deg);
+}
+
+.react-resizable-handle-ne {
+    top: 0;
+    right: 0;
+    cursor: ne-resize;
+    transform: rotate(270deg);
+}
+
+.react-resizable-handle-w,
+.react-resizable-handle-e {
+    top: 50%;
+    margin-top: -10px;
+    cursor: ew-resize;
+}
+
+.react-resizable-handle-w {
+    left: 0;
+    transform: rotate(135deg);
+}
+
+.react-resizable-handle-e {
+    right: 0;
+}
+
+.react-resizable-handle-n,
+.react-resizable-handle-s {
+    left: 50%;
+    margin-left: -10px;
+    cursor: ns-resize;
+}
+
+.react-resizable-handle-n {
+    top: -5px;
+    z-index: 100;
+}
+
+.react-resizable-handle-s {
+    display: none;
+    bottom: -5px;
+    z-index: 100;
+}
+
+.rdp-day:hover {
+    background-color: #edecec !important;
+    color: rgb(31, 31, 31) !important;
+    border-radius: 50% !important;
+}
+
+.rdp-chevron {
+    fill: rgb(84, 3, 214) !important;
+}
+
+.rdp-day.rdp-today {
+    color: rgb(255, 255, 255) !important;
+    border-radius: 50%;
+    background-color: #8574e5 !important;
+}
+
+.rdp-day::selection {
+    background-color: #8574e5 !important;
+    color: rgb(255, 0, 0) !important;
+}
+
+.rdp-day.rdp-selected > .rdp-day_button {
+    background: #d5d0f7;
+    color: #322290;
+    border: none;
+}
+
+.shadow {
+   box-shadow: 2px 2px 6px 1px rgba(0,0,0,0.3)
+}
+
+@keyframes spinBorder {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+.animate-spin-border {
+    animation: spinBorder 3s linear infinite;
+    background-size: 200% 200%;
+}
+
+.disableVisibilityTime {
+    display: none;
+}
+
+.activateVisibilityTime {
+    display: block;
+}

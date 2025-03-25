@@ -1,0 +1,12 @@
+.calendarHeader {
+    max-width: 5rem;
+    min-width: 5rem
+}
+
+@media screen and (max-width: 1189px) {
+    .calendarHeader {
+        /* background-color: red; */
+        max-width: 4rem;
+        min-width: 4rem
+    }
+}

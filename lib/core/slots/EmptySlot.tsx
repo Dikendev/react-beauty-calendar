@@ -1,0 +1,209 @@
+import { type CSSProperties, useCallback, useMemo } from "react";
+import type { Booking } from "../../@types";
+import type { BookingDateAndTime } from "../../@types/booking";
+
+import setEmptySlotKey from "../../context/emptySlotsStore.ts/emptySlotKey";
+import useEmptySlotStore from "../../context/emptySlotsStore.ts/useEmptySlotStore";
+import { DateUtils } from "../../utils/date-utils";
+
+import SlotTrigger, {
+    type SlotTriggerForwardRef,
+} from "../card-slots/SlotTrigger";
+import Card from "./Card";
+import ActualTimerIndicator from "./actualTimeIndicator/ActualTimeIndicator";
+
+export interface BlockTimeRef {
+    ref: (element: HTMLElement | null) => void;
+    style: CSSProperties;
+}
+
+export interface BlockTimeData {
+    key: string;
+    time: string;
+}
+
+export type BlocksTimeStructure = BlockTimeRef & BlockTimeData;
+
+export interface EmptySlotProps {
+    bookings?: Booking[];
+    dayHour?: BookingDateAndTime;
+    first: BlocksTimeStructure;
+    second: BlocksTimeStructure;
+    third: BlocksTimeStructure;
+    fourth: BlocksTimeStructure;
+    disabledCss: string;
+    firstDay: boolean;
+}
+
+const EmptySlot = ({
+    bookings,
+    first,
+    second,
+    third,
+    fourth,
+    disabledCss,
+    firstDay,
+    dayHour,
+}: EmptySlotProps) => {
+    const { setEmptySlotNode, emptySlotNodes } = useEmptySlotStore();
+
+    const firstSlot = useCardContentRender({
+        bookings,
+        blockTimeString: "00",
+        slotData: dayHour,
+    });
+    const secondSlot = useCardContentRender({
+        bookings,
+        blockTimeString: "15",
+        slotData: dayHour,
+    });
+    const thirdSlot = useCardContentRender({
+        bookings,
+        blockTimeString: "30",
+        slotData: dayHour,
+    });
+    const fourthSlot = useCardContentRender({
+        bookings,
+        blockTimeString: "45",
+        slotData: dayHour,
+    });
+
+    const insideCallBack = useCallback(
+        (node: SlotTriggerForwardRef | null, blockTimeData: BlockTimeData) => {
+            if (!node) return;
+
+            const keyToFind = setEmptySlotKey(blockTimeData);
+            const last = emptySlotNodes.get(keyToFind);
+
+            if (!last) setEmptySlotNode(node, blockTimeData);
+        },
+        [setEmptySlotNode, emptySlotNodes],
+    );
+
+    return (
+        <>
+            <SlotTrigger
+                ref={(node) =>
+                    insideCallBack(node, {
+                        key: first.key,
+                        time: first.time,
+                    })
+                }
+                slotData={first}
+                disabledCss={disabledCss}
+                events={{
+                    onMouseEnterEvent: () => "first",
+                }}
+                slotPosition="first"
+                actualTimerIndicatorChildren={
+                    <ActualTimerIndicator
+                        tailwindColor="bg-black"
+                        isFirstDay={firstDay}
+                        slotData={first}
+                    />
+                }
+            >
+                {firstSlot}
+            </SlotTrigger>
+            <SlotTrigger
+                ref={(node) =>
+                    insideCallBack(node, {
+                        key: second.key,
+                        time: second.time,
+                    })
+                }
+                slotData={second}
+                disabledCss={disabledCss}
+                events={{
+                    onMouseEnterEvent: () => "second",
+                }}
+                border
+                slotPosition="second"
+                actualTimerIndicatorChildren={
+                    <ActualTimerIndicator
+                        tailwindColor="bg-black"
+                        isFirstDay={firstDay}
+                        slotData={second}
+                    />
+                }
+            >
+                {secondSlot}
+            </SlotTrigger>
+            <SlotTrigger
+                ref={(node) =>
+                    insideCallBack(node, {
+                        key: third.key,
+                        time: third.time,
+                    })
+                }
+                slotData={third}
+                disabledCss={disabledCss}
+                events={{
+                    onMouseEnterEvent: () => "third",
+                }}
+                slotPosition="third"
+                actualTimerIndicatorChildren={
+                    <ActualTimerIndicator
+                        tailwindColor="bg-black"
+                        isFirstDay={firstDay}
+                        slotData={third}
+                    />
+                }
+            >
+                {thirdSlot}
+            </SlotTrigger>
+            <SlotTrigger
+                ref={(node) =>
+                    insideCallBack(node, {
+                        key: fourth.key,
+                        time: fourth.time,
+                    })
+                }
+                slotData={fourth}
+                disabledCss={disabledCss}
+                events={{
+                    onMouseEnterEvent: () => "fourth",
+                }}
+                slotPosition="fourth"
+                actualTimerIndicatorChildren={
+                    <ActualTimerIndicator
+                        tailwindColor="bg-black"
+                        isFirstDay={firstDay}
+                        slotData={fourth}
+                    />
+                }
+            >
+                {fourthSlot}
+            </SlotTrigger>
+        </>
+    );
+};
+
+interface useCardContentRender {
+    bookings?: Booking[];
+    blockTimeString: string;
+    slotData?: BookingDateAndTime;
+}
+
+const useCardContentRender = ({
+    bookings,
+    blockTimeString,
+    slotData,
+}: useCardContentRender) => {
+    return useMemo(() => {
+        if (bookings?.length && slotData?.day && slotData?.hour) {
+            const booking = bookings.find((booking) => {
+                const actualSlotTimeString = DateUtils.dateAndHourDateToString(
+                    new Date(booking.startAt),
+                );
+
+                return actualSlotTimeString.split(":")[1] === blockTimeString;
+            });
+
+            if (booking) return <Card booking={booking} slotData={slotData} />;
+        }
+        return null;
+    }, [blockTimeString, bookings, slotData]);
+};
+
+export default EmptySlot;
