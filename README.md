@@ -41,8 +41,9 @@ Install @RBC/react in your project with your package manager of choice:
 ```
 
 ```sh
-  yarn add @RBC/react -->
+  yarn add @RBC/react 
 ```
+-->
 
 ## Running the App
 
@@ -98,6 +99,7 @@ cd react-beauty-calendar
 ```sh
 npm run storybook
 ```
+or
 
 ```sh
 yarn storybook
