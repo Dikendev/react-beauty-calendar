@@ -32,7 +32,8 @@ With the need to implement an efficient scheduling system, I decided to create a
 - **Open Source**: MIT licensed, free forever
 - Storybook available.
 
-## Installation
+<!-- Disabled for now -->
+<!-- ## Installation
 Install @RBC/react in your project with your package manager of choice:
 
 ```sh
@@ -40,7 +41,7 @@ Install @RBC/react in your project with your package manager of choice:
 ```
 
 ```sh
-  yarn add @RBC/react
+  yarn add @RBC/react -->
 ```
 
 ## Running the App
