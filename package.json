@@ -1,24 +1,42 @@
 {
   "name": "react-beauty-calendar",
+  "author": "Diego Kennedy Guimarães Barros",
+  "description": "React Library inspired by Google Calendar and Outlook.",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Dikendev/react-beauty-calendar"
+  },
   "license": "MIT",
-  "private": true,
-  "version": "0.1.0",
+  "private": false,
+  "version": "1.0.0",
+  "keywords": [
+    "react",
+    "component",
+    "calendar",
+    "outlook",
+    "google",
+    "appointment",
+    "booking"
+  ],
   "type": "module",
   "main": "dist/react-beauty-calendar.js",
   "types": "dist/main.d.ts",
   "exports": "./dist/main.js",
   "module": "./dist/main.js",
   "files": [
-    "dist"
+    "dist",
+    "README.md"
   ],
   "scripts": {
     "dev": "vite",
-    "lint": "eslint .",
+    "biome": "npx biome ci .",
     "preview": "vite preview",
     "prepare": "husky",
     "build": "tsc -b && vite build",
     "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build"
+    "build-storybook": "storybook build",
+    "prepublish": "rm -rf ./dist && npm run build",
+    "test": ""
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",
@@ -91,5 +109,8 @@
     "extends": [
       "plugin:storybook/recommended"
     ]
-  }
+  },
+  "sideEffects": [
+    "**/*.css"
+  ]
 }
