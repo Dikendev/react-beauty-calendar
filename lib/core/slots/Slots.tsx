@@ -24,7 +24,6 @@ interface SlotsProps {
         finishAt: string;
     };
     firstDay: boolean;
-    firstTimeSlot: boolean;
     bookingViewType: BookingViewType;
     bookingBulk: Booking[];
 }
@@ -33,7 +32,6 @@ const Slots = ({
     dayHour,
     lunchTimeBlock,
     firstDay,
-    firstTimeSlot,
     bookingBulk,
     bookingViewType,
 }: SlotsProps) => {
@@ -174,14 +172,12 @@ const Slots = ({
         thirdBlockTimeData,
     ]);
 
-    // O slot da primeira row, tirar a bordar do top
     return (
         <td
             key={`${dayHour.day}-${dayHour.hour}-slot`}
             className={cn(
                 "bg-white border border-gray-300 w-[80rem] p-0 relative z-[0px]",
                 bookingViewType === BOOKING_VIEW_TYPE.WEEK && "max-w-[10rem]",
-                firstTimeSlot && "border-t-0",
             )}
         >
             {slotRender}

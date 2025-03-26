@@ -56,7 +56,7 @@ const DaysWeek = ({ daysOfWeek, bookingViewType }: DaysWeekProps) => {
             return (
                 <th
                     key={dayOfWeek}
-                    className="min-w-[8rem] w-[100vw] border-b-[1px]"
+                    className="min-w-[8rem] w-[100vw]"
                 >
                     <div
                         className={cn(

@@ -8,7 +8,7 @@ import {
 
 import Slots from "../slots/Slots";
 
-import { TableCell, TableRow } from "../../components/ui/Table";
+import { TableCell } from "../../components/ui/Table";
 import { BOOKING_VIEW_TYPE } from "../../constants";
 import useEmptySlotStore from "../../context/emptySlotsStore.ts/useEmptySlotStore";
 import { useGlobalStore } from "../../hooks";
@@ -63,12 +63,11 @@ const CalendarView = () => {
     }, [selectedNode, emptySlotNodes]);
 
     const tableContent = useMemo(() => {
-        const fistTimeSlot = (slotIndex: number) => slotIndex === 0;
         const isFistDay = (dayOfWeekIndex: number) => dayOfWeekIndex === 0;
 
         return (
             <>
-                {hours.map((hour, slotIndex) => (
+                {hours.map((hour) => (
                     <tr key={`${hour}-content`}>
                         <TableCell
                             style={{
@@ -98,7 +97,6 @@ const CalendarView = () => {
                                         day: String(day),
                                         hour,
                                     }}
-                                    firstTimeSlot={fistTimeSlot(slotIndex)}
                                     lunchTimeBlock={lunchTimeBlock}
                                     firstDay={isFistDay(dayOfWeekIndex)}
                                     bookingBulk={bookingBulkData.booking}
