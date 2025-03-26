@@ -1,6 +1,6 @@
 <p align="center">
   <a href="/">
-    <img src="public/logo.png" alt="Kaneo's logo" width="200" />
+    <img src="public/logo.png" alt="RBC logo" width="200" />
   </a>
 </p>
 
@@ -32,18 +32,13 @@ With the need to implement an efficient scheduling system, I decided to create a
 - **Open Source**: MIT licensed, free forever
 - Storybook available.
 
-<!-- Disabled for now -->
-<!-- ## Installation
-Install @RBC/react in your project with your package manager of choice:
+## Installation
+
+Install react-beauty-calendar in your project with your package manager of choice:
 
 ```sh
-  npm install @RBC/react
+  npm i react-beauty-calendar
 ```
-
-```sh
-  yarn add @RBC/react 
-```
--->
 
 ## Running the App
 

@@ -1,6 +1,6 @@
 <p align="center">
   <a href="/">
-    <img src="public/logo.png" alt="Kaneo's logo" width="200" />
+    <img src="public/logo.png" alt="RBC logo" width="200" />
   </a>
 </p>
 
@@ -33,14 +33,11 @@ Com a necessidade de implementar um sistema de agendamento eficiente, decidi cri
 - Storybook disponível.
 
 ## Instalação
-Instale @RBC/react no seu projeto usando o gerenciador de pacotes de sua escolha:
+
+Instale react-beauty-calendar no seu projeto usando o gerenciador de pacotes de sua escolha:
 
 ```sh
-  npm install @RBC/react
-```
-
-```sh
-  yarn add @RBC/react
+  npm install react-beauty-calendar
 ```
 
 ## Executando o App
