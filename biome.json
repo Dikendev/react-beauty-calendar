@@ -14,7 +14,8 @@
 			"dist",
 			"node_modules",
 			"babel.config.js",
-			"commitlint.config.js"
+			"commitlint.config.js",
+			"storybook-static"
 		]
 	},
 	"formatter": {
