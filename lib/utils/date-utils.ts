@@ -168,8 +168,8 @@ export const DateUtils = {
     },
 
     hourMinutesStringToDate(hourMinutes: string): Date {
-        const [hour, minutes] = hourMinutes.split(":");
         const asDate = new Date();
+        const [hour, minutes] = hourMinutes.split(":");
         asDate.setHours(Number(hour), Number(minutes));
         return asDate;
     },
