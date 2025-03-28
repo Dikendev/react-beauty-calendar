@@ -40,7 +40,7 @@ const BookingCard = ({ booking, slotData }: BookingCardProps) => {
         >
             <div
                 className={cn(
-                    "flex flex-col h-full text-white pl-2 justify-start items-start",
+                    "flex flex-col h-full text-white pl-0 md:pl-2 lg:pl-2 justify-start items-start",
                 )}
             >
                 {/* {booking.client.profile.name && (
@@ -48,7 +48,10 @@ const BookingCard = ({ booking, slotData }: BookingCardProps) => {
                         {booking.client.profile.name}
                     </p>
                 )} */}
-                <p className="text-[0.8rem] h-[0.8rem]">
+                <p
+                    className="text-[0.8rem] h-[0.8rem]"
+                    style={{ overflowWrap: "anywhere" }}
+                >
                     {`${DateUtils.dateAndHourDateToString(booking.startAt)} - ${DateUtils.dateAndHourDateToString(
                         booking.finishAt,
                     )}`}

@@ -79,7 +79,7 @@ const CalendarView = () => {
                             key={`${hour}-hour`}
                             className="border border-gray-300 py-2 px-4 text-center w-3 min-w-16"
                         >
-                            <div className="absolute top-[-3px] bg-white">
+                            <div className="absolute top-[-3px] left-0 right-5 bg-white text-end">
                                 <HourWithActions
                                     ref={(node) =>
                                         addTimeRenderedStore(node, hour)

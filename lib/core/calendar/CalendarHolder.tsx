@@ -11,6 +11,7 @@ import {
 } from "@dnd-kit/core";
 
 import DaysWeek from "../header-calendar/DaysOfWeek";
+import Header from "../header-calendar/Header";
 import HandleViewType from "./ViewTypes";
 
 import type {
@@ -25,8 +26,8 @@ import { MonthDescriptionProvider } from "../../context";
 import { initialMonthDescriptionState } from "../../context/month-description/month-description-store";
 import { useGlobalStore } from "../../hooks";
 import useBookingModal from "../../hooks/use-booking-model";
+
 import { mockUser } from "../../mock/booking-mock";
-import Header from "../header-calendar/Header";
 
 const CalendarHolder = () => {
     const { isDelayActive } = useDragStore((state) => state);
@@ -138,24 +139,24 @@ const CalendarHolder = () => {
 
     return (
         <div className=" z-[100]">
-            <div className="sticky top-0 w-full h-full z-[100]">
-                <div className="z-[100]">
-                    <MonthDescriptionProvider {...initialMonthDescriptionState}>
-                        <Header />
+            <MonthDescriptionProvider {...initialMonthDescriptionState}>
+                <div className="sticky top-0 w-full h-full z-[100]">
+                    <Header />
+                    <div className="z-[100]">
                         <DaysWeek
                             daysOfWeek={daysOfWeek}
                             bookingViewType={bookingViewType}
                         />
-                    </MonthDescriptionProvider>
+                    </div>
                 </div>
-            </div>
-            <DndContext
-                onDragEnd={handleDragEnd}
-                onDragStart={onDragStart}
-                sensors={sensors}
-            >
-                <HandleViewType bookingViewType={bookingViewType} />
-            </DndContext>
+                <DndContext
+                    onDragEnd={handleDragEnd}
+                    onDragStart={onDragStart}
+                    sensors={sensors}
+                >
+                    <HandleViewType bookingViewType={bookingViewType} />
+                </DndContext>
+            </MonthDescriptionProvider>
         </div>
     );
 };

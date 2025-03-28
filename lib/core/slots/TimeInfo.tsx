@@ -220,8 +220,10 @@ const TimeInfo = ({
                         />
                     </div>
                 ) : (
-                    <div className="rounded-sm h-full w-full content-center">
-                        {slotData.time}
+                    <div className="rounded-sm w-full h-full content-center relative">
+                        <span className="absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%]">
+                            {slotData.time}
+                        </span>
                     </div>
                 )}
             </Resizable>

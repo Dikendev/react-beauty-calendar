@@ -177,7 +177,8 @@ const Slots = ({
             key={`${dayHour.day}-${dayHour.hour}-slot`}
             className={cn(
                 "bg-white border border-gray-300 w-[80rem] p-0 relative z-[0px]",
-                bookingViewType === BOOKING_VIEW_TYPE.WEEK && "max-w-[10rem]",
+                bookingViewType === BOOKING_VIEW_TYPE.WEEK &&
+                    "max-w-[10rem] min-w-[1rem]",
             )}
         >
             {slotRender}

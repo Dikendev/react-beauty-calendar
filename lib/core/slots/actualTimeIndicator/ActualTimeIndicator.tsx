@@ -77,7 +77,7 @@ export const ActualTimerIndicator = ({
 
     const separatorContainer = useMemo((): string => {
         if (isFirstDay)
-            return bookingViewType === "DAY" ? "w-[101%]" : "w-[117%]";
+            return bookingViewType === "DAY" ? "w-[101%]" : "w-[100vw]";
 
         return bookingViewType === "DAY" ? "w-[102%]" : "w-[104%]";
     }, [isFirstDay, bookingViewType]);
@@ -130,7 +130,7 @@ export const ActualTimerIndicator = ({
                     }}
                     className={cn(
                         "absolute right-0 z-100",
-                        isFirstDay ? firstDaySeparator : "left-[-7px]",
+                        isFirstDay ? firstDaySeparator : "left-[-9px]",
                         separatorContainer,
                     )}
                 >

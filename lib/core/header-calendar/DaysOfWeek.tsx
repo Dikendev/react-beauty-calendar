@@ -54,7 +54,7 @@ const DaysWeek = ({ daysOfWeek, bookingViewType }: DaysWeekProps) => {
             const dayOfWeek = WEEK_DAYS[new Date(day).getDay()];
 
             return (
-                <th key={dayOfWeek} className="min-w-[8rem] w-[100vw]">
+                <th key={dayOfWeek} className="min-w-[1rem] w-[100vw]">
                     <div
                         className={cn(
                             "flex flex-col gap-[3px] text-gray-500 ",

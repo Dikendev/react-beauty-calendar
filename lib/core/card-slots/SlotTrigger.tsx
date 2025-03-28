@@ -265,7 +265,7 @@ const SlotTrigger = ({
                 key={slotData.key}
                 style={slotData.style}
                 className={cn(
-                    "w-[100%] min-w-32 h-[2rem] relative",
+                    "min-w-[1rem] h-[2rem] relative",
                     borderStyle,
                     activeStyle,
                 )}
@@ -310,9 +310,7 @@ const SlotTrigger = ({
                     <EventTabs
                         onClose={onCloseCreationModal}
                         onOpenChange={onOpenChange}
-                        buttonTrigger={
-                            <div key={slotData.key} className="w-[8rem]" />
-                        }
+                        buttonTrigger={<div key={slotData.key} />}
                     />
                 </DndContext>
             )}
