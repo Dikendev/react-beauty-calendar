@@ -176,9 +176,9 @@ const Slots = ({
         <td
             key={`${dayHour.day}-${dayHour.hour}-slot`}
             className={cn(
-                "bg-white border border-gray-300 w-[80rem] p-0 relative z-[0px]",
+                "bg-white border border-gray-300 min-w-[8rem] w-[80rem] p-0 relative z-[0px]",
                 bookingViewType === BOOKING_VIEW_TYPE.WEEK &&
-                    "max-w-[10rem] min-w-[1rem]",
+                    "max-w-[12rem] min-w-[5rem]",
             )}
         >
             {slotRender}

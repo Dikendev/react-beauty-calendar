@@ -1,6 +1,7 @@
 .calendarHeader {
-  max-width: 4.85rem;
-  min-width: 4.85rem;
+  max-width: 4rem;
+  min-width: 4rem;
+  width: 1rem;
 }
 
 @media screen and (max-width: 1189px) {

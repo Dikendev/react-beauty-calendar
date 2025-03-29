@@ -265,7 +265,7 @@ const SlotTrigger = ({
                 key={slotData.key}
                 style={slotData.style}
                 className={cn(
-                    "min-w-[1rem] h-[2rem] relative",
+                    "w-[100%] min-w-32 h-[2rem] relative",
                     borderStyle,
                     activeStyle,
                 )}

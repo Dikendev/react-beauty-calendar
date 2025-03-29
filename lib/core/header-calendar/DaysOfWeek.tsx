@@ -54,7 +54,14 @@ const DaysWeek = ({ daysOfWeek, bookingViewType }: DaysWeekProps) => {
             const dayOfWeek = WEEK_DAYS[new Date(day).getDay()];
 
             return (
-                <th key={dayOfWeek} className="min-w-[1rem] w-[100vw]">
+                <th
+                    key={dayOfWeek}
+                    className={cn(
+                        "min-w-[12rem] w-[100vw]",
+                        bookingViewType !== BOOKING_VIEW_TYPE.DAY &&
+                            "max-w-[2rem]",
+                    )}
+                >
                     <div
                         className={cn(
                             "flex flex-col gap-[3px] text-gray-500 ",
@@ -85,16 +92,19 @@ const DaysWeek = ({ daysOfWeek, bookingViewType }: DaysWeekProps) => {
                 </th>
             );
         });
-    }, [daysOfWeek, dayStyle, handleClickDay, tableStyle]);
+    }, [daysOfWeek, dayStyle, handleClickDay, tableStyle, bookingViewType]);
+
+    const emptyFirstHeaderColumnSlot = (
+        <th key="emptyBlocks" className={cn(styles.calendarHeader, tableStyle)}>
+            <div className="max-w-[4rem] min-w-[4rem] h-16 w-16" />
+        </th>
+    );
 
     return (
         <table className="min-w-full w-full bg-white no-border-sides">
             <tbody>
                 <tr>
-                    <th
-                        key="emptyBlocks"
-                        className={cn(styles.calendarHeader, tableStyle)}
-                    />
+                    {emptyFirstHeaderColumnSlot}
                     {daysOfWeekRender}
                 </tr>
             </tbody>

@@ -43,7 +43,6 @@ const Root = ({
             >
                 <NewEventProvider {...initialFormState}>
                     <CalendarHolder />
-                    {/* <Outlet /> */}
                 </NewEventProvider>
             </BookingModalProvider>
         </BookingProvider>

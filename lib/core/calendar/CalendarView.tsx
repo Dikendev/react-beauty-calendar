@@ -8,10 +8,11 @@ import {
 
 import Slots from "../slots/Slots";
 
-import { TableCell } from "../../components/ui/Table";
+import { Table, TableCell } from "../../components/ui/Table";
 import { BOOKING_VIEW_TYPE } from "../../constants";
 import useEmptySlotStore from "../../context/emptySlotsStore.ts/useEmptySlotStore";
 import { useGlobalStore } from "../../hooks";
+import { cn } from "../../lib/utils";
 import HourWithActions, { type HourWithActionsRef } from "./HourWithActions";
 
 const CalendarView = () => {
@@ -66,47 +67,54 @@ const CalendarView = () => {
         const isFistDay = (dayOfWeekIndex: number) => dayOfWeekIndex === 0;
 
         return (
-            <>
-                {hours.map((hour) => (
-                    <tr key={`${hour}-content`}>
-                        <TableCell
-                            style={{
-                                ...noBorderFirstColumn,
-                                ...dayCss,
-                                padding: 0,
-                                position: "relative",
-                            }}
-                            key={`${hour}-hour`}
-                            className="border border-gray-300 py-2 px-4 text-center w-3 min-w-16"
-                        >
-                            <div className="absolute top-[-3px] left-0 right-5 bg-white text-end">
-                                <HourWithActions
-                                    ref={(node) =>
-                                        addTimeRenderedStore(node, hour)
-                                    }
-                                    hour={hour}
-                                />
-                            </div>
-                        </TableCell>
+            <div
+                className={cn(
+                    "h-[75vh] overflow-auto",
+                    bookingViewType === BOOKING_VIEW_TYPE.WEEK && "w-max",
+                )}
+            >
+                <Table>
+                    {hours.map((hour) => (
+                        <tr key={`${hour}-content`}>
+                            <TableCell
+                                style={{
+                                    ...noBorderFirstColumn,
+                                    ...dayCss,
+                                    padding: 0,
+                                    position: "relative",
+                                }}
+                                key={`${hour}-hour`}
+                                className="border border-gray-300 py-2 px-4 text-center w-3 min-w-16"
+                            >
+                                <div className="absolute top-[-3px] left-0 right-5 bg-white text-end">
+                                    <HourWithActions
+                                        ref={(node) =>
+                                            addTimeRenderedStore(node, hour)
+                                        }
+                                        hour={hour}
+                                    />
+                                </div>
+                            </TableCell>
 
-                        {daysOfWeek.map((day, dayOfWeekIndex) => {
-                            return (
-                                <Slots
-                                    key={`${day}-${hour}-slot-content`}
-                                    dayHour={{
-                                        day: String(day),
-                                        hour,
-                                    }}
-                                    lunchTimeBlock={lunchTimeBlock}
-                                    firstDay={isFistDay(dayOfWeekIndex)}
-                                    bookingBulk={bookingBulkData.booking}
-                                    bookingViewType={bookingViewType}
-                                />
-                            );
-                        })}
-                    </tr>
-                ))}
-            </>
+                            {daysOfWeek.map((day, dayOfWeekIndex) => {
+                                return (
+                                    <Slots
+                                        key={`${day}-${hour}-slot-content`}
+                                        dayHour={{
+                                            day: String(day),
+                                            hour,
+                                        }}
+                                        lunchTimeBlock={lunchTimeBlock}
+                                        firstDay={isFistDay(dayOfWeekIndex)}
+                                        bookingBulk={bookingBulkData.booking}
+                                        bookingViewType={bookingViewType}
+                                    />
+                                );
+                            })}
+                        </tr>
+                    ))}
+                </Table>
+            </div>
         );
     }, [
         dayCss,

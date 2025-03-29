@@ -138,24 +138,24 @@ const CalendarHolder = () => {
     };
 
     return (
-        <div className=" z-[100]">
+        <div className="z-[100] max-w-[1410px]">
             <MonthDescriptionProvider {...initialMonthDescriptionState}>
-                <div className="sticky top-0 w-full h-full z-[100]">
+                <div className="w-full h-full z-[100]">
                     <Header />
-                    <div className="z-[100]">
+                    <div className="flex flex-col z-[100] overflow-auto">
                         <DaysWeek
                             daysOfWeek={daysOfWeek}
                             bookingViewType={bookingViewType}
                         />
+                        <DndContext
+                            onDragEnd={handleDragEnd}
+                            onDragStart={onDragStart}
+                            sensors={sensors}
+                        >
+                            <HandleViewType bookingViewType={bookingViewType} />
+                        </DndContext>
                     </div>
                 </div>
-                <DndContext
-                    onDragEnd={handleDragEnd}
-                    onDragStart={onDragStart}
-                    sensors={sensors}
-                >
-                    <HandleViewType bookingViewType={bookingViewType} />
-                </DndContext>
             </MonthDescriptionProvider>
         </div>
     );
