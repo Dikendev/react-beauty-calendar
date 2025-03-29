@@ -4,7 +4,13 @@
   "description": "React Library inspired by Google Calendar and Outlook.",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Dikendev/react-beauty-calendar"
+    "url": "git+https://github.com/Dikendev/react-beauty-calendar.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Dikendev/react-beauty-calendar/issues"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
   },
   "license": "MIT",
   "private": false,
