@@ -91,7 +91,7 @@ const Header = () => {
         <>
             {mobileLayout ? (
                 <div className="w-full flex flex-col justify-between pt-[0.5rem] bg-white">
-                    <div className="content-center z-50">
+                    <div className="content-center z-50 text-center">
                         <span className="text-gray-800 font-bold">
                             {monthMessage} {fullYear}
                         </span>
