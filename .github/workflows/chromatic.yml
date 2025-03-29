@@ -1,0 +1,29 @@
+
+name: 'Chromatic Deployment'
+
+on: push
+
+jobs:
+  chromatic:
+    name: 'Run Chromatic'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - run: yarn
+      - uses: chromaui/action@latest
+        id: chromatic
+        with:
+          projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Update GitHub Repository Website Link
+        if: success()
+        run: |
+          CHROMATIC_URL=$(echo "${{ steps.chromatic.outputs.web-url }}")
+          curl -X PATCH \
+            -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+            -H "Accept: application/vnd.github.v3+json" \
+            https://api.github.com/repos/${{ github.repository }} \
+            -d "{\"website\": \"$CHROMATIC_URL\"}"
