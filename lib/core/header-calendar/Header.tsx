@@ -1,6 +1,10 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
-import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
+import {
+    ChevronLeftIcon,
+    ChevronRightIcon,
+    SquareMousePointer,
+} from "lucide-react";
 
 import { useGlobalStore, useMonthDescription } from "../../hooks";
 import { DateUtils } from "../../utils/date-utils";
@@ -21,6 +25,7 @@ interface ShortcutButtons {
 }
 
 export type ShortcutButtonsList = ShortcutButtons[];
+const WINDOW_SIZE_LIMIT = 450;
 
 const Header = () => {
     const { todayWeek } = useGlobalStore();
@@ -28,6 +33,8 @@ const Header = () => {
     const { fullYear, monthMessage, updateMonthMessage } = useMonthDescription(
         (state) => state,
     );
+
+    const [mobileLayout, setMobileLayout] = useState<boolean>(false);
 
     const updateDateInfo = (targetDate: Date): void => {
         updateMonthMessage({
@@ -49,32 +56,67 @@ const Header = () => {
         updateMonthMessage({ monthMessage: initialMessage });
     }, [todayWeek, updateMonthMessage]);
 
+    useEffect(() => {
+        const mobileLayout = () => {
+            if (typeof window === "undefined") return false;
+
+            if (window.innerWidth <= WINDOW_SIZE_LIMIT) {
+                setMobileLayout(true);
+            } else {
+                setMobileLayout(false);
+            }
+        };
+
+        mobileLayout();
+        window.addEventListener("resize", mobileLayout);
+        return () => window.removeEventListener("resize", mobileLayout);
+    }, []);
+
+    const actions = (
+        <>
+            <HeaderDayActions
+                updateMonthMessage={updateMonthMessage}
+                updateDateInfo={updateDateInfo}
+            />
+            <HeaderTodayAction
+                updateMonthMessage={updateMonthMessage}
+                updateDateInfo={updateDateInfo}
+                mobileLayout={mobileLayout}
+            />
+        </>
+    );
+
     return (
-        <div className="w-full grid grid-cols-11 items-center pt-[0.5rem] px-3 bg-white">
-            <div className="col-start-1 gap-2 z-50">
-                <HeaderDayActions
-                    updateMonthMessage={updateMonthMessage}
-                    updateDateInfo={updateDateInfo}
-                />
-            </div>
+        <>
+            {mobileLayout ? (
+                <div className="w-full flex flex-col justify-between pt-[0.5rem] bg-white">
+                    <div className="content-center z-50">
+                        <span className="text-gray-800 font-bold">
+                            {monthMessage} {fullYear}
+                        </span>
+                    </div>
 
-            <div className="col-start-2 gap-2 z-50">
-                <HeaderTodayAction
-                    updateMonthMessage={updateMonthMessage}
-                    updateDateInfo={updateDateInfo}
-                />
-            </div>
+                    <div className="gap-2 z-50 flex flex-row justify-between items-center">
+                        {actions}
+                        <HeaderViewType />
+                    </div>
+                </div>
+            ) : (
+                <div className="w-full flex justify-between pt-[0.5rem] px-3 bg-white">
+                    <div className="gap-2 z-50 flex flex-row items-center">
+                        {actions}
+                    </div>
 
-            <div className="col-start-6 content-center z-50 col-span-3">
-                <span className=" text-gray-800 font-bold">
-                    {monthMessage} {fullYear}
-                </span>
-            </div>
+                    <div className="content-center z-50">
+                        <span className=" text-gray-800 font-bold">
+                            {monthMessage} {fullYear}
+                        </span>
+                    </div>
 
-            <div className="col-start-12 content-center z-50">
-                <HeaderViewType />
-            </div>
-        </div>
+                    <HeaderViewType />
+                </div>
+            )}
+        </>
     );
 };
 
@@ -171,7 +213,7 @@ const HeaderDayActions = ({
         <div className="flex flex-row justify-center">
             <Button
                 className="bg-white hover:bg-gray-100 border-none rounded-full py-3 px-3 flex focus:bg-gray-200 focus:outline-0 "
-                variant="default"
+                variant="ghost"
                 size="lg"
                 onClick={() => handleWeekChange("previous")}
             >
@@ -179,7 +221,7 @@ const HeaderDayActions = ({
             </Button>
             <Button
                 className="bg-white hover:bg-gray-100 border-none rounded-full py-3 px-3 flex text-gray-500 target:border-none focus:bg-gray-200 focus:outline-0"
-                variant="default"
+                variant="ghost"
                 size="lg"
                 onClick={() => handleWeekChange("next")}
             >
@@ -194,11 +236,13 @@ interface HeaderTodayActionProps {
         monthDescriptionProps: Partial<MonthDescriptionProps>,
     ) => void;
     updateDateInfo: (targetDate: Date) => void;
+    mobileLayout: boolean;
 }
 
 const HeaderTodayAction = ({
     updateMonthMessage,
     updateDateInfo,
+    mobileLayout,
 }: HeaderTodayActionProps) => {
     const { todayWeek, bookingViewType, setTodayDay } = useGlobalStore();
     const { onTodayClick } = useBookingModal();
@@ -234,11 +278,10 @@ const HeaderTodayAction = ({
     };
 
     return (
-        <div className="flex flex-row justify-center">
-            <Button variant="outline" onClick={todayDay}>
-                Today
-            </Button>
-        </div>
+        <Button variant={mobileLayout ? "ghost" : "outline"} onClick={todayDay}>
+            <SquareMousePointer />
+            {!mobileLayout && "Today"}
+        </Button>
     );
 };
 
