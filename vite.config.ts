@@ -1,8 +1,8 @@
 import { resolve } from "node:path";
 import tailwindcss from "@tailwindcss/vite";
 import react from "@vitejs/plugin-react";
-import dts from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
+import dts from "vite-plugin-dts";
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -19,7 +19,7 @@ export default defineConfig({
             formats: ["es", "cjs"],
         },
         rollupOptions: {
-            external: ["react", "react/jsx-runtime"],
+            external: ["react", "react-dom", "react/jsx-runtime"],
             output: {
                 exports: "named",
                 assetFileNames: "build/assets/[name][extname]",

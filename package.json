@@ -22,10 +22,8 @@
     "booking"
   ],
   "type": "module",
-  "main": "dist/react-beauty-calendar.js",
-  "types": "dist/main.d.ts",
-  "exports": "./dist/main.js",
-  "module": "./dist/main.js",
+  "main": "dist/build/main.cjs.js",
+  "module": "dist/build/main.es.js",
   "files": [
     "dist",
     "README.md"
@@ -63,8 +61,6 @@
     "date-fns": "^4.1.0",
     "dayjs": "^1.11.13",
     "lucide-react": "^0.483.0",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0",
     "react-resizable": "^3.0.5",
     "react-router": "^7.4.0",
     "tailwind-merge": "^3.0.2",
@@ -107,7 +103,10 @@
     "typescript": "~5.7.2",
     "typescript-eslint": "^8.24.1",
     "vite": "^6.2.0",
-    "vitest": "^3.0.9"
+    "vite-plugin-dts": "^4.5.3",
+    "vitest": "^3.0.9",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
   },
   "eslintConfig": {
     "extends": [
@@ -116,5 +115,9 @@
   },
   "sideEffects": [
     "**/*.css"
-  ]
+  ],
+  "peerDependencies": {
+    "react": ">=18.0.0 <20.0.0",
+    "react-dom": ">=18.0.0 <20.0.0"
+  }
 }
