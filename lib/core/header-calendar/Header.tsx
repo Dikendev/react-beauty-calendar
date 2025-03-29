@@ -25,7 +25,8 @@ interface ShortcutButtons {
 }
 
 export type ShortcutButtonsList = ShortcutButtons[];
-const WINDOW_SIZE_LIMIT = 450;
+
+const WINDOW_SIZE_LIMIT = 566;
 
 const Header = () => {
     const { todayWeek } = useGlobalStore();
@@ -73,7 +74,7 @@ const Header = () => {
     }, []);
 
     const actions = (
-        <>
+        <div className="flex flex-row items-center gap-[0.25rem]">
             <HeaderDayActions
                 updateMonthMessage={updateMonthMessage}
                 updateDateInfo={updateDateInfo}
@@ -83,7 +84,7 @@ const Header = () => {
                 updateDateInfo={updateDateInfo}
                 mobileLayout={mobileLayout}
             />
-        </>
+        </div>
     );
 
     return (
@@ -102,12 +103,12 @@ const Header = () => {
                     </div>
                 </div>
             ) : (
-                <div className="w-full flex justify-between pt-[0.5rem] px-3 bg-white">
-                    <div className="gap-2 z-50 flex flex-row items-center">
+                <div className="w-full flex justify-between mt-[0.5rem] bg-white relative">
+                    <div className="z-50 flex flex-row items-center">
                         {actions}
                     </div>
 
-                    <div className="content-center z-50">
+                    <div className="content-center z-50 absolute top-[50%] left-[50%] right-[50%] translate-x-[-50%] translate-y-[-50%] w-max">
                         <span className=" text-gray-800 font-bold">
                             {monthMessage} {fullYear}
                         </span>
@@ -279,7 +280,7 @@ const HeaderTodayAction = ({
 
     return (
         <Button variant={mobileLayout ? "ghost" : "outline"} onClick={todayDay}>
-            <SquareMousePointer />
+            <SquareMousePointer style={{ paddingTop: "0.8px" }} />
             {!mobileLayout && "Today"}
         </Button>
     );
