@@ -1,32 +1,13 @@
 {
-  "compilerOptions": {
-    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.node.tsbuildinfo",
-    "module": "esnext",
-    "target": "es5",
-    "lib": [ "es6", "dom" ],
-    "skipLibCheck": true,
-    "jsx": "react",
-    /* Bundler mode */
-    "moduleResolution": "bundler",
-    "isolatedModules": true,
-    "moduleDetection": "force",
-    "esModuleInterop": true,
-
-    /* Linting */
-    "strict": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "noFallthroughCasesInSwitch": true,
-    "noUncheckedSideEffectImports": true
-  },
-   "exclude": [
-    "node_modules",
-    "build",
-    "dist",
-    "scripts",
-    "acceptance-tests",
-    "webpack",
-    "jest"
-  ],
-  "include": ["vite.config.ts"]
+    "compilerOptions": {
+        "composite": true,
+        "skipLibCheck": true,
+        "module": "ESNext",
+        "moduleResolution": "bundler",
+        "allowSyntheticDefaultImports": true,
+        "strict": true
+    },
+    "include": [
+        "vite.config.ts"
+    ]
 }

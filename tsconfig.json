@@ -1,14 +1,67 @@
 {
-  "files": [],
-  "references": [
-    { "path": "./tsconfig.app.json" },
-    { "path": "./tsconfig.node.json" }
-  ],
   "compilerOptions": {
+    "useDefineForClassFields": true,
+    // Module and Target
+    "module": "ESNext",
+    "target": "ES2020",
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    "moduleResolution": "bundler", // Resolve modules for bundlers like Vite
+
+    // Library and Environment
+    "resolveJsonModule": true, // Allow importing JSON files
+    "jsx": "react-jsx",
+
+    "moduleDetection": "force",
+
+    // TypeScript Features
+    "declaration": true, // Generate .d.ts files
+    "declarationDir": "./dist", // Output directory for type declarations
+    "noEmit": true,
+    "outDir": "./dist", // Output directory for compiled files
+    "allowImportingTsExtensions": true, // Allow importing TypeScript files with extensions
+    // "typeRoots": ["./node_modules/@types", "./lib/utils/types"], // Custom type roots
+
+    // Strictness and Linting
+    "strict": true, // Enable all strict type-checking options
+    "noUnusedLocals": true, // Report unused local variables
+    "noUnusedParameters": true, // Report unused function parameters
+    "noFallthroughCasesInSwitch": true, // Disallow fallthrough in switch statements
+    "noUncheckedSideEffectImports": true, // Disallow unchecked imports with side effects
+
+    // Interoperability
+    "esModuleInterop": true, // Enable ES module interop
+    "allowSyntheticDefaultImports": true, // Allow default imports from modules without default exports
+
+    // Miscellaneous
+    "skipLibCheck": true, // Skip type checking of declaration files
+    "forceConsistentCasingInFileNames": true, // Enforce consistent casing in imports
+    // "isolatedModules": true, // Ensure each file can be transpiled in isolation
+    /* Linting */
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"]
-    },
-    "typeRoots": ["./node_modules/@types", "./src/types"]
+      "@/*": [
+        "./src/*"
+      ]
+    }
   },
+  "references": [
+    {
+      "path": "./tsconfig.node.json"
+    }
+  ],
+  "include": [
+    "src",
+    "lib", // Include all files in the `lib` folder
+    "vite.config.ts" //
+  ],
+  "exclude": [
+    "node_modules", // Exclude dependencies
+    "build", // Exclude build artifacts
+    "dist", // Exclude output directory
+    "scripts", // Exclude scripts folder
+    "acceptance-tests", // Exclude acceptance tests
+    "webpack", // Exclude webpack configuration
+    "jest", // Exclude Jest configuration
+    "./lib/**/*.stories.*" // Exclude Storybook stories
+  ]
 }
