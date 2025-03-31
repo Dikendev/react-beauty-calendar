@@ -11,6 +11,8 @@ export interface CalendarInstanceRef {
     getStatus: () => boolean;
 }
 
+import "./../App.css";
+
 const Root = ({
     viewModes,
     createBookingModal,
