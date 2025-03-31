@@ -3,6 +3,7 @@ import { Pencil, Trash2 } from "lucide-react";
 import {
     type CSSProperties,
     type Dispatch,
+    type PropsWithChildren,
     type SetStateAction,
     useMemo,
     useState,
@@ -22,6 +23,7 @@ import { Button } from "../../components/ui/Button";
 
 import {
     Popover,
+    PopoverAnchor,
     PopoverContent,
     PopoverTrigger,
 } from "../../components/ui/Popover";
@@ -32,6 +34,7 @@ interface BookingInfoOptionsProps {
     side: Side;
     booking: Booking;
     onOpenChange: Dispatch<SetStateAction<boolean>>;
+    isEditingOpen: boolean;
 }
 
 export type Side = (typeof SIDE_OPTIONS)[number];
@@ -41,15 +44,20 @@ export interface CardInfoOptions {
     onClick: () => void;
 }
 
+type BookingInfoOptionsWithChildren =
+    PropsWithChildren<BookingInfoOptionsProps>;
+
+const SIDE_OFF_SET = 5;
+const ALIGN_OFF_SET = 0;
+
 const BookingInfoOptions = ({
+    isEditingOpen,
     side,
     booking,
     onOpenChange,
-}: BookingInfoOptionsProps) => {
-    const [sideOffSet] = useState<number>(70);
-    const [alignOffSet] = useState<number>(-150);
+    children,
+}: BookingInfoOptionsWithChildren) => {
     const [position, setPosition] = useState({ x: 0, y: 0 });
-
     const dragStore = useDragStore();
 
     const {
@@ -131,23 +139,22 @@ const BookingInfoOptions = ({
     });
 
     return (
-        <Popover open={true} onOpenChange={onOpenChange}>
-            <PopoverTrigger />
+        <Popover open={isEditingOpen} onOpenChange={onOpenChange}>
+            <PopoverAnchor style={{ width: "100%" }}>
+                <PopoverTrigger asChild>{children}</PopoverTrigger>
+            </PopoverAnchor>
             <PopoverContent
                 ref={setNodeRef}
                 updatePositionStrategy="optimized"
-                className="w-[25rem]"
                 side={side}
                 align="start"
                 sticky="always"
-                sideOffset={sideOffSet}
-                alignOffset={alignOffSet}
+                sideOffset={SIDE_OFF_SET}
+                alignOffset={ALIGN_OFF_SET}
                 // onClick={(event) => test(event)}
-                style={dragStyle}
+                style={{ ...dragStyle, width: "25rem" }}
             >
                 <div className="grid gap-3">
-                    {/* <div className="grid gap-3" onClick={test}> */}
-                    {/* find a better way to handle this using ref */}
                     <input
                         type="text"
                         style={{
@@ -164,6 +171,8 @@ const BookingInfoOptions = ({
                             {...attributes}
                             {...listeners}
                         />
+
+                        {/* All this buttons need to change to be dynamic based on user selection */}
                         <FavoriteBooking />
                         <Button type="button" variant="outline" size="icon">
                             <Pencil className="h-3 w-3" />
@@ -180,8 +189,12 @@ const BookingInfoOptions = ({
                             options={buttonsOptions}
                             onChange={() => {}}
                         />
+
+                        {/*  */}
                     </div>
-                    <div className="mb-1 grid grid-cols-[25px_1fr] items-start pb-1 last:mb-0 last:pb-0">
+                    <div className="bookingCard_content">
+                        {/* card content */}
+
                         <div>
                             <span
                                 style={bookingColorSpan()}
@@ -194,6 +207,7 @@ const BookingInfoOptions = ({
                                 {dateInformation} | {dateToString}
                             </p>
                         </div>
+                        {/*  */}
                     </div>
                 </div>
             </PopoverContent>
