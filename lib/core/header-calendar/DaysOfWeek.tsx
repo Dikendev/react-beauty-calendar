@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from "react";
+import { type CSSProperties, useCallback, useMemo } from "react";
 import { useGlobalStore, useMonthDescription } from "../../hooks";
 
 import { BOOKING_VIEW_TYPE, MONTH } from "../../constants";
@@ -7,8 +7,6 @@ import { DateUtils, WEEK_DAYS } from "../../utils/date-utils";
 import type { BookingViewType } from "../../@types/booking";
 import type { MonthDescriptionProps } from "../../context/month-description/month-description-store";
 import { cn } from "../../lib/utils";
-
-import styles from "./daysOfWeek.module.css";
 
 interface DaysWeekProps {
     daysOfWeek: Date[];
@@ -19,13 +17,15 @@ const DaysWeek = ({ daysOfWeek, bookingViewType }: DaysWeekProps) => {
     const { setTodayDay, setBookingViewType } = useGlobalStore();
     const { updateMonthMessage } = useMonthDescription((state) => state);
 
-    const dayStyle =
+    const dayStyle: CSSProperties =
         bookingViewType === BOOKING_VIEW_TYPE.DAY
-            ? "text-start"
-            : "text-center";
+            ? { textAlign: "start" }
+            : { textAlign: "center" };
 
-    const tableStyle =
-        bookingViewType === BOOKING_VIEW_TYPE.TABLE && "justify-self-start";
+    const tableStyle: CSSProperties =
+        bookingViewType === BOOKING_VIEW_TYPE.TABLE
+            ? { justifySelf: "start" }
+            : {};
 
     const handleClickDay = useCallback(
         (day: Date) => {
@@ -57,31 +57,30 @@ const DaysWeek = ({ daysOfWeek, bookingViewType }: DaysWeekProps) => {
                 <th
                     key={dayOfWeek}
                     className={cn(
-                        "min-w-[12rem] w-[100vw]",
+                        "daysOfWeek",
                         bookingViewType !== BOOKING_VIEW_TYPE.DAY &&
-                            "max-w-[2rem]",
+                            "daysOfWeek_day",
                     )}
                 >
                     <div
-                        className={cn(
-                            "flex flex-col gap-[3px] text-gray-500 ",
-                            dayStyle,
-                            tableStyle,
-                        )}
+                        style={{ ...dayStyle, ...tableStyle }}
+                        className="daysOfWeek_parent"
                     >
                         <span
-                            className={cn(ifIsToday(day) && "text-purple-500")}
+                            className={cn(
+                                ifIsToday(day) && "daysOfWeek_day_today_title",
+                            )}
                         >
                             {dayOfWeek}
                         </span>
-                        <div className="w-full">
+                        <div style={{ width: "100%" }}>
                             <button
                                 type="button"
                                 className={cn(
-                                    "hover:cursor-pointer",
+                                    "daysOfWeek_day",
                                     ifIsToday(day)
-                                        ? "bg-purple-500 text-white rounded-full p-1"
-                                        : "hover:bg-gray-100 hover:border hover:border-gray-300 p-2 border-none rounded-full",
+                                        ? "daysOfWeek_day_today"
+                                        : "daysOfWeek_day_rest",
                                 )}
                                 onClick={() => handleClickDay(day)}
                             >
@@ -92,16 +91,16 @@ const DaysWeek = ({ daysOfWeek, bookingViewType }: DaysWeekProps) => {
                 </th>
             );
         });
-    }, [daysOfWeek, dayStyle, handleClickDay, tableStyle, bookingViewType]);
+    }, [daysOfWeek, handleClickDay, bookingViewType]);
 
     const emptyFirstHeaderColumnSlot = (
-        <th key="emptyBlocks" className={cn(styles.calendarHeader, tableStyle)}>
-            <div className="max-w-[4rem] min-w-[4rem] h-16 w-16" />
+        <th key="emptyBlocks" style={tableStyle} className={"calendarHeader"}>
+            <div className="daysOfWeek_emptySlot" />
         </th>
     );
 
     return (
-        <table className="min-w-full w-full bg-white no-border-sides">
+        <table className="daysOfWeek_emptySlot_table">
             <tbody>
                 <tr>
                     {emptyFirstHeaderColumnSlot}

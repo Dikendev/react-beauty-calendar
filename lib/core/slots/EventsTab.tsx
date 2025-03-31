@@ -66,7 +66,6 @@ const EventTabs = ({
 
     return (
         <DropdownMenu
-            dir="ltr"
             modal={false}
             open={true}
             defaultOpen={false}
@@ -76,25 +75,25 @@ const EventTabs = ({
 
             <DropdownMenuContent
                 ref={setNodeRef}
-                style={{ ...dragStyle, zIndex: 100 }}
-                className="w-[25rem]"
-                updatePositionStrategy="always"
+                style={{ ...dragStyle, zIndex: 100, width: "25rem" }}
                 forceMount
+                avoidCollisions
                 side="right"
                 sticky="always"
+                updatePositionStrategy="always"
                 onEscapeKeyDown={() => {}}
                 {...attributes}
             >
-                <div className="flex justify-between items-center hover:bg-gray-100 rounded-sm">
+                <div className="dropdownLabelContent">
                     <Label
                         ref={setActivatorNodeRef}
-                        className="w-full hover:cursor-move p-4"
+                        className="dropdownLabelContent_dropdownLabel"
                         {...listeners}
                     >
                         Appointment
                     </Label>
                     <X
-                        className="hover:cursor-pointer hover:text-gray-500"
+                        className="dropdownLabelContent_close"
                         onClick={onClose}
                     />
                 </div>

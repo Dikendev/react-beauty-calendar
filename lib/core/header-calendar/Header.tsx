@@ -74,7 +74,7 @@ const Header = () => {
     }, []);
 
     const actions = (
-        <div className="flex flex-row items-center gap-[0.25rem]">
+        <div className="header_actions">
             <HeaderDayActions
                 updateMonthMessage={updateMonthMessage}
                 updateDateInfo={updateDateInfo}
@@ -90,26 +90,24 @@ const Header = () => {
     return (
         <>
             {mobileLayout ? (
-                <div className="w-full flex flex-col justify-between pt-[0.5rem] bg-white">
-                    <div className="content-center z-50 text-center">
-                        <span className="text-gray-800 font-bold">
+                <div className="headerCalendar_mobile">
+                    <div className="headerCalendar_mobile_month">
+                        <span className="headerCalendar_mobile_month_span">
                             {monthMessage} {fullYear}
                         </span>
                     </div>
 
-                    <div className="gap-2 z-50 flex flex-row justify-between items-center">
+                    <div className="headerCalendar_mobile_actions">
                         {actions}
                         <HeaderViewType />
                     </div>
                 </div>
             ) : (
-                <div className="w-full flex justify-between mt-[0.5rem] bg-white relative">
-                    <div className="z-50 flex flex-row items-center">
-                        {actions}
-                    </div>
+                <div className="headerCalendar">
+                    <div className="headerCalendar_actions">{actions}</div>
 
-                    <div className="content-center z-50 absolute top-[50%] left-[50%] right-[50%] translate-x-[-50%] translate-y-[-50%] w-max">
-                        <span className=" text-gray-800 font-bold">
+                    <div className="headerCalendar_month">
+                        <span className="headerCalendar_month_span">
                             {monthMessage} {fullYear}
                         </span>
                     </div>
@@ -211,22 +209,22 @@ const HeaderDayActions = ({
     };
 
     return (
-        <div className="flex flex-row justify-center">
+        <div className="header_day_actions">
             <Button
-                className="bg-white hover:bg-gray-100 border-none rounded-full py-3 px-3 flex focus:bg-gray-200 focus:outline-0 "
+                className="header_day_actions_button"
                 variant="ghost"
                 size="lg"
                 onClick={() => handleWeekChange("previous")}
             >
-                <ChevronLeftIcon className="h-4 w-4 text-gray-500" />
+                <ChevronLeftIcon className="header_day_actions_button_icon" />
             </Button>
             <Button
-                className="bg-white hover:bg-gray-100 border-none rounded-full py-3 px-3 flex text-gray-500 target:border-none focus:bg-gray-200 focus:outline-0"
+                className="header_day_actions_button"
                 variant="ghost"
                 size="lg"
                 onClick={() => handleWeekChange("next")}
             >
-                <ChevronRightIcon className="h-4 w-4 text-gray-500" />
+                <ChevronRightIcon className="header_day_actions_button_icon" />
             </Button>
         </div>
     );

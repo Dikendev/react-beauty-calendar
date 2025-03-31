@@ -15,17 +15,11 @@ import {
 
 import type { Booking, BookingDateAndTime } from "../../@types/booking";
 
-import styles from "./Draggable.module.css";
-
-// import {
-//     patchBookingResize,
-//     patchBookingSelfResize,
-// } from '../../services/api-booking';
-
 import { useGlobalStore } from "../../hooks";
 
 import { BOOKING_VIEW_TYPE } from "../../constants";
 
+import { cn } from "../../lib/utils";
 import BookingInfoOptions, {
     type Side,
 } from "../booking-options/BookingInfoOptions";
@@ -221,7 +215,7 @@ const Card = ({ booking, slotData, ref }: CardProps) => {
                         slotData={slotData}
                         heightStyle={`${heightStyle}rem`}
                     />
-                    <div className="w-full h-[2rem] z-100 relative">
+                    <div className="isDraggingCard">
                         <CardContent
                             bookingInit={bookingInit}
                             bookingViewType={bookingViewType}
@@ -231,32 +225,39 @@ const Card = ({ booking, slotData, ref }: CardProps) => {
                     </div>
                 </>
             ) : (
-                <CardContent
-                    ref={setNodeRef}
-                    resizableParam={{
-                        state,
-                        onResize,
-                        resizeHandle: ["s"],
-                    }}
-                    customClasses={`bg-black ${styles.Draggable} ${isPending && styles.pendingDelay}`}
-                    bookingInit={bookingInit}
-                    bookingViewType={bookingViewType}
-                    slotData={slotData}
-                    heightStyleTransformer={`${heightStyle}rem`}
-                    onClick={openEditingModal}
-                    pendingStyle={pendingStyle}
-                    style={style}
-                    listeners={listeners}
-                    attributes={attributes}
-                />
-            )}
-            {isEditingOpen && (
                 <DndContext>
                     <BookingInfoOptions
                         booking={bookingInit}
                         onOpenChange={setIsEditingOpen}
-                        side={sideOption.current}
-                    />
+                        side={
+                            bookingViewType === BOOKING_VIEW_TYPE.DAY
+                                ? "top"
+                                : "left"
+                        }
+                        isEditingOpen={isEditingOpen}
+                    >
+                        <CardContent
+                            ref={setNodeRef}
+                            resizableParam={{
+                                state,
+                                onResize,
+                                resizeHandle: ["s"],
+                            }}
+                            customClasses={cn(
+                                "Draggable",
+                                isPending && "pendingDelay",
+                            )}
+                            bookingInit={bookingInit}
+                            bookingViewType={bookingViewType}
+                            slotData={slotData}
+                            heightStyleTransformer={`${heightStyle}rem`}
+                            onClick={openEditingModal}
+                            pendingStyle={pendingStyle}
+                            style={{ ...style, backgroundColor: "black" }}
+                            listeners={listeners}
+                            attributes={attributes}
+                        />
+                    </BookingInfoOptions>
                 </DndContext>
             )}
         </>

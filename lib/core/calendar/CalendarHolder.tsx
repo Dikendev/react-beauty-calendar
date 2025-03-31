@@ -138,11 +138,11 @@ const CalendarHolder = () => {
     };
 
     return (
-        <div className="z-[100] max-w-[1410px]">
+        <div className="calendarHolder">
             <MonthDescriptionProvider {...initialMonthDescriptionState}>
-                <div className="w-full h-full z-[100]">
+                <div className="calendarHolder_parent">
                     <Header />
-                    <div className="flex flex-col z-[100] overflow-auto">
+                    <div className="calendarHolder_parent_content">
                         <DaysWeek
                             daysOfWeek={daysOfWeek}
                             bookingViewType={bookingViewType}

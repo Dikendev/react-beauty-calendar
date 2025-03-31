@@ -23,6 +23,7 @@ import { useGlobalStore, useNewEventStore } from "../../hooks";
 import { DndContext } from "@dnd-kit/core";
 import type { Booking } from "../../@types";
 
+import { BOOKING_VIEW_TYPE } from "../../constants";
 import useBookingModal from "../../hooks/use-booking-model";
 import { cn } from "../../lib/utils";
 import { DateUtils } from "../../utils/date-utils";
@@ -102,7 +103,7 @@ const SlotTrigger = ({
 
     const renderedCardPreviewRef = useRef<HTMLDivElement>(null);
 
-    // isso está muito errado. melhorar. está chamando toda hora. sem necessidade.
+    // TODO: isso está muito errado. melhorar. está chamando toda hora. sem necessidade.
     useEffect(() => {
         updateHeightStyle(finishMock, startMock);
     }, [finishMock, startMock, updateHeightStyle]);
@@ -194,9 +195,9 @@ const SlotTrigger = ({
     const activeStyle =
         disabledCss.length || isDraggingOnClick
             ? disabledCss
-            : "hover:bg-white-50";
+            : "hovering_slotTrigger_core";
 
-    const borderStyle = border ? "border-b border-solid" : "";
+    const borderStyle = border ? "slotTrigger_core_border" : "";
 
     const renderPreviewCard = useCallback(() => {
         const { time, key } = slotData;
@@ -265,7 +266,9 @@ const SlotTrigger = ({
                 key={slotData.key}
                 style={slotData.style}
                 className={cn(
-                    "w-[100%] min-w-32 h-[2rem] relative",
+                    "slotTrigger_core",
+                    bookingViewType === BOOKING_VIEW_TYPE.DAY &&
+                        "slotTrigger_core_day",
                     borderStyle,
                     activeStyle,
                 )}
@@ -289,7 +292,7 @@ const SlotTrigger = ({
                 )}
 
                 {renderEvent && (
-                    <div className="w-full">
+                    <div style={{ width: "100%" }}>
                         <CardContent
                             ref={renderedCardPreviewRef}
                             bookingInit={bookingMock}

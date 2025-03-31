@@ -1,4 +1,11 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import {
+    type CSSProperties,
+    useCallback,
+    useEffect,
+    useMemo,
+    useRef,
+    useState,
+} from "react";
 
 import type { Booking } from "../../@types";
 import CardContent from "./CardContent";
@@ -11,8 +18,6 @@ import { Resizable } from "react-resizable";
 import { cn } from "../../lib/utils";
 import { DateUtils } from "../../utils/date-utils";
 import useResizableCardHook from "./useResizableCardHook";
-
-// import styles from "./Draggable.module.css";
 
 interface TimeInfoEvents {
     onClick: (finishAt?: string) => void;
@@ -166,7 +171,6 @@ const TimeInfo = ({
         resetPrevView();
     }, [resetFinishAt, resetHeightStyle, resetPrevView, resetState]);
 
-    // TODO: avaliar esse aviso aqui.
     useEffect(() => {
         return () => {
             stopCounter();
@@ -175,17 +179,19 @@ const TimeInfo = ({
     }, []);
 
     const bookingViewType = useGlobalStore((state) => state.bookingViewType);
-    const withChildrenStyle = isDraggingOnClick ? "bg-white border-none" : "";
+    const withChildrenStyle: CSSProperties = isDraggingOnClick
+        ? { backgroundColor: "white", border: "none" }
+        : {};
 
     return (
         <div
-            className={cn(
-                "w-full bg-red-300 h-full z-[-1] content-center border-solid border-[1px] border-black rounded-sm cursor-default",
-                withChildrenStyle,
-            )}
+            style={{
+                ...withChildrenStyle,
+            }}
+            className={cn("timeInfo_core", withChildrenStyle)}
         >
             <Resizable
-                className="slot-resizable "
+                className="slot-resizable"
                 height={state.height}
                 width={state.width}
                 onResizeStart={startCounter}
@@ -201,7 +207,7 @@ const TimeInfo = ({
                 transformScale={1}
             >
                 {isDraggingOnClick ? (
-                    <div style={{ height: "100%", alignContent: "center" }}>
+                    <div className="timeInfo_core_dragging">
                         <CardContent
                             customClasses="dragging-effect"
                             bookingInit={bookingMock}
@@ -220,8 +226,8 @@ const TimeInfo = ({
                         />
                     </div>
                 ) : (
-                    <div className="rounded-sm w-full h-full content-center relative">
-                        <span className="absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%]">
+                    <div className="timeInfo_core_timeParent">
+                        <span className="timeInfo_core_timeParent_time">
                             {slotData.time}
                         </span>
                     </div>

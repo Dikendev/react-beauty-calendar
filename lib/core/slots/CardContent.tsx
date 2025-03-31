@@ -1,10 +1,11 @@
 import {
+    type CSSProperties,
     type Ref,
     type SyntheticEvent,
     useEffect,
-    useMemo,
     useState,
 } from "react";
+
 import { cn } from "../../lib/utils";
 
 import type { Booking } from "../../@types";
@@ -45,11 +46,7 @@ interface CardContentProps {
     slotData: BookingDateAndTime;
     heightStyleTransformer: string;
     pendingStyle?: React.CSSProperties;
-    style?:
-        | {
-              transform: string;
-          }
-        | undefined;
+    style?: CSSProperties | undefined;
     listeners?: SyntheticListenerMap | undefined;
     attributes?: DraggableAttributes;
     onClick?: () => void;
@@ -84,15 +81,10 @@ const CardContent = ({
 
     const { updateIsDragging } = useDragStore((state) => state);
 
-    const handleStyleCardContent = useMemo(() => {
-        if (bookingViewType === BOOKING_VIEW_TYPE.DAY) return "w-[99%]";
-        return "w-full";
-    }, [bookingViewType]);
-
-    const handleStyleCardContentTest = useMemo(() => {
-        if (bookingViewType === BOOKING_VIEW_TYPE.DAY) return "w-[99%]";
-        return "w-full";
-    }, [bookingViewType]);
+    const handleStyleCardContent: CSSProperties =
+        bookingViewType === BOOKING_VIEW_TYPE.DAY
+            ? { width: "99%" }
+            : { width: "100%" };
 
     useEffect(() => {
         return () => {
@@ -124,11 +116,14 @@ const CardContent = ({
         }
     };
 
-    // useEffect(() => {
-    //     return () => {
-    //         setCustomClass("");
-    //     };
-    // }, []);
+    const cardContextStyle: CSSProperties = {
+        height: heightStyleTransformer,
+        position: "relative",
+        zIndex: 50,
+        ...pendingStyle,
+        ...style,
+        ...handleStyleCardContent,
+    };
 
     if (!open && !bookingInit.finishAt) return null;
 
@@ -138,7 +133,7 @@ const CardContent = ({
         return (
             <Resizable
                 className={cn(
-                    "absolute top-[0px]",
+                    "cardContent_resizable",
                     resizableParam.customClass,
                     customClass,
                 )}
@@ -157,8 +152,8 @@ const CardContent = ({
                 transformScale={1}
             >
                 <div
-                    className={cn("flex", handleStyleCardContentTest)}
                     style={{
+                        display: "flex",
                         height: heightStyleTransformer,
                         zIndex: 99,
                     }}
@@ -166,21 +161,12 @@ const CardContent = ({
                     <div
                         ref={ref}
                         className={cn(
-                            "border rounded-md overflow-hidden",
-                            handleStyleCardContent,
+                            "cardContent_render",
                             customClasses,
                             customClass.length && "dragging-effect",
                         )}
                         onClick={onClick}
-                        style={
-                            {
-                                height: heightStyleTransformer,
-                                position: "relative",
-                                zIndex: 50,
-                                ...pendingStyle,
-                                ...style,
-                            } as React.CSSProperties
-                        }
+                        style={cardContextStyle}
                         {...listeners}
                         {...attributes}
                     >
@@ -194,32 +180,21 @@ const CardContent = ({
         );
     }
 
-    // CARD AFTER DRAG, rendered this card.
+    // After card drag render this card.
     return (
         <div
-            className={cn("flex", handleStyleCardContentTest)}
             style={{
                 height: heightStyleTransformer,
+                display: "flex",
                 zIndex: 100,
+                ...handleStyleCardContent,
             }}
         >
             <div
                 ref={ref}
-                className={cn(
-                    "hover:bg-white border rounded-md overflow-hidden",
-                    handleStyleCardContent,
-                    customClasses,
-                )}
+                className={cn("cardContent_render", customClasses)}
                 onClick={onClick}
-                style={
-                    {
-                        height: heightStyleTransformer,
-                        position: "relative",
-                        zIndex: 50,
-                        ...pendingStyle,
-                        ...style,
-                    } as React.CSSProperties
-                }
+                style={cardContextStyle}
                 {...listeners}
                 {...attributes}
             >

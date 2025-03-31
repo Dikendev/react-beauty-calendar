@@ -69,8 +69,9 @@ const CalendarView = () => {
         return (
             <div
                 className={cn(
-                    "h-[75vh] overflow-auto",
-                    bookingViewType === BOOKING_VIEW_TYPE.WEEK && "w-max",
+                    "calendarCore",
+                    bookingViewType === BOOKING_VIEW_TYPE.WEEK &&
+                        "calendarCore_max",
                 )}
             >
                 <Table>
@@ -84,9 +85,9 @@ const CalendarView = () => {
                                     position: "relative",
                                 }}
                                 key={`${hour}-hour`}
-                                className="border border-gray-300 py-2 px-4 text-center w-3 min-w-16"
+                                className="calendarCore_cell"
                             >
-                                <div className="absolute top-[-3px] left-0 right-5 bg-white text-end">
+                                <div className="calendarCore_actions">
                                     <HourWithActions
                                         ref={(node) =>
                                             addTimeRenderedStore(node, hour)

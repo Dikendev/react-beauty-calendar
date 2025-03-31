@@ -6,7 +6,6 @@ import CalendarHolder from "./calendar/CalendarHolder";
 import { BookingModalProvider, BookingProvider } from "../context";
 import { NewEventProvider } from "../context/new-event/new-event-context";
 import { initialFormState } from "../context/new-event/new-event-store";
-import "../App.css";
 
 export interface CalendarInstanceRef {
     getStatus: () => boolean;

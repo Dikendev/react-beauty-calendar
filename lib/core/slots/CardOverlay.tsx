@@ -3,10 +3,7 @@ import { restrictToWindowEdges } from "@dnd-kit/modifiers";
 
 import type { Booking } from "../../@types";
 
-import styles from "./Draggable.module.css";
-
 import type { BookingDateAndTime } from "../../@types/booking";
-import { cn } from "../../lib/utils";
 import BookingCard from "../booking-card/BookingCard";
 
 interface CardOverlayProps {
@@ -26,12 +23,10 @@ const CardOverlay = ({
                 duration: 2000,
                 easing: "cubic-bezier(0.18, 0.67, 0.6, 1.22)",
             }}
-            className={cn("w-full", styles.Draggable, styles.dragging)}
+            className="Draggable dragging"
         >
             <div
-                className={cn(
-                    "text-white w-full absolute z-10 border rounded-sm overflow-hidden",
-                )}
+                className="cardOverlay_content"
                 style={{
                     height: heightStyle,
                 }}

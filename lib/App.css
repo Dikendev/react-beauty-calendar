@@ -191,12 +191,92 @@
   overflow: auto;
 }
 
-/* header */
+/* Header */
 .header_actions {
   display: flex;
   flex-direction: row;
   align-items: center;
   gap: 0.25rem;
+}
+
+.headerCalendar_mobile {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 100%;
+  padding-top: 0.5rem;
+  background-color: white;
+}
+
+.headerCalendar_mobile_month {
+  align-content: center;
+  z-index: 50;
+  text-align: center;
+}
+
+.headerCalendar_mobile_month_span {
+  color: #1e2939;
+  font-weight: 700;
+}
+
+.headerCalendar_mobile_actions {
+  gap: 0.5rem;
+  z-index: 50;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.headerCalendar {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  margin-top: 0.5rem;
+  background-color: white;
+  position: relative;
+}
+
+.headerCalendar_actions {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  z-index: 50;
+}
+
+.headerCalendar_month {
+  align-content: center;
+  width: max-content;
+  position: absolute;
+  z-index: 50;
+  top: 50%;
+  left: 50%;
+  right: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.headerCalendar_month_span {
+  color: #1e2939;
+  font-weight: 700;
+}
+
+/* Card */
+.isDraggingCard {
+  height: 2rem;
+  z-index: 100;
+  position: relative;
+}
+
+/* CardOverlay */
+
+.cardOverlay_content {
+  color: white;
+  position: absolute;
+  overflow: hidden;
+  width: 100%;
+  border: 1px solid;
+  border-radius: 0.25rem;
+  z-index: 10;
 }
 
 /* headerDayActions */
@@ -271,6 +351,11 @@
   width: 100%;
   padding: 0;
   position: relative;
+}
+
+.slot_disabled {
+  background-color: #e5e7eb;
+  border: none;
 }
 
 .slotWeek {
@@ -371,6 +456,23 @@
   border-bottom: 0px solid;
 }
 
+/* CardContent */
+.cardContent_resizable {
+  position: absolute;
+  width: 100%;
+  top: 0;
+}
+
+.cardContent_render {
+  border: 1px;
+  border-radius: 0.25rem;
+  overflow: hidden;
+}
+
+.cardContent_render:hover {
+  background-color: white;
+}
+
 /* timeInfo */
 .timeInfo_core {
   width: 100%;
@@ -396,6 +498,11 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+}
+
+.timeInfo_core_dragging {
+  height: 100%;
+  align-content: center;
 }
 
 /* EventsTab */

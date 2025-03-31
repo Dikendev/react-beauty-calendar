@@ -39,12 +39,13 @@ const Slots = ({
 
     const disabledCss = useRef<string>("");
 
+    //TODO: create a issue to fix this, it is hard to understand and complex to maintain, need to improve this.
     const isTimeLunch = (hour: string) => {
         if (
             hour === lunchTimeBlock.startAt ||
             hour === lunchTimeBlock.finishAt
         ) {
-            disabledCss.current = "bg-gray-200 border-none";
+            disabledCss.current = "slot_disabled";
             return true;
         }
         return false;
@@ -176,9 +177,8 @@ const Slots = ({
         <td
             key={`${dayHour.day}-${dayHour.hour}-slot`}
             className={cn(
-                "bg-white border border-gray-300 min-w-[8rem] w-[80rem] p-0 relative z-[0px]",
-                bookingViewType === BOOKING_VIEW_TYPE.WEEK &&
-                    "max-w-[12rem] min-w-[5rem]",
+                "slot",
+                bookingViewType === BOOKING_VIEW_TYPE.WEEK && "slotWeek",
             )}
         >
             {slotRender}
