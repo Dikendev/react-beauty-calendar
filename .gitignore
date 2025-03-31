@@ -30,3 +30,6 @@ build/Release
 *.sw?
 
 *storybook.log
+
+tsconfig.*
+vite.config.d*
