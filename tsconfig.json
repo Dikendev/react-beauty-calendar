@@ -35,13 +35,13 @@
     // Miscellaneous
     "skipLibCheck": true, // Skip type checking of declaration files
     "forceConsistentCasingInFileNames": true, // Enforce consistent casing in imports
-    // "isolatedModules": true, // Ensure each file can be transpiled in isolation
+    "isolatedModules": true, // Ensure each file can be transpiled in isolation
     /* Linting */
     "baseUrl": ".",
     "paths": {
       "@/*": [
-        "./src/*"
-      ]
+        "./src/*",
+      ],
     }
   },
   "references": [
