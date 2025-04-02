@@ -121,7 +121,13 @@ const BookingInfoOptions = ({
 
     useDndMonitor({
         onDragStart(event) {
-            if (event.active.id) dragStore.updateIsDragging(true);
+            const eventData = event.active.data.current as any; // fix this type later.;
+            const eventActiveId = event.active.id;
+            const isBookingInfo = eventData.type === "booking-info-options";
+
+            if (eventActiveId && isBookingInfo) {
+                dragStore.updateIsDragging(true);
+            }
         },
 
         onDragEnd(event) {

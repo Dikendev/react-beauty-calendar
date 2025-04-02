@@ -31,7 +31,11 @@ const CardOverlay = ({
                     height: heightStyle,
                 }}
             >
-                <BookingCard booking={bookingInit} slotData={slotData} />
+                <BookingCard
+                    booking={bookingInit}
+                    slotData={slotData}
+                    heightStyleTransformer={heightStyle}
+                />
             </div>
         </DragOverlay>
     );

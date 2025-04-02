@@ -45,8 +45,6 @@ interface CardContentProps {
     bookingViewType: string;
     slotData: BookingDateAndTime;
     heightStyleTransformer: string;
-    pendingStyle?: React.CSSProperties;
-    style?: CSSProperties | undefined;
     listeners?: SyntheticListenerMap | undefined;
     attributes?: DraggableAttributes;
     onClick?: () => void;
@@ -66,16 +64,11 @@ const CardContent = ({
     slotData,
     heightStyleTransformer,
     onClick,
-    pendingStyle,
-    style,
-    listeners,
-    attributes,
     customClasses,
     bookingViewType,
     resizableParam,
     events,
     open = true,
-    ref,
 }: CardContentProps) => {
     const [customClass, setCustomClass] = useState<string>("");
 
@@ -116,15 +109,6 @@ const CardContent = ({
         }
     };
 
-    const cardContextStyle: CSSProperties = {
-        height: heightStyleTransformer,
-        position: "relative",
-        zIndex: 50,
-        ...pendingStyle,
-        ...style,
-        ...handleStyleCardContent,
-    };
-
     if (!open && !bookingInit.finishAt) return null;
 
     if (resizableParam?.state?.height) {
@@ -158,23 +142,13 @@ const CardContent = ({
                         zIndex: 99,
                     }}
                 >
-                    <div
-                        ref={ref}
-                        className={cn(
-                            "cardContent_render",
-                            customClasses,
-                            customClass.length && "dragging-effect",
-                        )}
+                    <BookingCard
+                        key={bookingInit.id}
+                        heightStyleTransformer={heightStyleTransformer}
+                        booking={bookingInit}
+                        slotData={slotData}
                         onClick={onClick}
-                        style={cardContextStyle}
-                        {...listeners}
-                        {...attributes}
-                    >
-                        <BookingCard
-                            booking={bookingInit}
-                            slotData={slotData}
-                        />
-                    </div>
+                    />
                 </div>
             </Resizable>
         );
@@ -190,16 +164,13 @@ const CardContent = ({
                 ...handleStyleCardContent,
             }}
         >
-            <div
-                ref={ref}
-                className={cn("cardContent_render", customClasses)}
+            <BookingCard
+                heightStyleTransformer={heightStyleTransformer}
+                customClasses={customClasses}
+                booking={bookingInit}
+                slotData={slotData}
                 onClick={onClick}
-                style={cardContextStyle}
-                {...listeners}
-                {...attributes}
-            >
-                <BookingCard booking={bookingInit} slotData={slotData} />
-            </div>
+            />
         </div>
     );
 };
