@@ -1,17 +1,4 @@
-import {
-    type Ref,
-    useCallback,
-    useImperativeHandle,
-    useRef,
-    useState,
-} from "react";
-
-import {
-    DndContext,
-    type DragPendingEvent,
-    useDndMonitor,
-    useDraggable,
-} from "@dnd-kit/core";
+import { type Ref, useImperativeHandle, useRef, useState } from "react";
 
 import type { Booking, BookingDateAndTime } from "../../@types/booking";
 
@@ -19,12 +6,10 @@ import { useGlobalStore } from "../../hooks";
 
 import { BOOKING_VIEW_TYPE } from "../../constants";
 
-import { cn } from "../../lib/utils";
 import BookingInfoOptions, {
     type Side,
 } from "../booking-options/BookingInfoOptions";
 import CardContent from "./CardContent";
-import CardOverlay from "./CardOverlay";
 import useResizableCardHook from "./useResizableCardHook";
 
 interface CardProps {
@@ -45,13 +30,11 @@ const Card = ({ booking, slotData, ref }: CardProps) => {
 
     const [bookingInit, setBookingInit] = useState<Booking>({ ...booking });
 
-    const [isPending, setIsPending] = useState(false);
-    const [pendingDelayMs, setPendingDelay] = useState(0);
     const [isEditingOpen, setIsEditingOpen] = useState<boolean>(false);
 
     const sideOption = useRef<Side>("left");
 
-    const openEditingModal = () => {
+    const openEditingModal = (): void => {
         const weekDay = slotData.day.split(":")[0].trim();
 
         if (bookingViewType === BOOKING_VIEW_TYPE.DAY) {
@@ -69,46 +52,6 @@ const Card = ({ booking, slotData, ref }: CardProps) => {
         }
         setIsEditingOpen(true);
     };
-
-    const { attributes, listeners, setNodeRef, isDragging, transform } =
-        useDraggable({
-            id: bookingInit.id,
-            data: {
-                type: "booking-slots",
-                booking: bookingInit,
-                slotData,
-            },
-        });
-
-    const style = transform
-        ? {
-              transform: `translate3d(${transform.x}px, ${transform.y}px, 0)`,
-          }
-        : undefined;
-
-    const handlePending = useCallback((event: DragPendingEvent) => {
-        setIsPending(true);
-        const { constraint } = event;
-
-        if (event.id === booking.id && "delay" in constraint) {
-            setPendingDelay(constraint.delay);
-        }
-    }, []);
-
-    const handlePendingEnd = useCallback(() => {
-        setIsPending(false);
-    }, []);
-
-    useDndMonitor({
-        onDragPending: (event) => handlePending(event),
-        onDragAbort: () => handlePendingEnd(),
-        onDragCancel: () => handlePendingEnd(),
-        onDragEnd: () => handlePendingEnd(),
-    });
-
-    const pendingStyle: React.CSSProperties = isPending
-        ? { animationDuration: `${pendingDelayMs}ms` }
-        : {};
 
     const addTime = async (datetime: Date): Promise<void> => {
         try {
@@ -207,60 +150,27 @@ const Card = ({ booking, slotData, ref }: CardProps) => {
     );
 
     return (
-        <>
-            {isDragging ? (
-                <>
-                    <CardOverlay
-                        bookingInit={booking}
-                        slotData={slotData}
-                        heightStyle={`${heightStyle}rem`}
-                    />
-                    <div className="isDraggingCard">
-                        <CardContent
-                            bookingInit={bookingInit}
-                            bookingViewType={bookingViewType}
-                            slotData={slotData}
-                            heightStyleTransformer={`${heightStyle}rem`}
-                        />
-                    </div>
-                </>
-            ) : (
-                <DndContext>
-                    <BookingInfoOptions
-                        booking={bookingInit}
-                        onOpenChange={setIsEditingOpen}
-                        side={
-                            bookingViewType === BOOKING_VIEW_TYPE.DAY
-                                ? "top"
-                                : "left"
-                        }
-                        isEditingOpen={isEditingOpen}
-                    >
-                        <CardContent
-                            ref={setNodeRef}
-                            resizableParam={{
-                                state,
-                                onResize,
-                                resizeHandle: ["s"],
-                            }}
-                            customClasses={cn(
-                                "Draggable",
-                                isPending && "pendingDelay",
-                            )}
-                            bookingInit={bookingInit}
-                            bookingViewType={bookingViewType}
-                            slotData={slotData}
-                            heightStyleTransformer={`${heightStyle}rem`}
-                            onClick={openEditingModal}
-                            pendingStyle={pendingStyle}
-                            style={{ ...style, backgroundColor: "black" }}
-                            listeners={listeners}
-                            attributes={attributes}
-                        />
-                    </BookingInfoOptions>
-                </DndContext>
-            )}
-        </>
+        <BookingInfoOptions
+            booking={bookingInit}
+            onOpenChange={setIsEditingOpen}
+            side={bookingViewType === BOOKING_VIEW_TYPE.DAY ? "top" : "left"}
+            isEditingOpen={isEditingOpen}
+        >
+            <CardContent
+                resizableParam={{
+                    state,
+                    onResize,
+                    resizeHandle: ["s"],
+                }}
+                customClasses={"Draggable"}
+                bookingInit={bookingInit}
+                bookingViewType={bookingViewType}
+                slotData={slotData}
+                heightStyleTransformer={`${heightStyle}rem`}
+                onClick={openEditingModal}
+                // style={ backgroundColor: "black" }
+            />
+        </BookingInfoOptions>
     );
 };
 
