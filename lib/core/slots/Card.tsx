@@ -90,7 +90,7 @@ const Card = ({ booking, slotData, ref }: CardProps) => {
         setIsPending(true);
         const { constraint } = event;
 
-        if ("delay" in constraint) {
+        if (event.id === booking.id && "delay" in constraint) {
             setPendingDelay(constraint.delay);
         }
     }, []);
