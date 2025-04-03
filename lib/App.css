@@ -413,8 +413,6 @@
 
 .daysOfWeek_day_today {
   color: white;
-  width: 2rem;
-  height: 2rem;
   padding: 0.25rem;
   background-color: rgb(210, 104, 210);
 }
