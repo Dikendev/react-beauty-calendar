@@ -73,11 +73,11 @@ const BookingInfoOptions = ({
         };
     };
 
-    const handleOnDeleteBooking = async () => {
-        // event.stopPropagation();
-        // event.preventDefault();
-        // Call the user delete booking action callback
-    };
+    // const handleOnDeleteBooking = async () => {
+    //     // event.stopPropagation();
+    //     // event.preventDefault();
+    //     // Call the user delete booking action callback
+    // };
 
     const updatePosition = (transform: Transform | null): void => {
         if (!transform) {
