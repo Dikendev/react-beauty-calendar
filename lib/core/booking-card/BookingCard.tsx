@@ -139,8 +139,6 @@ const BookingCard = ({
                                 "flex flex-col h-full text-white pl-2 lg:pl-2 justify-start items-start",
                             )}
                         >
-                            {String(booking.startAt)}
-                            {booking.id}
                             <p className="text-[0.8rem] h-[0.8rem]">
                                 {`${DateUtils.dateAndHourDateToString(booking.startAt)} - ${DateUtils.dateAndHourDateToString(
                                     booking.finishAt,
