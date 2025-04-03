@@ -55,7 +55,9 @@ const BookingInfoContext = ({
     };
 
     useDndMonitor({
-        onDragStart() {},
+        onDragStart() {
+            () => console.log("onDragStart");
+        },
         onDragEnd(event) {
             event.active.id && updatePosition(transform);
         },
