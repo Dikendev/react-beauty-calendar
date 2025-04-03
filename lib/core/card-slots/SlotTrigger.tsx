@@ -314,6 +314,7 @@ const SlotTrigger = ({
                         onClose={onCloseCreationModal}
                         onOpenChange={onOpenChange}
                         buttonTrigger={<div key={slotData.key} />}
+                        side={bookingViewType === "DAY" ? "top" : "right"}
                     />
                 </DndContext>
             )}

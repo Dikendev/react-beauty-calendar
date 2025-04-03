@@ -16,9 +16,11 @@ import {
 import { Label } from "../../components/ui/Label";
 import type { EmptySlotNodes } from "../../context/emptySlotsStore.ts/useEmptySlotStore";
 import useBookingModal from "../../hooks/use-booking-model";
+import type { Side } from "../booking-options/BookingInfoOptions";
 
 interface EventTabsProps {
     emptySlotNodes?: EmptySlotNodes;
+    side: Side;
     buttonTrigger: JSX.Element;
     onClose: (event: React.MouseEvent) => void;
     onOpenChange: (status: boolean) => void;
@@ -27,6 +29,7 @@ type EventTabsWithChildren = PropsWithChildren<EventTabsProps>;
 
 const EventTabs = ({
     onClose,
+    side,
     onOpenChange,
     buttonTrigger,
 }: EventTabsWithChildren) => {
@@ -78,7 +81,7 @@ const EventTabs = ({
                 style={{ ...dragStyle, zIndex: 100, width: "25rem" }}
                 forceMount
                 avoidCollisions
-                side="right"
+                side={side}
                 sticky="always"
                 updatePositionStrategy="always"
                 onEscapeKeyDown={() => {}}
