@@ -106,6 +106,7 @@ const BookingInfoOptions = ({
 
     const _onOpenChange = (open: boolean) => {
         if (open === false) {
+            // need to decide if i need to reset the position on close.
             setPosition({
                 ...initialPosition,
             });
