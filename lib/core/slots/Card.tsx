@@ -34,7 +34,7 @@ const Card = ({ booking, slotData, ref }: CardProps) => {
 
     const sideOption = useRef<Side>("left");
 
-    const openEditingModal = () => {
+    const openEditingModal = (): void => {
         const weekDay = slotData.day.split(":")[0].trim();
 
         if (bookingViewType === BOOKING_VIEW_TYPE.DAY) {
@@ -150,33 +150,27 @@ const Card = ({ booking, slotData, ref }: CardProps) => {
     );
 
     return (
-        <>
-            {/* <DndContext> */}
-            <BookingInfoOptions
-                booking={bookingInit}
-                onOpenChange={setIsEditingOpen}
-                side={
-                    bookingViewType === BOOKING_VIEW_TYPE.DAY ? "top" : "left"
-                }
-                isEditingOpen={isEditingOpen}
-            >
-                <CardContent
-                    resizableParam={{
-                        state,
-                        onResize,
-                        resizeHandle: ["s"],
-                    }}
-                    customClasses={"Draggable"}
-                    bookingInit={bookingInit}
-                    bookingViewType={bookingViewType}
-                    slotData={slotData}
-                    heightStyleTransformer={`${heightStyle}rem`}
-                    onClick={openEditingModal}
-                    // style={ backgroundColor: "black" }
-                />
-            </BookingInfoOptions>
-            {/* </DndContext> */}
-        </>
+        <BookingInfoOptions
+            booking={bookingInit}
+            onOpenChange={setIsEditingOpen}
+            side={bookingViewType === BOOKING_VIEW_TYPE.DAY ? "top" : "left"}
+            isEditingOpen={isEditingOpen}
+        >
+            <CardContent
+                resizableParam={{
+                    state,
+                    onResize,
+                    resizeHandle: ["s"],
+                }}
+                customClasses={"Draggable"}
+                bookingInit={bookingInit}
+                bookingViewType={bookingViewType}
+                slotData={slotData}
+                heightStyleTransformer={`${heightStyle}rem`}
+                onClick={openEditingModal}
+                // style={ backgroundColor: "black" }
+            />
+        </BookingInfoOptions>
     );
 };
 

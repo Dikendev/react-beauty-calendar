@@ -132,7 +132,7 @@ const BookingCard = ({
                             booking,
                             new Date(day.split(":")[1]),
                         )}
-                        onPointerDown={onClick}
+                        onPointerUp={onClick}
                     >
                         <div
                             className={cn(
