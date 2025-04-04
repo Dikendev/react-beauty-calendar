@@ -11,7 +11,6 @@ import type {
     BookingViewType,
 } from "../../@types/booking";
 import { BOOKING_VIEW_TYPE } from "../../constants";
-import useDragStore from "../../context/drag/dragStore";
 
 import { cn } from "../../lib/utils";
 
