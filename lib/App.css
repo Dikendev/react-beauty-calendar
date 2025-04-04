@@ -11,10 +11,6 @@
   display: inline;
 }
 
-.dragging-effect {
-  border: 2px solid rgba(255, 21, 0, 0.682);
-}
-
 .show-handle.react-resizable .react-resizable-handle-s {
   display: inline;
 }
@@ -380,6 +376,8 @@
 
 /* DaysOfWeek */
 .daysOfWeek {
+  padding: 0.5rem;
+  border-radius: 100%;
   min-width: 12rem;
   width: 100vw;
 }
@@ -389,11 +387,8 @@
   flex-direction: column;
   gap: 3px;
   color: #6a7282; 
-}
-
-.daysOfWeek_day {
-  padding: 0.5rem;
-  border-radius: 100%;
+  max-width: 11rem;
+  text-align: center;
 }
 
 .daysOfWeek_day_rest {
@@ -404,7 +399,8 @@
 }
 
 .daysOfWeek_day_rest:hover {
-  background-color: rgb(227, 226, 226);
+  border: 1px solid rgba(91, 91, 91, 0.293);
+  background-color: rgba(227, 226, 226, 0.447);
 }
 
 .daysOfWeek_day_today_title {
@@ -422,7 +418,9 @@
 }
 
 .daysOfWeek_day {
-  max-width: 2rem;
+  border-radius: 100%;
+  width: 2rem;
+  height: 2rem;
 }
 
 .daysOfWeek_emptySlot_table {
@@ -479,7 +477,8 @@
 }
 
 .cardContent_render {
-  border: 1px;
+  border-color: rgb(255, 89, 6);
+  border-left-width: thick;
   border-radius: 0.25rem;
   overflow: hidden;
 }

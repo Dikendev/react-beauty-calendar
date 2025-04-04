@@ -119,7 +119,7 @@ const BookingCard = ({
                     className={cn(
                         "cardContent_render",
                         customClasses,
-                        isPending && "Draggable pendingDelay dragging-effect",
+                        isPending && "Draggable pendingDelay",
                     )}
                     style={{ ...style, ...cardContextStyle }}
                     {...listeners}

@@ -1,4 +1,4 @@
-import { type ReactElement, useCallback, useMemo, useState } from "react";
+import { type ReactElement, useCallback, useMemo } from "react";
 
 import {
     CalendarCog,
@@ -46,10 +46,6 @@ const HeaderViewType = () => {
     const { resetNodes, resetSelectedNode } = useEmptySlotStore();
     const { viewModes, onChangeViewType } = useBookingModal();
 
-    const [selected, setSelected] = useState<keyof typeof BOOKING_VIEW_TYPE>(
-        BOOKING_VIEW_TYPE.WEEK,
-    );
-
     const variantOnSelection = useCallback(
         (_bookingViewType: BookingViewType) => {
             return _bookingViewType === bookingViewType ? "custom" : "outline";
@@ -59,25 +55,15 @@ const HeaderViewType = () => {
 
     const week = useCallback(
         (option: keyof typeof BOOKING_VIEW_TYPE) => {
-            if (option === selected) return;
-
-            // Need to reset the slot nodes and the selectedNode. Previously, the selected node was only being reset during the render of the slots, which caused UI flashes. This needs to be refactored to be used in multiple places without causing UI issues.
-
+            if (option === bookingViewType) return;
             resetNodes();
             resetSelectedNode();
 
             // Call this from the booking app
             onChangeViewType(option);
-            setSelected(option);
             onViewTypeChange(option);
         },
-        [
-            onViewTypeChange,
-            selected,
-            resetNodes,
-            resetSelectedNode,
-            onChangeViewType,
-        ],
+        [onViewTypeChange, resetNodes, resetSelectedNode, onChangeViewType],
     );
 
     const options: IconsViewType[] = useMemo(() => {
@@ -90,9 +76,11 @@ const HeaderViewType = () => {
     }, [viewModes, week, variantOnSelection]);
 
     const findSelectedIcon = useMemo(() => {
-        const option = options.find((option) => option.label === selected);
+        const option = options.find(
+            (option) => option.label === bookingViewType,
+        );
         if (option) return option.icon;
-    }, [selected, options]);
+    }, [bookingViewType, options]);
 
     return (
         <DropdownMenu>
@@ -112,7 +100,7 @@ const HeaderViewType = () => {
                 {options.map((option) => (
                     <DropdownMenuCheckboxItem
                         key={option.label}
-                        checked={option.label === selected}
+                        checked={option.label === bookingViewType}
                         onCheckedChange={() => option.events(option.label)}
                         className="flex flex-row justify-between gap-6"
                     >

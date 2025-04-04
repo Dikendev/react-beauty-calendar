@@ -209,7 +209,6 @@ const TimeInfo = ({
                 {isDraggingOnClick ? (
                     <div className="timeInfo_core_dragging">
                         <CardContent
-                            customClasses="dragging-effect"
                             bookingInit={bookingMock}
                             bookingViewType={bookingViewType}
                             slotData={{

@@ -1,5 +1,9 @@
 import { type CSSProperties, useCallback, useMemo } from "react";
-import { useGlobalStore, useMonthDescription } from "../../hooks";
+import {
+    useDaysSelectedView,
+    useGlobalStore,
+    useMonthDescription,
+} from "../../hooks";
 
 import { BOOKING_VIEW_TYPE, MONTH } from "../../constants";
 import { DateUtils, WEEK_DAYS } from "../../utils/date-utils";
@@ -16,11 +20,7 @@ interface DaysWeekProps {
 const DaysWeek = ({ daysOfWeek, bookingViewType }: DaysWeekProps) => {
     const { setTodayDay, setBookingViewType } = useGlobalStore();
     const { updateMonthMessage } = useMonthDescription((state) => state);
-
-    const dayStyle: CSSProperties =
-        bookingViewType === BOOKING_VIEW_TYPE.DAY
-            ? { textAlign: "start" }
-            : { textAlign: "center" };
+    const { onViewTypeChange } = useDaysSelectedView();
 
     const tableStyle: CSSProperties =
         bookingViewType === BOOKING_VIEW_TYPE.TABLE
@@ -29,6 +29,17 @@ const DaysWeek = ({ daysOfWeek, bookingViewType }: DaysWeekProps) => {
 
     const handleClickDay = useCallback(
         (day: Date) => {
+            const swapViewType = () => {
+                setBookingViewType(BOOKING_VIEW_TYPE.WEEK);
+                onViewTypeChange(BOOKING_VIEW_TYPE.WEEK);
+            };
+
+            const isViewTypeDay = () => {
+                return bookingViewType === BOOKING_VIEW_TYPE.DAY;
+            };
+
+            if (isViewTypeDay()) return swapViewType();
+            console.log("NAO PODE PASSAR");
             const daySelected = setTodayDay(day);
 
             if (!daySelected) return;
@@ -42,7 +53,7 @@ const DaysWeek = ({ daysOfWeek, bookingViewType }: DaysWeekProps) => {
             updateMonthMessage(monthData);
             setBookingViewType(BOOKING_VIEW_TYPE.DAY);
         },
-        [setTodayDay, updateMonthMessage, setBookingViewType],
+        [bookingViewType, setTodayDay, updateMonthMessage, setBookingViewType],
     );
 
     const daysOfWeekRender = useMemo(() => {
@@ -62,10 +73,7 @@ const DaysWeek = ({ daysOfWeek, bookingViewType }: DaysWeekProps) => {
                             "daysOfWeek_day",
                     )}
                 >
-                    <div
-                        style={{ ...dayStyle, ...tableStyle }}
-                        className="daysOfWeek_parent"
-                    >
+                    <div style={tableStyle} className="daysOfWeek_parent">
                         <span
                             className={cn(
                                 ifIsToday(day) && "daysOfWeek_day_today_title",
