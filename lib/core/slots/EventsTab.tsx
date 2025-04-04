@@ -14,6 +14,7 @@ import {
     DropdownMenuTrigger,
 } from "../../components/ui/Dropdown-menu";
 import { Label } from "../../components/ui/Label";
+import useDragStore from "../../context/drag/dragStore";
 import type { EmptySlotNodes } from "../../context/emptySlotsStore.ts/useEmptySlotStore";
 import useBookingModal from "../../hooks/use-booking-model";
 import type { Side } from "../booking-options/BookingInfoOptions";
@@ -36,6 +37,7 @@ const EventTabs = ({
     const [position, setPosition] = useState({ x: 0, y: 0 });
 
     const bookingModal = useBookingModal();
+    const updateIsDragging = useDragStore((state) => state.updateIsDragging);
 
     const {
         attributes,
@@ -44,7 +46,7 @@ const EventTabs = ({
         transform,
         setActivatorNodeRef,
     } = useDraggable({
-        id: "unique-id",
+        id: "booking_info",
         data: {
             type: "another",
         },
@@ -55,6 +57,9 @@ const EventTabs = ({
     };
 
     useDndMonitor({
+        onDragStart() {
+            updateIsDragging(true);
+        },
         onDragEnd(event) {
             if (event.active.id) {
                 const { y, x } = position;
@@ -63,6 +68,8 @@ const EventTabs = ({
                     x: x + (transform?.x || 0),
                     y: y + (transform?.y || 0),
                 });
+
+                updateIsDragging(false);
             }
         },
     });

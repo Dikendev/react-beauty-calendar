@@ -35,8 +35,6 @@ const Slots = ({
     bookingBulk,
     bookingViewType,
 }: SlotsProps) => {
-    const isDragging = useDragStore((state) => state.isDragging);
-
     const disabledCss = useRef<string>("");
 
     //TODO: create a issue to fix this, it is hard to understand and complex to maintain, need to improve this.
@@ -58,28 +56,28 @@ const Slots = ({
     const { isOver: isOverFirst, setNodeRef: setNodeRefFirst } = useDroppable({
         id: `${DateUtils.newDateKey(dayHour.day, dayHour.hour)}`,
         data: { accepts: ["booking-slots"] },
-        disabled: isTimeLunch(dayHour.hour) || isDragging,
+        disabled: isTimeLunch(dayHour.hour),
     });
 
     const { isOver: isOverSecond, setNodeRef: setNodeRefSecond } = useDroppable(
         {
             id: `${DateUtils.newDateKey(dayHour.day, secondBlockTime)}`,
             data: { accepts: ["booking-slots"] },
-            disabled: isTimeLunch(secondBlockTime) || isDragging,
+            disabled: isTimeLunch(secondBlockTime),
         },
     );
 
     const { isOver: isOverThird, setNodeRef: setNodeRefThird } = useDroppable({
         id: `${DateUtils.newDateKey(dayHour.day, thirdBlockTime)}`,
         data: { accepts: ["booking-slots"] },
-        disabled: isTimeLunch(thirdBlockTime) || isDragging,
+        disabled: isTimeLunch(thirdBlockTime),
     });
 
     const { isOver: isOverFourth, setNodeRef: setNodeRefFourth } = useDroppable(
         {
             id: `${DateUtils.newDateKey(dayHour.day, fourthBlockTime)}`,
             data: { accepts: ["booking-slots"] },
-            disabled: isTimeLunch(fourthBlockTime) || isDragging,
+            disabled: isTimeLunch(fourthBlockTime),
         },
     );
 

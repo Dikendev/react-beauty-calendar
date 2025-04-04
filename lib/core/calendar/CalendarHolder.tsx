@@ -60,7 +60,7 @@ const CalendarHolder = () => {
 
     const onDragStart = useCallback((event: DragStartEvent) => {
         const { active } = event;
-        if (active.id === "unique-id") return;
+        if (active.id === "booking_info") return;
     }, []);
 
     const getTimeDiff = (startTime: Date, endTime: Date) => {

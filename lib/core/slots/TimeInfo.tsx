@@ -27,11 +27,13 @@ interface TimeInfoEvents {
 }
 
 interface TimeInfoProps {
+    isDragging: boolean;
     slotData: BlocksTimeStructure;
     events: TimeInfoEvents;
 }
 
 const TimeInfo = ({
+    isDragging,
     slotData,
     events: { onClick, renderPreviewCard, resetPrevView },
 }: TimeInfoProps) => {
@@ -226,9 +228,11 @@ const TimeInfo = ({
                     </div>
                 ) : (
                     <div className="timeInfo_core_timeParent">
-                        <span className="timeInfo_core_timeParent_time">
-                            {slotData.time}
-                        </span>
+                        {!isDragging && (
+                            <span className="timeInfo_core_timeParent_time">
+                                {slotData.time}
+                            </span>
+                        )}
                     </div>
                 )}
             </Resizable>

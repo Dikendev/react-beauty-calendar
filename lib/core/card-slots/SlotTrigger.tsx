@@ -281,6 +281,7 @@ const SlotTrigger = ({
                 {((!children && showTimeInfo && !renderEvent) ||
                     isDraggingOnClick) && (
                     <TimeInfo
+                        isDragging={isDragging}
                         slotData={slotData}
                         events={{
                             onClick: openModal,

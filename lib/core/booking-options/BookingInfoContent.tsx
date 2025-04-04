@@ -4,6 +4,7 @@ import { Pencil, Trash2 } from "lucide-react";
 import type { CSSProperties, PropsWithChildren } from "react";
 import { Button } from "../../components/ui/Button";
 import { PopoverContent } from "../../components/ui/Popover";
+import useDragStore from "../../context/drag/dragStore";
 import FavoriteBooking from "../favorite-booking/FavoriteBooking";
 import SelectOptions from "../header-calendar/SelectItem";
 import type { CardInfoOptions, Side } from "./BookingInfoOptions";
@@ -50,13 +51,15 @@ const BookingInfoContext = ({
         },
     });
 
+    const updateIsDragging = useDragStore((state) => state.updateIsDragging);
+
     const dragStyle: CSSProperties = {
         transform: `translate3d(${xAxis + (transform?.x || 0)}px, ${yAxis + (transform?.y || 0)}px, 0)`,
     };
 
     useDndMonitor({
         onDragStart() {
-            () => console.log("onDragStart");
+            updateIsDragging(true);
         },
         onDragEnd(event) {
             event.active.id && updatePosition(transform);

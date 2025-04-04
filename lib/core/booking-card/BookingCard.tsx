@@ -8,6 +8,7 @@ import {
 } from "@dnd-kit/core";
 import { type CSSProperties, useCallback, useState } from "react";
 import { BOOKING_VIEW_TYPE } from "../../constants";
+import useDragStore from "../../context/drag/dragStore";
 import { useGlobalStore } from "../../hooks";
 import { cn } from "../../lib/utils";
 import CardOverlay from "../slots/CardOverlay";
@@ -32,6 +33,7 @@ const BookingCard = ({
 
     const [isPending, setIsPending] = useState(false);
     const [pendingDelayMs, setPendingDelay] = useState(0);
+    const { updateIsDragging } = useDragStore();
 
     const { attributes, listeners, setNodeRef, isDragging, transform } =
         useDraggable({
@@ -50,6 +52,7 @@ const BookingCard = ({
         : undefined;
 
     useDndMonitor({
+        onDragStart: () => updateIsDragging(true),
         onDragPending: (event) => handlePending(event),
         onDragAbort: () => handlePendingEnd(),
         onDragCancel: () => handlePendingEnd(),
@@ -68,6 +71,7 @@ const BookingCard = ({
     }, []);
 
     const handlePendingEnd = useCallback(() => {
+        updateIsDragging(false);
         setIsPending(false);
     }, []);
 
