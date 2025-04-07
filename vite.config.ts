@@ -37,7 +37,12 @@ export default defineConfig({
                 exports: "named",
                 assetFileNames: "build/assets/[name][extname]",
                 entryFileNames: "build/[name].[format].js",
+                globals: {
+                    react: "React",
+                    "react-dom": "ReactDOM",
+                },
             },
         },
+        cssCodeSplit: false,
     },
 });
