@@ -1,19 +1,39 @@
 import { useRef } from "react";
-import type { JSX } from "react";
-import type { CalendarInstanceRef } from "../../src/App";
-import type { UseBookingInstanceProps } from "../@types/calendar-instance";
-import Root from "../core/Root";
+import type { BookingViewType } from "../@types/booking";
+import type {
+    CalendarInstanceRef,
+    UseBookingInstanceProps,
+} from "../@types/calendar-instance";
+import ReferenceErrorCustom from "../classes/reference-error";
 
-interface BookingInstance {
-    getCalendar: () => JSX.Element;
-}
+import Root from "../core/Root";
 
 const useCalendarInstance = (
     props: UseBookingInstanceProps,
-): BookingInstance => {
+): CalendarInstanceRef => {
     console.log("creating a calendar instance");
 
     const calendarRef = useRef<CalendarInstanceRef>(null);
+
+    const updateViewType = (bookingType: BookingViewType) => {
+        if (calendarRef?.current) {
+            calendarRef.current.updateViewType(bookingType);
+        }
+    };
+
+    const updateWeekAndViewType = (date?: Date) => {
+        if (!calendarRef?.current) {
+            throw new ReferenceErrorCustom();
+        }
+        return calendarRef.current.updateWeekAndViewType(date);
+    };
+
+    const updateTodayDayAndViewType = (date: Date) => {
+        if (!calendarRef?.current) {
+            throw new ReferenceErrorCustom();
+        }
+        return calendarRef.current.updateTodayDayAndViewType(date);
+    };
 
     const getCalendar = () => {
         return <Root ref={calendarRef} {...props} />;
@@ -21,6 +41,9 @@ const useCalendarInstance = (
 
     return {
         getCalendar,
+        updateViewType,
+        updateWeekAndViewType,
+        updateTodayDayAndViewType,
     };
 };
 

@@ -312,6 +312,7 @@
 /* CalendarView */
 
 .calendarCore {
+  z-index: 0;
   height: 75vh;
   overflow: auto;
 }

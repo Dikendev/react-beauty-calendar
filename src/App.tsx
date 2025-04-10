@@ -9,10 +9,6 @@ import TabsContentCore from "../lib/core/slots/TabsContent";
 import { useCalendarInstance } from "../lib/main";
 import { mockBooking } from "../lib/mock/booking-mock";
 
-export interface CalendarInstanceRef {
-    getStatus: () => boolean;
-}
-
 const App = () => {
     const onChangeViewType = (bookingViewType: BookingViewType) => {
         console.log("on change view Type", bookingViewType);
@@ -34,6 +30,10 @@ const App = () => {
         console.log("On modal close");
     };
 
+    const onHeaderDayClick = (date: Date) => {
+        console.log("onHeaderDayClick", date);
+    };
+
     const onCardDropCallback = async (
         booking: Booking,
         overId: string,
@@ -47,9 +47,10 @@ const App = () => {
 
     const calendarInstance = useCalendarInstance({
         bookings: mockBooking,
-        viewModes: ["DAY", "WEEK"],
+        viewModes: ["day", "week"],
         onChangeViewType,
         onSlotClick,
+        onHeaderDayClick,
         onTodayClick,
         onDayChange,
         onModalClose,

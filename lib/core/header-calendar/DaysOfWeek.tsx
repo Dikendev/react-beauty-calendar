@@ -10,6 +10,7 @@ import { DateUtils, WEEK_DAYS } from "../../utils/date-utils";
 
 import type { BookingViewType } from "../../@types/booking";
 import type { MonthDescriptionProps } from "../../context/month-description/month-description-store";
+import useBookingModal from "../../hooks/use-booking-model";
 import { cn } from "../../lib/utils";
 
 interface DaysWeekProps {
@@ -21,6 +22,7 @@ const DaysWeek = ({ daysOfWeek, bookingViewType }: DaysWeekProps) => {
     const { setTodayDay, setBookingViewType } = useGlobalStore();
     const { updateMonthMessage } = useMonthDescription((state) => state);
     const { onViewTypeChange } = useDaysSelectedView();
+    const { onHeaderDayClick } = useBookingModal();
 
     const tableStyle: CSSProperties =
         bookingViewType === BOOKING_VIEW_TYPE.TABLE
@@ -38,8 +40,9 @@ const DaysWeek = ({ daysOfWeek, bookingViewType }: DaysWeekProps) => {
                 return bookingViewType === BOOKING_VIEW_TYPE.DAY;
             };
 
+            onHeaderDayClick(day, bookingViewType);
             if (isViewTypeDay()) return swapViewType();
-            console.log("NAO PODE PASSAR");
+
             const daySelected = setTodayDay(day);
 
             if (!daySelected) return;

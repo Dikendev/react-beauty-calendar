@@ -16,7 +16,7 @@ import {
 import { Label } from "../../components/ui/Label";
 import useDragStore from "../../context/drag/dragStore";
 import type { EmptySlotNodes } from "../../context/emptySlotsStore.ts/useEmptySlotStore";
-import useBookingModal from "../../hooks/use-booking-model";
+// import useBookingModal from "../../hooks/use-booking-model";
 import type { Side } from "../booking-options/BookingInfoOptions";
 
 interface EventTabsProps {
@@ -33,10 +33,10 @@ const EventTabs = ({
     side,
     onOpenChange,
     buttonTrigger,
+    children,
 }: EventTabsWithChildren) => {
     const [position, setPosition] = useState({ x: 0, y: 0 });
 
-    const bookingModal = useBookingModal();
     const updateIsDragging = useDragStore((state) => state.updateIsDragging);
 
     const {
@@ -76,6 +76,7 @@ const EventTabs = ({
 
     return (
         <DropdownMenu
+            dir="ltr"
             modal={false}
             open={true}
             defaultOpen={false}
@@ -85,13 +86,12 @@ const EventTabs = ({
 
             <DropdownMenuContent
                 ref={setNodeRef}
-                style={{ ...dragStyle, zIndex: 100, width: "25rem" }}
+                style={{ ...dragStyle, zIndex: 50, width: "25rem" }}
                 forceMount
                 avoidCollisions
                 side={side}
                 sticky="always"
                 updatePositionStrategy="always"
-                onEscapeKeyDown={() => {}}
                 {...attributes}
             >
                 <div className="dropdownLabelContent">
@@ -107,7 +107,7 @@ const EventTabs = ({
                         onClick={onClose}
                     />
                 </div>
-                {bookingModal.createBookingModal}
+                {children}
             </DropdownMenuContent>
         </DropdownMenu>
     );

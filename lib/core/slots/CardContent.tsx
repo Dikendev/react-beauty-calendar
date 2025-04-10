@@ -69,6 +69,7 @@ const CardContent = ({
     resizableParam,
     events,
     open = true,
+    ref,
 }: CardContentProps) => {
     const [customClass, setCustomClass] = useState<string>("");
 
@@ -157,6 +158,7 @@ const CardContent = ({
     // After card drag render this card.
     return (
         <div
+            ref={ref}
             style={{
                 height: heightStyleTransformer,
                 display: "flex",

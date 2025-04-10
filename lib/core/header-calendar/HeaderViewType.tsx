@@ -1,4 +1,4 @@
-import { type ReactElement, useCallback, useMemo } from "react";
+import { type ReactElement, useCallback, useEffect, useMemo } from "react";
 
 import {
     CalendarCog,
@@ -21,7 +21,6 @@ import {
     DropdownMenuContent,
     DropdownMenuTrigger,
 } from "../../components/ui/Dropdown-menu";
-import useEmptySlotStore from "../../context/emptySlotsStore.ts/useEmptySlotStore";
 import useBookingModal from "../../hooks/use-booking-model";
 import { StringUtils } from "../../utils/string.utils";
 import ShortcutCommands from "../shortcut-commands/ShortcutCommands";
@@ -43,8 +42,7 @@ const VIEW_TYPE_ICONS = {
 const HeaderViewType = () => {
     const { bookingViewType } = useGlobalStore();
     const { onViewTypeChange } = useDaysSelectedView();
-    const { resetNodes, resetSelectedNode } = useEmptySlotStore();
-    const { viewModes, onChangeViewType } = useBookingModal();
+    const { viewModes } = useBookingModal();
 
     const variantOnSelection = useCallback(
         (_bookingViewType: BookingViewType) => {
@@ -54,16 +52,11 @@ const HeaderViewType = () => {
     );
 
     const week = useCallback(
-        (option: keyof typeof BOOKING_VIEW_TYPE) => {
+        (option: BookingViewType) => {
             if (option === bookingViewType) return;
-            resetNodes();
-            resetSelectedNode();
-
-            // Call this from the booking app
-            onChangeViewType(option);
             onViewTypeChange(option);
         },
-        [onViewTypeChange, resetNodes, resetSelectedNode, onChangeViewType],
+        [onViewTypeChange],
     );
 
     const options: IconsViewType[] = useMemo(() => {

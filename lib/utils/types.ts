@@ -1,8 +1,8 @@
 import type { JSX, Ref } from "react";
-import type { CalendarInstanceRef } from "../../src/App";
 import type { Booking, ViewModes } from "../@types";
 
 import type { BookingDateAndTime, BookingViewType } from "../@types/booking";
+import type { CalendarInstanceRef } from "../@types/calendar-instance";
 import type { ActionType } from "../core/header-calendar/Header";
 import type { BlockTimeData } from "../core/slots/EmptySlot";
 

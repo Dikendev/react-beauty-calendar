@@ -3,7 +3,9 @@ import type { BookingViewType, Bookings } from "../../@types/booking";
 import type { RootEventsProps } from "../../@types/calendar-instance";
 import BookingModalContext from "./booking-modal-context";
 
-export interface BookingModalContextProps extends RootEventsProps {
+type BookingModalContextPick = Omit<RootEventsProps, "onChangeViewType">;
+
+export interface BookingModalContextProps extends BookingModalContextPick {
     createBookingModal: ReactNode;
     bookings: Bookings;
     viewModes: BookingViewType[];

@@ -64,6 +64,8 @@ const SlotTrigger = ({
         (state) => state,
     );
 
+    const bookingModal = useBookingModal();
+
     const { emptySlotNodes, setSelectedNode } = useEmptySlotStore();
 
     const { onModalClose, onSlotClick } = useBookingModal();
@@ -315,8 +317,14 @@ const SlotTrigger = ({
                         onClose={onCloseCreationModal}
                         onOpenChange={onOpenChange}
                         buttonTrigger={<div key={slotData.key} />}
-                        side={bookingViewType === "DAY" ? "top" : "right"}
-                    />
+                        side={
+                            bookingViewType === BOOKING_VIEW_TYPE.DAY
+                                ? "top"
+                                : "right"
+                        }
+                    >
+                        {bookingModal.createBookingModal}
+                    </EventTabs>
                 </DndContext>
             )}
         </>
