@@ -8,6 +8,7 @@ import { NewEventProvider } from "../context/new-event/new-event-context";
 import { initialFormState } from "../context/new-event/new-event-store";
 
 import "./../App.css";
+import useEmptySlotStore from "../context/emptySlotsStore.ts/useEmptySlotStore";
 import { useGlobalStore } from "../hooks";
 
 const Root = ({
@@ -30,6 +31,8 @@ const Root = ({
         bookingViewType,
     } = useGlobalStore();
 
+    const { setSelectedNode } = useEmptySlotStore((store) => store);
+
     useImperativeHandle(ref, () => ({
         updateViewType: (bookingType) => {
             setBookingViewType(bookingType);
@@ -39,6 +42,9 @@ const Root = ({
         },
         updateTodayDayAndViewType: (date) => {
             return setTodayDayAndViewType(date);
+        },
+        updateSelectedNode: (nodeKey: string) => {
+            setSelectedNode(nodeKey);
         },
     }));
 

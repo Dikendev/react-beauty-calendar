@@ -15,7 +15,7 @@ export interface EmptySlotState extends EmptySlotStore {
         node: SlotTriggerForwardRef,
         slotData: BlockTimeData,
     ) => void;
-    setSelectedNode: (nodeKey: string, closeView?: boolean) => void;
+    setSelectedNode: (nodeKey: string) => void;
     resetSelectedNode: () => void;
     resetNodes: () => void;
 }
@@ -60,15 +60,16 @@ const useEmptySlotStore = create<EmptySlotState>((set, get) => ({
         });
     },
 
-    setSelectedNode: (selectedNode: string, closeView = false): void => {
+    setSelectedNode: (selectedNode: string): void => {
         const prevMaps = new Map(get().emptySlotNodes);
         const prevSelectedNode = get().selectedNode;
 
         set((prev) => {
-            if (closeView) {
+            if (prevSelectedNode.length) {
                 const prevNodeOpen = prevMaps.get(prevSelectedNode);
                 if (prevNodeOpen) prevNodeOpen.closeEvent();
             }
+
             return {
                 ...prev,
                 selectedNode,

@@ -35,6 +35,13 @@ const useCalendarInstance = (
         return calendarRef.current.updateTodayDayAndViewType(date);
     };
 
+    const updateSelectedNode = (nodeKey: string) => {
+        if (!calendarRef?.current) {
+            throw new ReferenceErrorCustom();
+        }
+        return calendarRef.current.updateSelectedNode(nodeKey);
+    };
+
     const getCalendar = () => {
         return <Root ref={calendarRef} {...props} />;
     };
@@ -44,6 +51,7 @@ const useCalendarInstance = (
         updateViewType,
         updateWeekAndViewType,
         updateTodayDayAndViewType,
+        updateSelectedNode,
     };
 };
 

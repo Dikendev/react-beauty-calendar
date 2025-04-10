@@ -13,6 +13,7 @@ export interface CalendarRoot {
     updateViewType: (bookingType: BookingViewType) => void;
     updateWeekAndViewType: (date?: Date) => NextAndPreviousWeek;
     updateTodayDayAndViewType: (date: Date) => Date;
+    updateSelectedNode: (nodeKey: string) => void;
 }
 
 export type UseBookingInstanceProps = RootProps;
