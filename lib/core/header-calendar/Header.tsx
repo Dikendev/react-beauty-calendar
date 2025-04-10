@@ -11,6 +11,7 @@ import { DateUtils } from "../../utils/date-utils";
 
 import { Button } from "../../components/ui/Button";
 import { BOOKING_VIEW_TYPE, MONTH } from "../../constants";
+import useEmptySlotStore from "../../context/emptySlotsStore.ts/useEmptySlotStore";
 import type { MonthDescriptionProps } from "../../context/month-description/month-description-store";
 import useBookingModal from "../../hooks/use-booking-model";
 import HeaderViewType from "./HeaderViewType";
@@ -132,6 +133,10 @@ const HeaderDayActions = ({
     const { nextWeek, previousWeek, bookingViewType, setDays } =
         useGlobalStore();
 
+    const { resetSelectedNode, resetNodes } = useEmptySlotStore(
+        (state) => state,
+    );
+
     const { onDayChange } = useBookingModal();
 
     const nextDay = (): Date[] => {
@@ -177,6 +182,9 @@ const HeaderDayActions = ({
     };
 
     const handleWeekChange = (actionType: ActionType) => {
+        resetNodes();
+        resetSelectedNode();
+
         switch (bookingViewType) {
             case BOOKING_VIEW_TYPE.TABLE:
             case BOOKING_VIEW_TYPE.DAY: {
