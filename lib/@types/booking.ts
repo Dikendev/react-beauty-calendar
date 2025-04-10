@@ -18,4 +18,4 @@ export interface BookingBulkData {
     booking: Booking[];
 }
 
-export type BookingViewType = "WEEK" | "DAY" | "MONTH" | "TABLE";
+export type BookingViewType = "week" | "day" | "month" | "table";

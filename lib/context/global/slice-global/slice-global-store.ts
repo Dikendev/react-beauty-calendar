@@ -1,4 +1,5 @@
 import type { StateCreator } from "zustand";
+import { BOOKING_VIEW_TYPE } from "../../../constants";
 import type { BookingInfoState } from "../booking-info/booking-info";
 import type {
     DayAndWeekState,
@@ -20,12 +21,12 @@ const sliceGlobalStore: StateCreator<
 > = (_, get) => ({
     setWeekAndViewType: (date?: Date): NextAndPreviousWeek => {
         const todayWeek = get().todayWeek(date);
-        get().setBookingViewType("WEEK");
+        get().setBookingViewType(BOOKING_VIEW_TYPE.WEEK);
         return todayWeek;
     },
     setTodayDayAndViewType: (date: Date): Date => {
         const todayDay = get().setTodayDay(date);
-        get().setBookingViewType("DAY");
+        get().setBookingViewType(BOOKING_VIEW_TYPE.DAY);
         return todayDay;
     },
 });

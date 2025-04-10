@@ -33,7 +33,7 @@ const bookingInfoStore: StateCreator<BookingInfoState> = (
     get,
 ): BookingInfoState => ({
     users: [],
-    bookingViewType: "WEEK",
+    bookingViewType: "week",
     bookingBulkData: {
         user: {
             id: "",

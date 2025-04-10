@@ -6,6 +6,7 @@ import { cn } from "../../../lib/utils";
 import { DateUtils } from "../../../utils/date-utils";
 
 import { Separator } from "../../../components/ui/Separator";
+import { BOOKING_VIEW_TYPE } from "../../../constants";
 import type { BlocksTimeStructure } from "../EmptySlot";
 import {
     TimeEquality,
@@ -77,9 +78,13 @@ export const ActualTimerIndicator = ({
 
     const separatorContainer = useMemo((): string => {
         if (isFirstDay)
-            return bookingViewType === "DAY" ? "w-[101%]" : "w-[100vw]";
+            return bookingViewType === BOOKING_VIEW_TYPE.DAY
+                ? "w-[101%]"
+                : "w-[100vw]";
 
-        return bookingViewType === "DAY" ? "w-[102%]" : "w-[104%]";
+        return bookingViewType === BOOKING_VIEW_TYPE.DAY
+            ? "w-[102%]"
+            : "w-[104%]";
     }, [isFirstDay, bookingViewType]);
 
     if (!renderTimeIndicator) return;

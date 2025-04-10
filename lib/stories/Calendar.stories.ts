@@ -52,7 +52,7 @@ type Story = StoryObj<typeof meta>;
 export const calendar: Story = {
     args: {
         bookings: mockBooking,
-        viewModes: ["DAY", "WEEK"],
+        viewModes: ["day", "week"],
         createBookingModal: TabsContentCore(),
     },
 };

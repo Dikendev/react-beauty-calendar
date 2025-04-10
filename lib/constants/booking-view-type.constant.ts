@@ -1,6 +1,6 @@
 export const BOOKING_VIEW_TYPE = {
-    DAY: "DAY",
-    WEEK: "WEEK",
-    TABLE: "TABLE",
-    MONTH: "MONTH",
+    DAY: "day",
+    WEEK: "week",
+    TABLE: "table",
+    MONTH: "month",
 } as const;
