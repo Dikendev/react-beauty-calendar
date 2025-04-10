@@ -75,45 +75,49 @@ const CalendarView = () => {
                 )}
             >
                 <Table>
-                    {hours.map((hour) => (
-                        <tr key={`${hour}-content`}>
-                            <TableCell
-                                style={{
-                                    ...noBorderFirstColumn,
-                                    ...dayCss,
-                                    padding: 0,
-                                    position: "relative",
-                                }}
-                                key={`${hour}-hour`}
-                                className="calendarCore_cell"
-                            >
-                                <div className="calendarCore_actions">
-                                    <HourWithActions
-                                        ref={(node) =>
-                                            addTimeRenderedStore(node, hour)
-                                        }
-                                        hour={hour}
-                                    />
-                                </div>
-                            </TableCell>
+                    <tbody>
+                        {hours.map((hour) => (
+                            <tr key={`${hour}-content`}>
+                                <TableCell
+                                    style={{
+                                        ...noBorderFirstColumn,
+                                        ...dayCss,
+                                        padding: 0,
+                                        position: "relative",
+                                    }}
+                                    key={`${hour}-hour`}
+                                    className="calendarCore_cell"
+                                >
+                                    <div className="calendarCore_actions">
+                                        <HourWithActions
+                                            ref={(node) =>
+                                                addTimeRenderedStore(node, hour)
+                                            }
+                                            hour={hour}
+                                        />
+                                    </div>
+                                </TableCell>
 
-                            {daysOfWeek.map((day, dayOfWeekIndex) => {
-                                return (
-                                    <Slots
-                                        key={`${day}-${hour}-slot-content`}
-                                        dayHour={{
-                                            day: String(day),
-                                            hour,
-                                        }}
-                                        lunchTimeBlock={lunchTimeBlock}
-                                        firstDay={isFistDay(dayOfWeekIndex)}
-                                        bookingBulk={bookingBulkData.booking}
-                                        bookingViewType={bookingViewType}
-                                    />
-                                );
-                            })}
-                        </tr>
-                    ))}
+                                {daysOfWeek.map((day, dayOfWeekIndex) => {
+                                    return (
+                                        <Slots
+                                            key={`${day}-${hour}-slot-content`}
+                                            dayHour={{
+                                                day: String(day),
+                                                hour,
+                                            }}
+                                            lunchTimeBlock={lunchTimeBlock}
+                                            firstDay={isFistDay(dayOfWeekIndex)}
+                                            bookingBulk={
+                                                bookingBulkData.booking
+                                            }
+                                            bookingViewType={bookingViewType}
+                                        />
+                                    );
+                                })}
+                            </tr>
+                        ))}
+                    </tbody>
                 </Table>
             </div>
         );
