@@ -5,15 +5,16 @@ import type { BlockTimeData } from "../core/slots/EmptySlot";
 import type { Booking, BookingDateAndTime, BookingViewType } from "./booking";
 import type { ViewModes } from "./calendar";
 
-export interface CalendarInstanceRef extends CalendarRoot {
+export interface CalendarInstanceRef extends CalendarRootRef {
     getCalendar: () => JSX.Element;
 }
 
-export interface CalendarRoot {
+export interface CalendarRootRef {
     updateViewType: (bookingType: BookingViewType) => void;
     updateWeekAndViewType: (date?: Date) => NextAndPreviousWeek;
     updateTodayDayAndViewType: (date: Date) => Date;
     updateSelectedNode: (nodeKey: string) => void;
+    updateFinishAt: (selectedHour: string) => void;
 }
 
 export type UseBookingInstanceProps = RootProps;
@@ -22,7 +23,7 @@ export interface RootProps extends RootEventsProps {
     bookings: Booking[];
     createBookingModal: JSX.Element;
     viewModes: ViewModes;
-    ref?: Ref<CalendarRoot>;
+    ref?: Ref<CalendarRootRef>;
 }
 
 interface OnSlotClick {

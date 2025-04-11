@@ -4,6 +4,7 @@ import type {
     CalendarInstanceRef,
     UseBookingInstanceProps,
 } from "../@types/calendar-instance";
+
 import ReferenceErrorCustom from "../classes/reference-error";
 
 import Root from "../core/Root";
@@ -11,14 +12,13 @@ import Root from "../core/Root";
 const useCalendarInstance = (
     props: UseBookingInstanceProps,
 ): CalendarInstanceRef => {
-    console.log("creating a calendar instance");
-
     const calendarRef = useRef<CalendarInstanceRef>(null);
 
     const updateViewType = (bookingType: BookingViewType) => {
-        if (calendarRef?.current) {
-            calendarRef.current.updateViewType(bookingType);
+        if (!calendarRef?.current) {
+            throw new ReferenceErrorCustom();
         }
+        calendarRef.current.updateViewType(bookingType);
     };
 
     const updateWeekAndViewType = (date?: Date) => {
@@ -42,6 +42,13 @@ const useCalendarInstance = (
         return calendarRef.current.updateSelectedNode(nodeKey);
     };
 
+    const updateFinishAt = (hour24Format: string) => {
+        if (!calendarRef?.current) {
+            throw new ReferenceErrorCustom();
+        }
+        return calendarRef.current.updateFinishAt(hour24Format);
+    };
+
     const getCalendar = () => {
         return <Root ref={calendarRef} {...props} />;
     };
@@ -52,6 +59,7 @@ const useCalendarInstance = (
         updateWeekAndViewType,
         updateTodayDayAndViewType,
         updateSelectedNode,
+        updateFinishAt,
     };
 };
 

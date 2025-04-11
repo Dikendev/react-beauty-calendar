@@ -1,9 +1,15 @@
+import type { Ref } from "react";
 import { createStore } from "zustand";
+
+export interface NewEventFormRef {
+    updateFinishAt: (selectedHour: string) => void;
+}
 
 export interface NewEventFormProps {
     date: string;
     startAt: string;
     finishAt: string;
+    ref?: Ref<NewEventFormRef>;
 }
 
 export interface NewEventFormState extends NewEventFormProps {

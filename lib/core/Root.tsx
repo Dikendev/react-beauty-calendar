@@ -1,15 +1,18 @@
-import { useEffect, useImperativeHandle } from "react";
+import { useEffect, useImperativeHandle, useRef } from "react";
 import type { RootProps } from "../@types/calendar-instance";
+import { BookingModalProvider, BookingProvider } from "../context";
 import { initialBookingFormState } from "../context/booking/booking-store";
+import useEmptySlotStore from "../context/emptySlotsStore.ts/useEmptySlotStore";
+import { NewEventProvider } from "../context/new-event/new-event-context";
+import {
+    type NewEventFormRef,
+    initialFormState,
+} from "../context/new-event/new-event-store";
+import { useGlobalStore } from "../hooks";
+
 import CalendarHolder from "./calendar/CalendarHolder";
 
-import { BookingModalProvider, BookingProvider } from "../context";
-import { NewEventProvider } from "../context/new-event/new-event-context";
-import { initialFormState } from "../context/new-event/new-event-store";
-
 import "./../App.css";
-import useEmptySlotStore from "../context/emptySlotsStore.ts/useEmptySlotStore";
-import { useGlobalStore } from "../hooks";
 
 const Root = ({
     viewModes,
@@ -24,6 +27,8 @@ const Root = ({
     bookings,
     ref,
 }: RootProps) => {
+    const newEventProviderRef = useRef<NewEventFormRef>(null);
+
     const {
         setBookingViewType,
         setWeekAndViewType,
@@ -33,11 +38,16 @@ const Root = ({
 
     const { setSelectedNode } = useEmptySlotStore((store) => store);
 
+    const updateFinishAt = (hour24Format: string) => {
+        newEventProviderRef?.current?.updateFinishAt(hour24Format);
+    };
+
     useImperativeHandle(ref, () => ({
         updateViewType: (bookingType) => setBookingViewType(bookingType),
         updateWeekAndViewType: (date) => setWeekAndViewType(date),
         updateTodayDayAndViewType: (date) => setTodayDayAndViewType(date),
         updateSelectedNode: (nodeKey: string) => setSelectedNode(nodeKey),
+        updateFinishAt: (hour24Format: string) => updateFinishAt(hour24Format),
     }));
 
     useEffect(() => {
@@ -57,7 +67,10 @@ const Root = ({
                 onModalClose={onModalClose}
                 bookings={bookings}
             >
-                <NewEventProvider {...initialFormState}>
+                <NewEventProvider
+                    ref={newEventProviderRef}
+                    {...initialFormState}
+                >
                     <CalendarHolder />
                 </NewEventProvider>
             </BookingModalProvider>
