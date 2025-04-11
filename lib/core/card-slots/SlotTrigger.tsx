@@ -45,7 +45,7 @@ interface SlotTriggerProps {
 }
 
 export interface SlotTriggerForwardRef {
-    showEvent: () => void;
+    showEvent: (slotNode?: string) => void;
     closeEvent: () => void;
     onOpenCloseChange: (status: boolean) => void;
 }
@@ -67,7 +67,6 @@ const SlotTrigger = ({
     const bookingModal = useBookingModal();
 
     const { emptySlotNodes, setSelectedNode } = useEmptySlotStore();
-
     const { onModalClose, onSlotClick } = useBookingModal();
 
     const { finishAt, startAt, updateStartAt, updateFinishAt, updateDate } =
@@ -105,11 +104,6 @@ const SlotTrigger = ({
 
     const renderedCardPreviewRef = useRef<HTMLDivElement>(null);
 
-    // TODO: isso está muito errado. melhorar. está chamando toda hora. sem necessidade.
-    useEffect(() => {
-        updateHeightStyle(finishMock, startMock);
-    }, [finishMock, startMock, updateHeightStyle]);
-
     const onMouseEnterEvent = useCallback((): void => {
         if (isDragging || open) return;
 
@@ -142,12 +136,14 @@ const SlotTrigger = ({
     };
 
     const formUpdateFinishAt = useCallback(
-        (time: string, increasingMinutes = 15) => {
+        (time: string, increasingMinutes = 15): string => {
             const convertDateToString = DateUtils.addMinutesToHour(
                 time,
                 increasingMinutes,
             );
+
             updateFinishAt(convertDateToString);
+            return convertDateToString;
         },
         [updateFinishAt],
     );
@@ -159,8 +155,6 @@ const SlotTrigger = ({
             updateIsDragging(false);
             const { time, key } = slotData;
 
-            // User instance calendar callback call
-            onSlotClick({ time, key });
             const keyToFind = setEmptySlotKey({ key, time });
             const slot = emptySlotNodes?.get(keyToFind);
 
@@ -173,7 +167,13 @@ const SlotTrigger = ({
             const increasingMinutes = finishAt ? 0 : 15;
             const updateFinishAtStarter = finishAt || time;
 
-            formUpdateFinishAt(updateFinishAtStarter, increasingMinutes);
+            const finishAtUpdated = formUpdateFinishAt(
+                updateFinishAtStarter,
+                increasingMinutes,
+            );
+
+            // User instance calendar callback
+            onSlotClick({ slotData, finishTime: finishAtUpdated });
             setOpen(true);
         },
         [
@@ -222,6 +222,15 @@ const SlotTrigger = ({
         setOpen(true);
     };
 
+    const resetPrevView = useCallback(() => {
+        setIsDraggingOnClick(false);
+    }, []);
+
+    // TODO: Improve this, are calling so many times.
+    useEffect(() => {
+        updateHeightStyle(finishMock, startMock);
+    }, [finishMock, startMock, updateHeightStyle]);
+
     useEffect(() => {
         if (!renderEvent) return;
 
@@ -256,10 +265,6 @@ const SlotTrigger = ({
             resetPrevView();
         },
     }));
-
-    const resetPrevView = useCallback(() => {
-        setIsDraggingOnClick(false);
-    }, []);
 
     return (
         <>

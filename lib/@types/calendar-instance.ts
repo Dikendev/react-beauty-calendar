@@ -25,6 +25,11 @@ export interface RootProps extends RootEventsProps {
     ref?: Ref<CalendarRoot>;
 }
 
+interface OnSlotClick {
+    slotData: BlockTimeData;
+    finishTime: string;
+}
+
 export interface RootEventsProps {
     onChangeViewType: (bookingViewType: BookingViewType) => void;
     onTodayClick: (date: Date) => void;
@@ -36,5 +41,5 @@ export interface RootEventsProps {
     ) => Promise<void>;
     onDayChange: (date: Date[], actionType: ActionType) => void;
     onModalClose: () => void;
-    onSlotClick: (slotData: BlockTimeData) => void;
+    onSlotClick: (slot: OnSlotClick) => void;
 }

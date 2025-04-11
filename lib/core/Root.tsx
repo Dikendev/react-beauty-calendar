@@ -34,18 +34,10 @@ const Root = ({
     const { setSelectedNode } = useEmptySlotStore((store) => store);
 
     useImperativeHandle(ref, () => ({
-        updateViewType: (bookingType) => {
-            setBookingViewType(bookingType);
-        },
-        updateWeekAndViewType: (date) => {
-            return setWeekAndViewType(date);
-        },
-        updateTodayDayAndViewType: (date) => {
-            return setTodayDayAndViewType(date);
-        },
-        updateSelectedNode: (nodeKey: string) => {
-            setSelectedNode(nodeKey);
-        },
+        updateViewType: (bookingType) => setBookingViewType(bookingType),
+        updateWeekAndViewType: (date) => setWeekAndViewType(date),
+        updateTodayDayAndViewType: (date) => setTodayDayAndViewType(date),
+        updateSelectedNode: (nodeKey: string) => setSelectedNode(nodeKey),
     }));
 
     useEffect(() => {

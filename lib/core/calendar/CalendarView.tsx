@@ -59,7 +59,7 @@ const CalendarView = () => {
     useEffect(() => {
         if (selectedNode) {
             const emptySlotNode = emptySlotNodes.get(selectedNode);
-            if (emptySlotNode) emptySlotNode.showEvent();
+            if (emptySlotNode) emptySlotNode.showEvent(selectedNode);
         }
     }, [selectedNode, emptySlotNodes]);
 
