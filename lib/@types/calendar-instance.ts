@@ -34,7 +34,7 @@ export interface OnSlotClick {
 export interface RootEventsProps {
     onChangeViewType: (bookingViewType: BookingViewType) => void;
     onTodayClick: (date: Date) => void;
-    onHeaderDayClick: (date: Date, bookingViewType: BookingViewType) => void;
+    onHeaderDayClick?: (date: Date, bookingViewType: BookingViewType) => void;
     onCardDropCallback: (
         booking: Booking,
         overId: string,
