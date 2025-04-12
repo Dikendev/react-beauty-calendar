@@ -26,7 +26,7 @@ export interface RootProps extends RootEventsProps {
     ref?: Ref<CalendarRootRef>;
 }
 
-interface OnSlotClick {
+export interface OnSlotClick {
     slotData: BlockTimeData;
     finishTime: string;
 }

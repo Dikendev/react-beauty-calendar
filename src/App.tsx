@@ -3,8 +3,8 @@ import type {
     BookingDateAndTime,
     BookingViewType,
 } from "../lib/@types/booking";
+import type { OnSlotClick } from "../lib/@types/calendar-instance";
 import type { ActionType } from "../lib/core/header-calendar/Header";
-import type { BlockTimeData } from "../lib/core/slots/EmptySlot";
 import TabsContentCore from "../lib/core/slots/TabsContent";
 import { useCalendarInstance } from "../lib/main";
 import { mockBooking } from "../lib/mock/booking-mock";
@@ -14,8 +14,8 @@ const App = () => {
         console.log("on change view Type", bookingViewType);
     };
 
-    const onSlotClick = (slotData: BlockTimeData) => {
-        console.log("onSlotClick", slotData);
+    const onSlotClick = (slot: OnSlotClick) => {
+        console.log("onSlotClick", slot);
     };
 
     const onTodayClick = (date: Date) => {
