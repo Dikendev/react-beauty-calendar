@@ -17,7 +17,6 @@ export interface NextAndPreviousWeek {
 }
 export interface DayAndWeekProps {
     hours: Times;
-    selectedDay: string | null;
     daysOfWeek: DaysOfWeek;
     timesRendered: Map<string, HourWithActionsRef>;
 }
@@ -36,7 +35,6 @@ const initValuesWeek = DateUtils.generateWeekDays();
 
 const dayAndWeekStore: StateCreator<DayAndWeekState> = (set, get) => ({
     hours: generateTimes(START_TIME, END_TIME, INTERVAL),
-    selectedDay: null,
     daysOfWeek: initValuesWeek.week,
     timesRendered: new Map(),
 
@@ -56,9 +54,7 @@ const dayAndWeekStore: StateCreator<DayAndWeekState> = (set, get) => ({
         let week: Date[] = [];
 
         set((prev) => {
-            const validDate = validateDate(prev.selectedDay, date);
-
-            const { week: daysOfWeek } = DateUtils.generateWeekDays(validDate);
+            const { week: daysOfWeek } = DateUtils.generateWeekDays(date);
             week = daysOfWeek;
 
             return {
@@ -143,13 +139,6 @@ const dayAndWeekStore: StateCreator<DayAndWeekState> = (set, get) => ({
         });
     },
 });
-
-const validateDate = (prevSelectedDay: string | null, date?: Date) => {
-    if (!date) {
-        return prevSelectedDay ? new Date(prevSelectedDay) : new Date();
-    }
-    return date;
-};
 
 export type DayAndWeekStore = ReturnType<typeof dayAndWeekStore>;
 export default dayAndWeekStore;
