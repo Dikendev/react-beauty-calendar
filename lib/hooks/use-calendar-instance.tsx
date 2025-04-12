@@ -15,37 +15,27 @@ const useCalendarInstance = (
     const calendarRef = useRef<CalendarInstanceRef>(null);
 
     const updateViewType = (bookingType: BookingViewType) => {
-        if (!calendarRef?.current) {
-            throw new ReferenceErrorCustom();
-        }
+        if (!calendarRef?.current) throw new ReferenceErrorCustom();
         calendarRef.current.updateViewType(bookingType);
     };
 
     const updateWeekAndViewType = (date?: Date) => {
-        if (!calendarRef?.current) {
-            throw new ReferenceErrorCustom();
-        }
+        if (!calendarRef?.current) throw new ReferenceErrorCustom();
         return calendarRef.current.updateWeekAndViewType(date);
     };
 
     const updateTodayDayAndViewType = (date: Date) => {
-        if (!calendarRef?.current) {
-            throw new ReferenceErrorCustom();
-        }
+        if (!calendarRef?.current) throw new ReferenceErrorCustom();
         return calendarRef.current.updateTodayDayAndViewType(date);
     };
 
     const updateSelectedNode = (nodeKey: string) => {
-        if (!calendarRef?.current) {
-            throw new ReferenceErrorCustom();
-        }
+        if (!calendarRef?.current) throw new ReferenceErrorCustom();
         return calendarRef.current.updateSelectedNode(nodeKey);
     };
 
     const updateFinishAt = (hour24Format: string) => {
-        if (!calendarRef?.current) {
-            throw new ReferenceErrorCustom();
-        }
+        if (!calendarRef?.current) throw new ReferenceErrorCustom();
         return calendarRef.current.updateFinishAt(hour24Format);
     };
 
