@@ -74,13 +74,7 @@ const EventTabs = ({
     });
 
     return (
-        <DropdownMenu
-            dir="ltr"
-            modal={false}
-            open={true}
-            defaultOpen={false}
-            onOpenChange={onOpenChange}
-        >
+        <DropdownMenu dir="ltr" modal={false} open onOpenChange={onOpenChange}>
             <DropdownMenuTrigger asChild>{buttonTrigger}</DropdownMenuTrigger>
 
             <DropdownMenuContent

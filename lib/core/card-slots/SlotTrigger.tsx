@@ -74,6 +74,7 @@ const SlotTrigger = ({
         updateDate,
         updateStartAt,
         updateFinishAtWithOffset,
+        resetForm,
     } = useNewEventStore((state) => state);
 
     const bookingViewType = useGlobalStore((state) => state.bookingViewType);
@@ -115,7 +116,8 @@ const SlotTrigger = ({
         if (result === slotPosition) setShowTimeInfo(true);
     }, [slotPosition, events, isDragging, open]);
 
-    const onCloseCreationModal = (event: React.MouseEvent): void => {
+    const onCloseCreationModal = (event?: React.MouseEvent): void => {
+        resetForm();
         updateIsDragging(false);
 
         const keyToFind = setEmptySlotKey(slotData);
@@ -126,12 +128,13 @@ const SlotTrigger = ({
         // user callback on close, using optional chain
         onModalClose?.();
 
-        event.stopPropagation();
-        event.preventDefault();
+        event?.stopPropagation();
+        event?.preventDefault();
         setOpen(false);
     };
 
     const onOpenChange = (status: boolean): void => {
+        if (!status) onCloseCreationModal();
         setRenderEvent(status);
         setShowTimeInfo(status);
         setOpen(status);
