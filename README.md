@@ -31,6 +31,49 @@ With the need to implement an efficient scheduling system, I decided to create a
 - **Drag & Drop**: Advanced appointment creation
 - **Open Source**: MIT licensed, free forever
 - Storybook available.
+## Technologies Used
+
+### Core Technologies
+- **[React](https://reactjs.org/)**: A JavaScript library for building user interfaces.
+- **[TypeScript](https://www.typescriptlang.org/)**: A strongly typed programming language that builds on JavaScript, providing type safety and better developer experience.
+
+### State Management
+- **[Zustand](https://github.com/pmndrs/zustand)**: A small, fast, and scalable state-management library for React.
+
+### Date Utilities
+- **[date-fns](https://date-fns.org/)**: A modern JavaScript date utility library for parsing, formatting, and manipulating dates.
+- **[dayjs](https://day.js.org/)**: A lightweight JavaScript date library for parsing, validating, and formatting dates.
+
+### Drag and Drop
+- **[@dnd-kit/core](https://dndkit.com/)**: A modern drag-and-drop toolkit for React.
+
+### UI Components
+- **[Radix UI](https://www.radix-ui.com/)**: Accessible, unstyled UI components for building modern React applications.
+
+### Styling
+- **[Tailwind CSS](https://tailwindcss.com/)**: A utility-first CSS framework for rapid UI development.
+
+### Build Tools
+- **[Vite](https://vitejs.dev/)**: A fast build tool and development server for modern web projects.
+
+### Testing
+- **[Vitest](https://vitest.dev/)**: A blazing-fast unit testing framework for modern web applications.
+- **[Playwright](https://playwright.dev/)**: An end-to-end testing framework for web applications.
+
+### Storybook
+- **[Storybook](https://storybook.js.org/)**: A tool for developing and testing UI components in isolation.
+- **[Chromatic](https://www.chromatic.com/)**: Visual testing and review for Storybook components.
+
+### Linting and Formatting
+- **[ESLint](https://eslint.org/)**: A tool for identifying and fixing problems in JavaScript code.
+
+### Utilities
+- **[clsx](https://github.com/lukeed/clsx)**: Utility for conditionally joining classNames.
+- **[cmdk](https://cmdk.paco.me/)**: A fast, composable command menu for React.
+
+### Development Tools
+- **[Husky](https://typicode.github.io/husky/)**: Git hooks for automating tasks.
+- **[Concurrently](https://github.com/open-cli-tools/concurrently)**: Run multiple commands concurrently.
 
 ## Installation
 
