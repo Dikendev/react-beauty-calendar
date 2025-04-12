@@ -48,7 +48,7 @@ const BookingInfoOptions = ({
     children,
 }: BookingInfoOptionsWithChildren) => {
     const [position, setPosition] = useState({ ...initialPosition });
-    const updateIsDragging = useDragStore().updateIsDragging;
+    const updateIsDragging = useDragStore((state) => state.updateIsDragging);
 
     const dateToString = useMemo(() => {
         return `${DateUtils.dateAndHourDateToString(booking.startAt)} - ${DateUtils.dateAndHourDateToString(

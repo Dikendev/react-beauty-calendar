@@ -61,9 +61,7 @@ const SlotTrigger = ({
     children,
     ref,
 }: SlotTriggerProps) => {
-    const { updateIsDelayActive, isDragging, updateIsDragging } = useDragStore(
-        (state) => state,
-    );
+    const { isDragging, updateIsDragging } = useDragStore((state) => state);
 
     const bookingModal = useBookingModal();
 
@@ -119,7 +117,6 @@ const SlotTrigger = ({
 
     const onCloseCreationModal = (event: React.MouseEvent): void => {
         updateIsDragging(false);
-        updateIsDelayActive(true);
 
         const keyToFind = setEmptySlotKey(slotData);
         const slot = emptySlotNodes?.get(keyToFind);
@@ -135,7 +132,6 @@ const SlotTrigger = ({
     };
 
     const onOpenChange = (status: boolean): void => {
-        updateIsDelayActive(true);
         setRenderEvent(status);
         setShowTimeInfo(status);
         setOpen(status);
@@ -242,7 +238,6 @@ const SlotTrigger = ({
         showEvent: (time: string) => {
             updateStartAt(time);
             setShowTimeInfo(false);
-            updateIsDelayActive(false);
             setOpen(true);
             setRenderEvent(true);
         },

@@ -73,7 +73,7 @@ const CardContent = ({
 }: CardContentProps) => {
     const [customClass, setCustomClass] = useState<string>("");
 
-    const { updateIsDragging } = useDragStore((state) => state);
+    const updateIsDragging = useDragStore((state) => state.updateIsDragging);
 
     const handleStyleCardContent: CSSProperties =
         bookingViewType === BOOKING_VIEW_TYPE.DAY

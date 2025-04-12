@@ -1,24 +1,21 @@
+import { type CSSProperties, useCallback } from "react";
+
 import type { Booking, BookingDateAndTime } from "../../@types/booking";
+import { cn } from "../../lib/utils";
 import { DateUtils } from "../../utils/date-utils";
 
-import {
-    type DragPendingEvent,
-    useDndMonitor,
-    useDraggable,
-} from "@dnd-kit/core";
-import { type CSSProperties, useCallback, useState } from "react";
+import { useDndMonitor, useDraggable } from "@dnd-kit/core";
 import { BOOKING_VIEW_TYPE } from "../../constants";
 import useDragStore from "../../context/drag/dragStore";
 import { useGlobalStore } from "../../hooks";
-import { cn } from "../../lib/utils";
 import CardOverlay from "../slots/CardOverlay";
 
 interface BookingCardProps {
     booking: Booking;
     slotData: BookingDateAndTime;
-    customClasses?: string | undefined;
+    customClasses?: string;
     heightStyleTransformer?: string;
-    onClick?: (() => void) | undefined;
+    onClick?: () => void;
 }
 
 const BookingCard = ({
@@ -31,9 +28,7 @@ const BookingCard = ({
     const { day, hour } = slotData;
     const { bookingViewType } = useGlobalStore();
 
-    const [isPending, setIsPending] = useState(false);
-    const [pendingDelayMs, setPendingDelay] = useState(0);
-    const { updateIsDragging } = useDragStore();
+    const updateIsDragging = useDragStore((state) => state.updateIsDragging);
 
     const { attributes, listeners, setNodeRef, isDragging, transform } =
         useDraggable({
@@ -53,31 +48,14 @@ const BookingCard = ({
 
     useDndMonitor({
         onDragStart: () => updateIsDragging(true),
-        onDragPending: (event) => handlePending(event),
         onDragAbort: () => handlePendingEnd(),
         onDragCancel: () => handlePendingEnd(),
         onDragEnd: () => handlePendingEnd(),
     });
 
-    const handlePending = useCallback((event: DragPendingEvent) => {
-        if (event.id === booking.id) {
-            setIsPending(true);
-            const { constraint } = event;
-
-            if ("delay" in constraint) {
-                setPendingDelay(constraint.delay);
-            }
-        }
-    }, []);
-
     const handlePendingEnd = useCallback(() => {
         updateIsDragging(false);
-        setIsPending(false);
     }, []);
-
-    const pendingStyle: React.CSSProperties = isPending
-        ? { animationDuration: `${pendingDelayMs}ms` }
-        : {};
 
     const isBelowMaxTimeLimit = (normalizedBookingDate: string): boolean => {
         return normalizedBookingDate <= "11:30";
@@ -92,7 +70,6 @@ const BookingCard = ({
         height: heightStyleTransformer,
         position: "relative",
         zIndex: 50,
-        ...pendingStyle,
         ...style,
         ...handleStyleCardContent,
     };
@@ -120,11 +97,7 @@ const BookingCard = ({
                 <div
                     key={booking.id}
                     ref={setNodeRef}
-                    className={cn(
-                        "cardContent_render",
-                        customClasses,
-                        isPending && "Draggable pendingDelay",
-                    )}
+                    className={cn("cardContent_render", customClasses)}
                     style={{ ...style, ...cardContextStyle }}
                     {...listeners}
                     {...attributes}

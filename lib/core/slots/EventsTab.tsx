@@ -16,7 +16,6 @@ import {
 import { Label } from "../../components/ui/Label";
 import useDragStore from "../../context/drag/dragStore";
 import type { EmptySlotNodes } from "../../context/emptySlotsStore.ts/useEmptySlotStore";
-// import useBookingModal from "../../hooks/use-booking-model";
 import type { Side } from "../booking-options/BookingInfoOptions";
 
 interface EventTabsProps {

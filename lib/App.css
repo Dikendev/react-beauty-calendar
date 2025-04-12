@@ -568,13 +568,6 @@
     transition: box-shadow 300ms ease;
   }
 
-  &.pendingDelay {
-    animation: pending linear;
-    background-image: linear-gradient(90deg,
-      rgb(0, 47, 255) calc(var(--progress)* 1%),
-      transparent calc(var(--progress)* 1% + 1%));
-  }
-
   &:not(.handle) {
     > div {
       touch-action: none;
@@ -643,23 +636,5 @@
   }
   to {
     opacity: 1;
-  }
-}
-
-@keyframes pop {
-  0% {
-    transform: translate3d(var(--translate-x, 0), var(--translate-y, 0), 0)
-    scale(1);
-  }
-  100% {
-    transform: translate3d(var(--translate-x, 0), var(--translate-y, 0), 0)
-    scale(var(--scale));
-    box-shadow: var(--box-shadow);
-  }
-}
-
-@keyframes pending {
-  100% {
-    --progress: 100;
   }
 }

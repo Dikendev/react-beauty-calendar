@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo } from "react";
+import { useCallback, useEffect } from "react";
 
 import {
     DndContext,
@@ -20,25 +20,21 @@ import type {
     BookingDateAndTime,
 } from "../../@types/booking";
 
-import useDragStore from "../../context/drag/dragStore";
-
 import { MonthDescriptionProvider } from "../../context";
 import { initialMonthDescriptionState } from "../../context/month-description/month-description-store";
+
 import { useGlobalStore } from "../../hooks";
 import useBookingModal from "../../hooks/use-booking-model";
 
+// import { snapCenterToCursor } from "@dnd-kit/modifiers";
 import { mockUser } from "../../mock/booking-mock";
 
 const CalendarHolder = () => {
-    const { isDelayActive } = useDragStore((state) => state);
     const { bookings } = useBookingModal();
 
-    const activationConstraint = useMemo(() => {
-        return {
-            delay: isDelayActive ? 500 : 0,
-            tolerance: 100,
-        };
-    }, [isDelayActive]);
+    const activationConstraint = {
+        distance: 10,
+    };
 
     const { setBookingBulkData, optimisticCardUpdate } = useGlobalStore();
     const { onCardDropCallback } = useBookingModal();
@@ -151,6 +147,7 @@ const CalendarHolder = () => {
                             onDragEnd={handleDragEnd}
                             onDragStart={onDragStart}
                             sensors={sensors}
+                            // modifiers={[snapCenterToCursor]}
                         >
                             <HandleViewType bookingViewType={bookingViewType} />
                         </DndContext>
