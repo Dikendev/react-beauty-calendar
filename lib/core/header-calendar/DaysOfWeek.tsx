@@ -40,7 +40,7 @@ const DaysWeek = ({ daysOfWeek, bookingViewType }: DaysWeekProps) => {
                 return bookingViewType === BOOKING_VIEW_TYPE.DAY;
             };
 
-            onHeaderDayClick(day, bookingViewType);
+            onHeaderDayClick?.(day, bookingViewType);
             if (isViewTypeDay()) return swapViewType();
 
             const daySelected = setTodayDay(day);
