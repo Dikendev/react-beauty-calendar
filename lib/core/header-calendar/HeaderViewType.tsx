@@ -1,4 +1,4 @@
-import { type ReactElement, useCallback, useEffect, useMemo } from "react";
+import { type ReactElement, useCallback, useMemo } from "react";
 
 import {
     CalendarCog,
