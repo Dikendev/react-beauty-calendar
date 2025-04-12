@@ -1,4 +1,4 @@
-import { type CSSProperties, useCallback, useMemo } from "react";
+import { type CSSProperties, useCallback, useEffect, useMemo } from "react";
 import {
     useDaysSelectedView,
     useGlobalStore,
@@ -20,14 +20,11 @@ interface DaysWeekProps {
 
 const DaysWeek = ({ daysOfWeek, bookingViewType }: DaysWeekProps) => {
     const { setTodayDay, setBookingViewType } = useGlobalStore();
-    const { updateMonthMessage } = useMonthDescription((state) => state);
+    const { updateMonthMessage, updateHeaderDateLabel } = useMonthDescription(
+        (state) => state,
+    );
     const { onViewTypeChange } = useDaysSelectedView();
     const { onHeaderDayClick } = useBookingModal();
-
-    const tableStyle: CSSProperties =
-        bookingViewType === BOOKING_VIEW_TYPE.TABLE
-            ? { justifySelf: "start" }
-            : {};
 
     const handleClickDay = useCallback(
         (day: Date) => {
@@ -58,6 +55,11 @@ const DaysWeek = ({ daysOfWeek, bookingViewType }: DaysWeekProps) => {
         },
         [bookingViewType, setTodayDay, updateMonthMessage, setBookingViewType],
     );
+
+    const tableStyle: CSSProperties =
+        bookingViewType === BOOKING_VIEW_TYPE.TABLE
+            ? { justifySelf: "start" }
+            : {};
 
     const daysOfWeekRender = useMemo(() => {
         const ifIsToday = (day: Date): boolean => {
@@ -109,6 +111,20 @@ const DaysWeek = ({ daysOfWeek, bookingViewType }: DaysWeekProps) => {
             <div className="daysOfWeek_emptySlot" />
         </th>
     );
+
+    useEffect(() => {
+        switch (bookingViewType) {
+            case BOOKING_VIEW_TYPE.DAY: {
+                updateHeaderDateLabel(daysOfWeek[0]);
+                break;
+            }
+            case BOOKING_VIEW_TYPE.WEEK: {
+                const monthMessage =
+                    DateUtils.generateWeekMonthLabel(daysOfWeek);
+                updateMonthMessage({ monthMessage });
+            }
+        }
+    }, [daysOfWeek]);
 
     return (
         <table className="daysOfWeek_emptySlot_table">

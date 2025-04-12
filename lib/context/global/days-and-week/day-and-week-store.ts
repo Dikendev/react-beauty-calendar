@@ -3,29 +3,32 @@ import type { HourWithActionsRef } from "../../../core/calendar/HourWithActions"
 import { DateUtils } from "../../../utils/date-utils";
 import { type Times, generateTimes } from "../../../utils/hours";
 
+// Make a default to the calendar, but the user can change the start and the end time by props.
+// The interval is always 60 min (1 hour).
 const START_TIME = "08:00";
 const END_TIME = "23:30";
 const INTERVAL = 60;
+
+export type DaysOfWeek = Date[];
 
 export interface NextAndPreviousWeek {
     firstDayOfWeek: Date;
     lastDayOfWeek: Date;
 }
-
-export interface DayAndWeekProps extends NextAndPreviousWeek {
+export interface DayAndWeekProps {
     hours: Times;
     selectedDay: string | null;
-    daysOfWeek: Date[];
+    daysOfWeek: DaysOfWeek;
     timesRendered: Map<string, HourWithActionsRef>;
 }
 
 export interface DayAndWeekState extends DayAndWeekProps {
     setTodayDay: (date: Date) => Date;
     setDays: (days: number) => Date[];
-    todayWeek: (date?: Date) => NextAndPreviousWeek;
+    todayWeek: (date?: Date) => DaysOfWeek;
     getWeek: () => NextAndPreviousWeek;
-    nextWeek: () => NextAndPreviousWeek;
-    previousWeek: () => NextAndPreviousWeek;
+    nextWeek: () => DaysOfWeek;
+    previousWeek: () => DaysOfWeek;
     addTimesRendered: (element: HourWithActionsRef, hourKey: string) => void;
 }
 
@@ -35,8 +38,6 @@ const dayAndWeekStore: StateCreator<DayAndWeekState> = (set, get) => ({
     hours: generateTimes(START_TIME, END_TIME, INTERVAL),
     selectedDay: null,
     daysOfWeek: initValuesWeek.week,
-    firstDayOfWeek: initValuesWeek.firstDayOfWeek,
-    lastDayOfWeek: initValuesWeek.lastDayOfWeek,
     timesRendered: new Map(),
 
     setTodayDay: (date: Date): Date => {
@@ -51,73 +52,55 @@ const dayAndWeekStore: StateCreator<DayAndWeekState> = (set, get) => ({
         return todaysDayDate[0];
     },
 
-    todayWeek: (date?: Date): NextAndPreviousWeek => {
-        let first: Date = new Date();
-        let last: Date = new Date();
+    todayWeek: (date?: Date): DaysOfWeek => {
+        let week: Date[] = [];
 
         set((prev) => {
             const validDate = validateDate(prev.selectedDay, date);
 
-            const {
-                week: daysOfWeek,
-                firstDayOfWeek,
-                lastDayOfWeek,
-            } = DateUtils.generateWeekDays(validDate);
-
-            first = firstDayOfWeek;
-            last = lastDayOfWeek;
+            const { week: daysOfWeek } = DateUtils.generateWeekDays(validDate);
+            week = daysOfWeek;
 
             return {
                 ...prev,
                 daysOfWeek,
-                firstDayOfWeek,
-                lastDayOfWeek,
             };
         });
 
-        return {
-            firstDayOfWeek: first,
-            lastDayOfWeek: last,
-        };
+        return week;
     },
 
-    nextWeek: (): NextAndPreviousWeek => {
-        const adding = DateUtils.addDay(get().lastDayOfWeek, 1);
-        const {
-            firstDayOfWeek,
-            lastDayOfWeek,
-            week: daysOfWeek,
-        } = DateUtils.generateWeekDays(adding);
+    nextWeek: (): DaysOfWeek => {
+        const adding = DateUtils.addDay(get().getWeek().lastDayOfWeek, 1);
+        let week: Date[] = [];
+
+        const { week: daysOfWeek } = DateUtils.generateWeekDays(adding);
+        week = daysOfWeek;
 
         set((prev) => ({
             ...prev,
             daysOfWeek,
-            firstDayOfWeek,
-            lastDayOfWeek,
         }));
 
-        return { firstDayOfWeek, lastDayOfWeek };
+        return week;
     },
 
-    previousWeek: (): NextAndPreviousWeek => {
-        const minus = DateUtils.addDay(get().firstDayOfWeek, -1);
-        const {
-            firstDayOfWeek,
-            lastDayOfWeek,
-            week: daysOfWeek,
-        } = DateUtils.generateWeekDays(minus);
+    previousWeek: (): DaysOfWeek => {
+        const minus = DateUtils.addDay(get().getWeek().firstDayOfWeek, -1);
+        let week: Date[] = [];
+
+        const { week: daysOfWeek } = DateUtils.generateWeekDays(minus);
+        week = daysOfWeek;
 
         set((prev) => ({
             ...prev,
             daysOfWeek,
-            firstDayOfWeek,
-            lastDayOfWeek,
         }));
 
-        return { firstDayOfWeek, lastDayOfWeek };
+        return week;
     },
 
-    setDays: (days: number): Date[] => {
+    setDays: (days: number): DaysOfWeek => {
         const actualDay = get().daysOfWeek[0];
 
         if (!actualDay) return [];
@@ -127,16 +110,14 @@ const dayAndWeekStore: StateCreator<DayAndWeekState> = (set, get) => ({
         set((prev) => ({
             ...prev,
             daysOfWeek: day,
-            firstDayOfWeek: day[0],
-            lastDayOfWeek: day[0],
         }));
 
         return day;
     },
 
     getWeek: (): NextAndPreviousWeek => {
-        const firstDayOfWeek = get().firstDayOfWeek;
-        const lastDayOfWeek = get().lastDayOfWeek;
+        const firstDayOfWeek = get().daysOfWeek[0];
+        const lastDayOfWeek = get().daysOfWeek[get().daysOfWeek.length - 1];
 
         return {
             firstDayOfWeek,

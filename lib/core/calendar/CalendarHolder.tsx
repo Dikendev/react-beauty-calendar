@@ -39,14 +39,6 @@ const CalendarHolder = () => {
     const { setBookingBulkData, optimisticCardUpdate } = useGlobalStore();
     const { onCardDropCallback } = useBookingModal();
 
-    useEffect(() => {
-        const bookData: BookingBulkData = {
-            user: mockUser,
-            booking: bookings,
-        };
-        setBookingBulkData(bookData);
-    }, [bookings, setBookingBulkData]);
-
     const sensors = useSensors(
         useSensor(MouseSensor, { activationConstraint }),
         useSensor(TouchSensor, { activationConstraint }),
@@ -132,6 +124,14 @@ const CalendarHolder = () => {
             }
         }
     };
+
+    useEffect(() => {
+        const bookData: BookingBulkData = {
+            user: mockUser,
+            booking: bookings,
+        };
+        setBookingBulkData(bookData);
+    }, [bookings, setBookingBulkData]);
 
     return (
         <div className="calendarHolder">

@@ -1,6 +1,10 @@
 import { differenceInMinutes, subMinutes } from "date-fns";
 import dayjs from "dayjs";
 import { MONTH } from "../constants";
+import type {
+    DaysOfWeek,
+    NextAndPreviousWeek,
+} from "../context/global/days-and-week/day-and-week-store";
 
 export const WEEK_DAYS = [
     "Sun",
@@ -26,8 +30,6 @@ export const WEEK_DAYS_FULL_NAME = [
 
 export type DatesData = {
     week: Date[];
-    firstDayOfWeek: Date;
-    lastDayOfWeek: Date;
 };
 
 export const DateUtils = {
@@ -43,13 +45,9 @@ export const DateUtils = {
 
     generateWeekDays(newDate?: Date): DatesData {
         const indexToStart = this.findIndexToStart(newDate);
-
         const weekDaysArray = new Array(7).fill(0);
 
-        let firstDayOfWeek = new Date();
-        let lastDayOfWeek = new Date();
-
-        const result = weekDaysArray.map((_, index) => {
+        const week = weekDaysArray.map((_, index) => {
             const today = newDate ? newDate : new Date();
 
             const diffIndex = index - indexToStart;
@@ -59,30 +57,10 @@ export const DateUtils = {
                 today.getDate() + diffIndex,
             );
 
-            if (index === 0) {
-                firstDayOfWeek = new Date(
-                    currentDate.getFullYear(),
-                    currentDate.getMonth(),
-                    currentDate.getDate(),
-                );
-            }
-
-            if (index === weekDaysArray.length - 1) {
-                lastDayOfWeek = new Date(
-                    currentDate.getFullYear(),
-                    currentDate.getMonth(),
-                    currentDate.getDate(),
-                );
-            }
-
             return currentDate;
         });
 
-        return {
-            week: result,
-            firstDayOfWeek,
-            lastDayOfWeek,
-        };
+        return { week };
     },
 
     generateDays(date: Date, daysForwardOrBack: number): Date[] {
@@ -214,5 +192,23 @@ export const DateUtils = {
         const isSameMonth = date.getMonth() === today.getMonth();
         const isSameYear = date.getFullYear() === today.getFullYear();
         return isSameDate && isSameMonth && isSameYear;
+    },
+
+    firstAndLastWeekDays(week: DaysOfWeek): NextAndPreviousWeek {
+        return {
+            firstDayOfWeek: week[0],
+            lastDayOfWeek: week[week.length - 1],
+        };
+    },
+
+    generateWeekMonthLabel(week: DaysOfWeek) {
+        const { firstDayOfWeek, lastDayOfWeek } =
+            DateUtils.firstAndLastWeekDays(week);
+
+        const firstDayOfWeekMonth = firstDayOfWeek.getMonth();
+
+        return firstDayOfWeekMonth !== lastDayOfWeek.getMonth()
+            ? DateUtils.shortMonthDescription(firstDayOfWeek, lastDayOfWeek)
+            : MONTH[firstDayOfWeekMonth];
     },
 };
