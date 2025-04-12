@@ -14,20 +14,21 @@ import type { BlocksTimeStructure } from "../slots/EmptySlot";
 import EventTabs from "../slots/EventsTab";
 import type { TimesBlock } from "../slots/Slots";
 import TimeInfo from "../slots/TimeInfo";
+import useResizableCardHook from "../slots/useResizableCardHook";
 
 import useDragStore from "../../context/drag/dragStore";
 import setEmptySlotKey from "../../context/emptySlotsStore.ts/emptySlotKey";
 import useEmptySlotStore from "../../context/emptySlotsStore.ts/useEmptySlotStore";
+
 import { useGlobalStore, useNewEventStore } from "../../hooks";
+import useBookingModal from "../../hooks/use-booking-model";
 
 import { DndContext } from "@dnd-kit/core";
 import type { Booking } from "../../@types";
 
 import { BOOKING_VIEW_TYPE } from "../../constants";
-import useBookingModal from "../../hooks/use-booking-model";
 import { cn } from "../../lib/utils";
 import { DateUtils } from "../../utils/date-utils";
-import useResizableCardHook from "../slots/useResizableCardHook";
 
 interface SlotEvents {
     onMouseEnterEvent: () => string;
@@ -45,7 +46,7 @@ interface SlotTriggerProps {
 }
 
 export interface SlotTriggerForwardRef {
-    showEvent: (slotNode?: string) => void;
+    showEvent: (slotNode: string) => void;
     closeEvent: () => void;
     onOpenCloseChange: (status: boolean) => void;
 }
@@ -69,8 +70,13 @@ const SlotTrigger = ({
     const { emptySlotNodes, setSelectedNode } = useEmptySlotStore();
     const { onModalClose, onSlotClick } = useBookingModal();
 
-    const { finishAt, startAt, updateStartAt, updateFinishAt, updateDate } =
-        useNewEventStore((state) => state);
+    const {
+        startAt,
+        finishAt,
+        updateDate,
+        updateStartAt,
+        updateFinishAtWithOffset,
+    } = useNewEventStore((state) => state);
 
     const bookingViewType = useGlobalStore((state) => state.bookingViewType);
 
@@ -135,19 +141,6 @@ const SlotTrigger = ({
         setOpen(status);
     };
 
-    const formUpdateFinishAt = useCallback(
-        (time: string, increasingMinutes = 15): string => {
-            const convertDateToString = DateUtils.addMinutesToHour(
-                time,
-                increasingMinutes,
-            );
-
-            updateFinishAt(convertDateToString);
-            return convertDateToString;
-        },
-        [updateFinishAt],
-    );
-
     const openModal = useCallback(
         (finishAt?: string): void => {
             if (isDragging && !finishAt) return;
@@ -159,15 +152,14 @@ const SlotTrigger = ({
             const slot = emptySlotNodes?.get(keyToFind);
 
             setSelectedNode(keyToFind);
-            if (slot) slot.showEvent();
+            if (slot) slot.showEvent(time);
 
             updateDate(key);
-            updateStartAt(time);
 
             const increasingMinutes = finishAt ? 0 : 15;
             const updateFinishAtStarter = finishAt || time;
 
-            const finishAtUpdated = formUpdateFinishAt(
+            const finishAtUpdated = updateFinishAtWithOffset(
                 updateFinishAtStarter,
                 increasingMinutes,
             );
@@ -178,14 +170,14 @@ const SlotTrigger = ({
         },
         [
             slotData,
-            updateDate,
-            updateStartAt,
-            formUpdateFinishAt,
             emptySlotNodes,
             isDragging,
             setSelectedNode,
-            updateIsDragging,
             onSlotClick,
+            updateDate,
+            updateStartAt,
+            updateIsDragging,
+            updateFinishAtWithOffset,
         ],
     );
 
@@ -209,9 +201,9 @@ const SlotTrigger = ({
 
         updateDate(key);
         updateStartAt(time);
-        formUpdateFinishAt(time);
+        updateFinishAtWithOffset(time);
     }, [
-        formUpdateFinishAt,
+        updateFinishAtWithOffset,
         slotData,
         updateDate,
         updateIsDragging,
@@ -247,7 +239,8 @@ const SlotTrigger = ({
     }, [children]);
 
     useImperativeHandle(ref, () => ({
-        showEvent: () => {
+        showEvent: (time: string) => {
+            updateStartAt(time);
             setShowTimeInfo(false);
             updateIsDelayActive(false);
             setOpen(true);

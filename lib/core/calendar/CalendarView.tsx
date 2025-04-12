@@ -11,7 +11,7 @@ import Slots from "../slots/Slots";
 import { Table, TableCell } from "../../components/ui/Table";
 import { BOOKING_VIEW_TYPE } from "../../constants";
 import useEmptySlotStore from "../../context/emptySlotsStore.ts/useEmptySlotStore";
-import { useGlobalStore } from "../../hooks";
+import { useGlobalStore, useNewEventStore } from "../../hooks";
 import { cn } from "../../lib/utils";
 import HourWithActions, { type HourWithActionsRef } from "./HourWithActions";
 
@@ -25,6 +25,9 @@ const CalendarView = () => {
     } = useGlobalStore();
 
     const { selectedNode, emptySlotNodes } = useEmptySlotStore();
+    const { finishAt, updateFinishAtWithOffset } = useNewEventStore(
+        (state) => state,
+    );
 
     const [lunchTimeBlock] = useState({
         startAt: "12:00",
@@ -56,12 +59,22 @@ const CalendarView = () => {
         [],
     );
 
+    const selectedTimeHour = (): string => {
+        return selectedNode.split(";")[1];
+    };
+
     useEffect(() => {
         if (selectedNode) {
             const emptySlotNode = emptySlotNodes.get(selectedNode);
-            if (emptySlotNode) emptySlotNode.showEvent(selectedNode);
+            emptySlotNode?.showEvent(selectedTimeHour());
         }
     }, [selectedNode, emptySlotNodes]);
+
+    useEffect(() => {
+        if (selectedTimeHour() === finishAt) {
+            updateFinishAtWithOffset(selectedTimeHour());
+        }
+    }, [selectedNode, finishAt]);
 
     const tableContent = useMemo(() => {
         const isFistDay = (dayOfWeekIndex: number) => dayOfWeekIndex === 0;

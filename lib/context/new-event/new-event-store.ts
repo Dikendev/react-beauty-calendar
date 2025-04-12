@@ -1,5 +1,6 @@
 import type { Ref } from "react";
 import { createStore } from "zustand";
+import { DateUtils } from "../../utils/date-utils";
 
 export interface NewEventFormRef {
     updateFinishAt: (selectedHour: string) => void;
@@ -18,6 +19,10 @@ export interface NewEventFormState extends NewEventFormProps {
     updateStartAt: (selectedHour: string) => void;
     updateFinishAt: (selectedHour: string) => void;
     updateDate: (dateAsString: string) => void;
+    updateFinishAtWithOffset: (
+        time: string,
+        increasingMinutes?: number,
+    ) => string;
     resetForm: () => void;
 }
 
@@ -30,7 +35,7 @@ export const initialFormState: NewEventFormProps = {
 export type NewEventStore = ReturnType<typeof newEventFormStore>;
 
 const newEventFormStore = (initProps?: Partial<NewEventFormState>) => {
-    return createStore<NewEventFormState>((set) => ({
+    return createStore<NewEventFormState>((set, get) => ({
         ...initialFormState,
         ...initProps,
 
@@ -48,6 +53,19 @@ const newEventFormStore = (initProps?: Partial<NewEventFormState>) => {
 
         updateFinishAt: (selectedHour: string) =>
             set((prev) => ({ ...prev, finishAt: selectedHour })),
+
+        updateFinishAtWithOffset: (
+            time: string,
+            increasingMinutes = 15,
+        ): string => {
+            const convertDateToString = DateUtils.addMinutesToHour(
+                time,
+                increasingMinutes,
+            );
+
+            get().updateFinishAt(convertDateToString);
+            return convertDateToString;
+        },
 
         updateClient: (id: string, name: string) =>
             set((prev) => ({
