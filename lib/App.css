@@ -280,6 +280,7 @@
   display: flex;
   flex-direction: row;
   justify-content: center;
+  gap: 3px;
 }
 
 .header_day_actions_button {
@@ -485,7 +486,11 @@
 }
 
 .cardContent_render:hover {
-  background-color: white;
+  border-style: inset;
+  border-top: 1px solid rgb(255, 89, 6);
+  border-right: 1px solid rgb(255, 89, 6);
+  border-bottom: 1px solid rgb(255, 89, 6);
+  /* background-color: white; */
 }
 
 /* timeInfo */

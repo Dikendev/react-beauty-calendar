@@ -1,20 +1,18 @@
 import { SquareMousePointer } from "lucide-react";
 import { Button } from "../../components/ui/Button";
+import WithTooltip from "../../hoc/WithTooltip";
 
 interface HeaderTodayActionProps {
-    mobileLayout: boolean;
     onClick: () => void;
 }
 
-const HeaderTodayAction = ({
-    mobileLayout,
-    onClick,
-}: HeaderTodayActionProps) => {
+const HeaderTodayAction = ({ onClick }: HeaderTodayActionProps) => {
     return (
-        <Button variant={mobileLayout ? "ghost" : "outline"} onClick={onClick}>
-            <SquareMousePointer style={{ paddingTop: "0.8px" }} />
-            {!mobileLayout && "Today"}
-        </Button>
+        <WithTooltip content="Today">
+            <Button variant="ghost" onClick={onClick}>
+                <SquareMousePointer style={{ paddingTop: "0.8px" }} />
+            </Button>
+        </WithTooltip>
     );
 };
 

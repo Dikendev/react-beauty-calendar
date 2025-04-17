@@ -120,10 +120,7 @@ const Header = () => {
     const actions = (
         <div className="header_actions">
             <HeaderDayActions handleWeekChange={handleWeekChange} />
-            <HeaderTodayAction
-                mobileLayout={mobileLayout}
-                onClick={handleTodayClick}
-            />
+            <HeaderTodayAction onClick={handleTodayClick} />
         </div>
     );
 

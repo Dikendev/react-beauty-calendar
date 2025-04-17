@@ -65,7 +65,8 @@ const SlotTrigger = ({
 
     const bookingModal = useBookingModal();
 
-    const { emptySlotNodes, setSelectedNode } = useEmptySlotStore();
+    const { emptySlotNodes, setSelectedNode, resetSelectedNode } =
+        useEmptySlotStore();
     const { onModalClose, onSlotClick } = useBookingModal();
 
     const {
@@ -116,9 +117,14 @@ const SlotTrigger = ({
         if (result === slotPosition) setShowTimeInfo(true);
     }, [slotPosition, events, isDragging, open]);
 
-    const onCloseCreationModal = (event?: React.MouseEvent): void => {
+    const resetDataAndDragging = () => {
         resetForm();
         updateIsDragging(false);
+        resetSelectedNode();
+    };
+
+    const onCloseCreationModal = (event?: React.MouseEvent): void => {
+        resetDataAndDragging();
 
         const keyToFind = setEmptySlotKey(slotData);
         const slot = emptySlotNodes?.get(keyToFind);
@@ -217,6 +223,12 @@ const SlotTrigger = ({
         setIsDraggingOnClick(false);
     }, []);
 
+    const prepareToShowModal = () => {
+        setShowTimeInfo(false);
+        setOpen(true);
+        setRenderEvent(true);
+    };
+
     // TODO: Improve this, are calling so many times.
     useEffect(() => {
         updateHeightStyle(finishMock, startMock);
@@ -240,9 +252,7 @@ const SlotTrigger = ({
     useImperativeHandle(ref, () => ({
         showEvent: (time: string) => {
             updateStartAt(time);
-            setShowTimeInfo(false);
-            setOpen(true);
-            setRenderEvent(true);
+            prepareToShowModal();
         },
         closeEvent: () => {
             setOpen(false);

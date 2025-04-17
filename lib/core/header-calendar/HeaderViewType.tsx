@@ -80,16 +80,15 @@ const HeaderViewType = () => {
             <DropdownMenuTrigger>
                 <Button variant="ghost" className="w-8 h-8" asChild>
                     <WithTooltip content="Calendar Modes">
-                        {findSelectedIcon || (
-                            <CalendarCog
-                                color="gray"
-                                className="w-full h-full"
-                            />
-                        )}
+                        <Button variant="ghost">
+                            {findSelectedIcon || (
+                                <CalendarCog className="w-full h-full" />
+                            )}
+                        </Button>
                     </WithTooltip>
                 </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent className="z-100">
+            <DropdownMenuContent>
                 {options.map((option) => (
                     <DropdownMenuCheckboxItem
                         key={option.label}

@@ -20,11 +20,11 @@ const WithTooltip = ({ children, content }: WithTooltipChildren) => {
             <Tooltip>
                 <TooltipTrigger asChild>{children}</TooltipTrigger>
                 <TooltipContent
-                    sideOffset={9}
+                    sideOffset={3}
                     side="bottom"
                     className="border border-input bg-popover px-2 py-1 text-xs text-muted-foreground"
                 >
-                    <p>{content}</p>
+                    {content}
                 </TooltipContent>
             </Tooltip>
         </TooltipProvider>
