@@ -8,19 +8,21 @@ import { DateUtils } from "../../../utils/date-utils";
 import { Separator } from "../../../components/ui/Separator";
 import { BOOKING_VIEW_TYPE } from "../../../constants";
 import type { BlocksTimeStructure } from "../EmptySlot";
+
+import FirstDaySlot from "./FIrstDaySlot";
 import {
     TimeEquality,
     TimeIndicatorPosition,
 } from "./position-based-on-seconds";
 
 interface ActualTimerIndicatorProps {
-    tailwindColor: string;
+    color?: string;
     isFirstDay: boolean;
     slotData: BlocksTimeStructure;
 }
 
 export const ActualTimerIndicator = ({
-    tailwindColor,
+    color = "#000",
     isFirstDay,
     slotData,
 }: ActualTimerIndicatorProps) => {
@@ -78,20 +80,12 @@ export const ActualTimerIndicator = ({
 
     const separatorContainer = useMemo((): string => {
         if (isFirstDay)
-            return bookingViewType === BOOKING_VIEW_TYPE.DAY
-                ? "w-[101%]"
-                : "w-[100vw]";
+            return bookingViewType === BOOKING_VIEW_TYPE.DAY ? "101%" : "100vw";
 
-        return bookingViewType === BOOKING_VIEW_TYPE.DAY
-            ? "w-[102%]"
-            : "w-[104%]";
+        return bookingViewType === BOOKING_VIEW_TYPE.DAY ? "102%" : "104%";
     }, [isFirstDay, bookingViewType]);
 
     if (!renderTimeIndicator) return;
-
-    const todayStyle = "left-[-18px] w-[102%]";
-    const notTodayStyle = "w-[104%] left-[-3px]";
-    const firstDaySeparator = "left-[-18px]";
 
     return (
         <>
@@ -99,25 +93,24 @@ export const ActualTimerIndicator = ({
                 <div
                     style={{
                         top: `${positionBasedOnSeconds - 2}px`,
+                        left: isFirstDay ? "-18px" : "-3px",
+                        width: isFirstDay ? "102%" : "104%",
                     }}
-                    className={cn(
-                        "absolute right-0 z-100",
-                        isFirstDay ? todayStyle : notTodayStyle,
-                        separatorContainer,
-                    )}
+                    className={cn("timeIndicator_today", separatorContainer)}
                 >
-                    <div className="relative">
+                    <div style={{ position: "relative" }}>
                         <Separator
-                            style={{ height: "4px" }}
-                            className={tailwindColor}
+                            style={{ height: "4px", backgroundColor: color }}
                         />
 
                         {isFirstDay && (
-                            <div className="absolute left-0 top-[-3px] cursor-pointer">
+                            <div className="today_first_day">
                                 <Separator
                                     orientation="vertical"
-                                    style={{ height: "11px" }}
-                                    className={tailwindColor}
+                                    style={{
+                                        height: "11px",
+                                        backgroundColor: color,
+                                    }}
                                 />
                             </div>
                         )}
@@ -132,45 +125,22 @@ export const ActualTimerIndicator = ({
                 <div
                     style={{
                         top: `${positionBasedOnSeconds - 1}px`,
+                        left: isFirstDay ? "-18px" : "-9px",
+                        width: separatorContainer,
                     }}
-                    className={cn(
-                        "absolute right-0 z-100",
-                        isFirstDay ? firstDaySeparator : "left-[-9px]",
-                        separatorContainer,
-                    )}
+                    className={cn("timeIndicator_today")}
                 >
                     <Separator
                         style={{
                             height: "2px",
+                            backgroundColor: color,
                         }}
-                        className={tailwindColor}
                     />
 
                     <FirstDaySlot
                         isRendered={isFirstDay}
                         dateToRender={dateToRender}
                     />
-                </div>
-            )}
-        </>
-    );
-};
-
-interface FirstDaySlotProps {
-    isRendered: boolean;
-    dateToRender: string;
-}
-
-const FirstDaySlot = ({ isRendered, dateToRender }: FirstDaySlotProps) => {
-    const constraintToRenderTime = isRendered && dateToRender;
-
-    return (
-        <>
-            {constraintToRenderTime && (
-                <div className="absolute left-[-42px] top-[-8px] z-50">
-                    <span>
-                        <strong>{dateToRender}</strong>
-                    </span>
                 </div>
             )}
         </>

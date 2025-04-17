@@ -525,6 +525,27 @@
   align-content: center;
 }
 
+/* TimeIndicator */
+.timeIndicator_today {
+  position: absolute;
+  right: 0;
+  z-index: 100;
+}
+
+.today_first_day {
+  position: absolute;
+  left: 0;
+  top: -3px;
+  cursor: pointer;
+}
+
+.first_day_slot {
+  position: absolute;
+  left: -42px;
+  top: -8px;
+  z-index: 50;
+}
+
 /* EventsTab */
 .dropdownLabelContent {
   display: flex;
@@ -550,6 +571,8 @@
   cursor: pointer;
   color: #6a7282;
 }
+
+
 
 /* Dragable */
 @property --progress {

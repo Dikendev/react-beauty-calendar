@@ -97,7 +97,6 @@ const EmptySlot = ({
                 slotPosition="first"
                 actualTimerIndicatorChildren={
                     <ActualTimerIndicator
-                        tailwindColor="bg-black"
                         isFirstDay={firstDay}
                         slotData={first}
                     />
@@ -121,7 +120,6 @@ const EmptySlot = ({
                 slotPosition="second"
                 actualTimerIndicatorChildren={
                     <ActualTimerIndicator
-                        tailwindColor="bg-black"
                         isFirstDay={firstDay}
                         slotData={second}
                     />
@@ -144,7 +142,6 @@ const EmptySlot = ({
                 slotPosition="third"
                 actualTimerIndicatorChildren={
                     <ActualTimerIndicator
-                        tailwindColor="bg-black"
                         isFirstDay={firstDay}
                         slotData={third}
                     />
@@ -167,7 +164,6 @@ const EmptySlot = ({
                 slotPosition="fourth"
                 actualTimerIndicatorChildren={
                     <ActualTimerIndicator
-                        tailwindColor="bg-black"
                         isFirstDay={firstDay}
                         slotData={fourth}
                     />
