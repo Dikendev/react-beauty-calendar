@@ -32,10 +32,13 @@ export const ActualTimerIndicator = ({
     const [dateToRender, setDateToRender] = useState<string>("");
 
     const isToday = useMemo(() => {
-        const today = new Date();
-        const day = today.getDay();
-        const slotDay = new Date(slotData.key).getDay();
-        return slotDay === day;
+        const now = new Date();
+        const slotKey = new Date(slotData.key);
+
+        return (
+            slotKey.getDay() === now.getDay() &&
+            slotKey.getDate() === now.getDate()
+        );
     }, [slotData.key]);
 
     useEffect(() => {
