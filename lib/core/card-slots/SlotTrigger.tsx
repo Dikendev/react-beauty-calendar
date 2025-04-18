@@ -229,6 +229,14 @@ const SlotTrigger = ({
         setRenderEvent(true);
     };
 
+    useEffect(() => {
+        if (isDragging) {
+            document.body.style.cursor = "ns-resize";
+        } else {
+            document.body.style.cursor = "default";
+        }
+    }, [isDragging]);
+
     // TODO: Improve this, are calling so many times.
     useEffect(() => {
         updateHeightStyle(finishMock, startMock);
@@ -284,8 +292,6 @@ const SlotTrigger = ({
                 onMouseLeave={handleOnMouseLeave}
                 onFocus={() => {}}
             >
-                {actualTimerIndicatorChildren}
-
                 {((!children && showTimeInfo && !renderEvent) ||
                     isDraggingOnClick) && (
                     <TimeInfo
@@ -299,6 +305,8 @@ const SlotTrigger = ({
                         }}
                     />
                 )}
+
+                {actualTimerIndicatorChildren}
 
                 {renderEvent && (
                     <div style={{ width: "100%" }}>

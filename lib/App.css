@@ -541,8 +541,8 @@
 
 .first_day_slot {
   position: absolute;
-  left: -42px;
-  top: -8px;
+  left: 0;
+  top: -23px;
   z-index: 50;
 }
 
@@ -571,8 +571,6 @@
   cursor: pointer;
   color: #6a7282;
 }
-
-
 
 /* Dragable */
 @property --progress {
