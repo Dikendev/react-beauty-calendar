@@ -3,7 +3,6 @@ import {
     useCallback,
     useEffect,
     useMemo,
-    useRef,
     useState,
 } from "react";
 
@@ -37,9 +36,8 @@ const TimeInfo = ({
     slotData,
     events: { onClick, renderPreviewCard, resetPrevView },
 }: TimeInfoProps) => {
-    const { startAt } = useNewEventStore((state) => state);
-
-    const [counter, setCounter] = useState<number>(0);
+    const startAt = useNewEventStore((state) => state.startAt);
+    const bookingViewType = useGlobalStore((state) => state.bookingViewType);
 
     const [finishAt, setFinishAt] = useState<string>(
         DateUtils.addMinutesToHour(slotData.time, 15),
@@ -47,16 +45,9 @@ const TimeInfo = ({
 
     const [isDraggingOnClick, setIsDraggingOnClick] = useState<boolean>(false);
 
-    const mouseClickPressTimeRef = useRef<NodeJS.Timeout>(null);
-
-    useEffect(() => {
-        if (counter === 0) return;
-
-        if (counter > 20) {
-            setIsDraggingOnClick(true);
-            renderPreviewCard();
-        }
-    }, [counter, renderPreviewCard]);
+    const withChildrenStyle: CSSProperties = isDraggingOnClick
+        ? { backgroundColor: "white", border: "none" }
+        : {};
 
     const startMock = useMemo((): Date => {
         return DateUtils.convertStringTimeToDateFormat(startAt);
@@ -104,32 +95,13 @@ const TimeInfo = ({
     }, [finishMock, startMock]);
 
     const startCounter = () => {
-        if (mouseClickPressTimeRef.current) return;
-
-        mouseClickPressTimeRef.current = setInterval(() => {
-            setCounter((prev) => prev + 1);
-        }, 10);
+        setIsDraggingOnClick(true);
+        renderPreviewCard();
     };
 
-    const stopCounter = useCallback(() => {
-        if (!mouseClickPressTimeRef.current) return;
-
-        setCounter(0);
-        clearInterval(mouseClickPressTimeRef.current);
-        mouseClickPressTimeRef.current = null;
-    }, []);
-
     const mouseUp = () => {
-        if (counter < 20) {
-            onClick();
-            stopCounter();
-            resetLocalStates();
-        } else {
-            stopCounter();
-
-            onClick(finishAt);
-            resetLocalStates();
-        }
+        onClick(finishAt);
+        resetLocalStates();
     };
 
     const addTime = async (dateTime: Date): Promise<void> => {
@@ -153,10 +125,6 @@ const TimeInfo = ({
         onSubTime: subTime,
     });
 
-    useEffect(() => {
-        updateHeightStyle(finishMock, startMock);
-    }, [finishMock, startMock, updateHeightStyle]);
-
     const onUnmountCardContent = () => {
         resetLocalStates();
     };
@@ -174,16 +142,14 @@ const TimeInfo = ({
     }, [resetFinishAt, resetHeightStyle, resetPrevView, resetState]);
 
     useEffect(() => {
+        updateHeightStyle(finishMock, startMock);
+    }, [finishMock, startMock, updateHeightStyle]);
+
+    useEffect(() => {
         return () => {
-            stopCounter();
             resetLocalStates();
         };
     }, []);
-
-    const bookingViewType = useGlobalStore((state) => state.bookingViewType);
-    const withChildrenStyle: CSSProperties = isDraggingOnClick
-        ? { backgroundColor: "white", border: "none" }
-        : {};
 
     return (
         <div
