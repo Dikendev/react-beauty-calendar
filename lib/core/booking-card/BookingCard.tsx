@@ -28,7 +28,9 @@ const BookingCard = ({
     const { day, hour } = slotData;
     const { bookingViewType } = useGlobalStore();
 
-    const updateIsDragging = useDragStore((state) => state.updateIsDragging);
+    const { updateIsDragging, isDragging: isDraggingStore } = useDragStore(
+        (state) => state,
+    );
 
     const { attributes, listeners, setNodeRef, isDragging, transform } =
         useDraggable({
@@ -70,6 +72,7 @@ const BookingCard = ({
         height: heightStyleTransformer,
         position: "relative",
         zIndex: 50,
+        cursor: isDraggingStore ? "ns-resize" : "pointer",
         ...style,
         ...handleStyleCardContent,
     };
@@ -91,49 +94,48 @@ const BookingCard = ({
         return { backgroundColor: "#000456c0" };
     };
 
-    return (
-        <>
-            {!isDragging && (
+    if (!isDragging) {
+        return (
+            <div
+                key={booking.id}
+                ref={setNodeRef}
+                className={cn("cardContent_render", customClasses)}
+                style={{ ...style, ...cardContextStyle }}
+                {...listeners}
+                {...attributes}
+            >
                 <div
-                    key={booking.id}
-                    ref={setNodeRef}
-                    className={cn("cardContent_render", customClasses)}
-                    style={{ ...style, ...cardContextStyle }}
-                    {...listeners}
-                    {...attributes}
+                    className="relative w-full h-full"
+                    key={`${day}-${hour}`}
+                    style={cardTodayCustomStyle(
+                        booking,
+                        new Date(day.split(":")[1]),
+                    )}
+                    onPointerUp={onClick}
                 >
                     <div
-                        className="relative w-full h-full"
-                        key={`${day}-${hour}`}
-                        style={cardTodayCustomStyle(
-                            booking,
-                            new Date(day.split(":")[1]),
+                        className={cn(
+                            "flex flex-col h-full text-white pl-2 lg:pl-2 justify-start items-start",
                         )}
-                        onPointerUp={onClick}
                     >
-                        <div
-                            className={cn(
-                                "flex flex-col h-full text-white pl-2 lg:pl-2 justify-start items-start",
-                            )}
-                        >
-                            <p className="text-[0.8rem] h-[0.8rem]">
-                                {`${DateUtils.dateAndHourDateToString(booking.startAt)} - ${DateUtils.dateAndHourDateToString(
-                                    booking.finishAt,
-                                )}`}
-                            </p>
-                            <span className="flex flex-row items-center justify-center" />
-                        </div>
+                        <p className="text-[0.8rem] h-[0.8rem]">
+                            {`${DateUtils.dateAndHourDateToString(booking.startAt)} - ${DateUtils.dateAndHourDateToString(
+                                booking.finishAt,
+                            )}`}
+                        </p>
+                        <span className="flex flex-row items-center justify-center" />
                     </div>
                 </div>
-            )}
-            {isDragging && (
-                <CardOverlay
-                    bookingInit={booking}
-                    slotData={slotData}
-                    heightStyle={String(heightStyleTransformer)}
-                />
-            )}
-        </>
+            </div>
+        );
+    }
+
+    return (
+        <CardOverlay
+            bookingInit={booking}
+            slotData={slotData}
+            heightStyle={String(heightStyleTransformer)}
+        />
     );
 };
 
