@@ -354,7 +354,6 @@
   padding-bottom: 0;
 } 
 
-
 /* slots */
 
 .slot {
@@ -364,6 +363,8 @@
   width: 100%;
   padding: 0;
   position: relative;
+  border-bottom: none;
+  border-top: none;
 }
 
 .slot_disabled {
@@ -465,10 +466,6 @@
 
 .hovering_slotTrigger_core:hover {
   background-color: rgba(255, 255, 255, 0.575);
-}
-
-.slotTrigger_core_border {
-  border-bottom: 0px solid;
 }
 
 /* CardContent */

@@ -39,11 +39,31 @@ const mockUser: User = {
 const mockBooking: Booking[] = [
     {
         id: "1",
+        startAt: new Date("2025-03-16T11:00:00Z"),
+        finishAt: new Date("2025-03-16T11:15:00Z"),
+    },
+    {
+        id: "2",
+        startAt: new Date("2025-03-15T11:00:00Z"),
+        finishAt: new Date("2025-03-15T12:00:00Z"),
+    },
+    {
+        id: "3",
+        startAt: new Date("2025-03-17T11:00:00Z"),
+        finishAt: new Date("2025-03-17T11:30:00Z"),
+    },
+    {
+        id: "4",
+        startAt: new Date("2025-03-14T11:00:00Z"),
+        finishAt: new Date("2025-03-14T11:45:00Z"),
+    },
+    {
+        id: "5",
         startAt: new Date("2025-03-23T13:00:00Z"),
         finishAt: new Date("2025-03-23T13:30:00Z"),
     },
     {
-        id: "2",
+        id: "6",
         startAt: new Date("2025-03-23T14:30:00Z"),
         finishAt: new Date("2025-03-23T15:30:00Z"),
     },

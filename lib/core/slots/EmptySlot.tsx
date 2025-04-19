@@ -116,7 +116,6 @@ const EmptySlot = ({
                 events={{
                     onMouseEnterEvent: () => "second",
                 }}
-                border
                 slotPosition="second"
                 actualTimerIndicatorChildren={
                     <ActualTimerIndicator

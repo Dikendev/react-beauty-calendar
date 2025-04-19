@@ -39,7 +39,6 @@ interface SlotTriggerProps {
     slotPosition: TimesBlock;
     disabledCss: string;
     events: SlotEvents;
-    border?: boolean;
     children?: ReactNode;
     actualTimerIndicatorChildren?: ReactNode;
     ref: Ref<SlotTriggerForwardRef>;
@@ -56,7 +55,6 @@ const SlotTrigger = ({
     slotPosition,
     disabledCss,
     events,
-    border,
     actualTimerIndicatorChildren,
     children,
     ref,
@@ -196,8 +194,6 @@ const SlotTrigger = ({
             ? disabledCss
             : "hovering_slotTrigger_core";
 
-    const borderStyle = border ? "slotTrigger_core_border" : "";
-
     const renderPreviewCard = useCallback(() => {
         const { time, key } = slotData;
 
@@ -280,12 +276,15 @@ const SlotTrigger = ({
             <div
                 ref={slotData.ref}
                 key={slotData.key}
-                style={slotData.style}
+                style={{
+                    borderBottom:
+                        slotPosition === "fourth" ? "1px solid #8080807a" : "",
+                    ...slotData.style,
+                }}
                 className={cn(
                     "slotTrigger_core",
                     bookingViewType === BOOKING_VIEW_TYPE.DAY &&
                         "slotTrigger_core_day",
-                    borderStyle,
                     activeStyle,
                 )}
                 onMouseOver={onMouseEnterEvent}

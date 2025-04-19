@@ -3,6 +3,7 @@ import type { ResizeCallbackData, ResizeHandle } from "react-resizable";
 import type { Booking } from "../../@types";
 import { DateUtils } from "../../utils/date-utils";
 import { INITIAL_HEIGHT, MIN_DIFF_TIME_THRESHOLD } from "./Card";
+import { TIME_INTERVAL_IN_MINUTES } from "./service/StartAt";
 
 interface useResizableCardHookProps {
     booking: Booking;
@@ -12,7 +13,7 @@ interface useResizableCardHookProps {
     starter?: boolean;
 }
 
-const INCREASER = 0.2;
+const BASE_VALUE = 1.95;
 
 const useResizableCardHook = ({
     booking,
@@ -29,35 +30,20 @@ const useResizableCardHook = ({
         width: 600,
     });
 
-    // For some reason i need to start with the number 2, find out a better way to do this.
+    const calculateHeight = () => {
+        const diffInMinutes = DateUtils.timeDiffInSeconds(
+            booking.finishAt,
+            booking.startAt,
+        );
 
-    // find out why 7.3;
-    // maybe related to the height of the time slot.
-    // study about this.
+        const increment = 2;
+        const blocks = Math.ceil(diffInMinutes / TIME_INTERVAL_IN_MINUTES);
+        return BASE_VALUE + (blocks - 1) * increment;
+    };
+
     const [heightStyle, setHeightStyle] = useState<number>(
-        starter
-            ? Math.round(
-                  DateUtils.timeDiffInSeconds(
-                      booking.finishAt,
-                      booking.startAt,
-                  ) / 7.5,
-              )
-            : 2,
+        starter ? calculateHeight() : BASE_VALUE,
     );
-
-    const dividerByEight = (value: number): boolean => {
-        return value % 8 === 0;
-    };
-
-    const isGreaterThen18 = (value: number): boolean => {
-        return value >= 18;
-    };
-
-    const greatherAndOdd = (value: number): boolean => {
-        const greaterThan8 = value >= 8 && value <= 10;
-        const isOdd = value % 2 === 0;
-        return greaterThan8 && dividerByEight(value) && isOdd;
-    };
 
     const addTime = async (
         handle: ResizeHandle[] = ["se", "s"],
@@ -70,13 +56,7 @@ const useResizableCardHook = ({
             const newFinish = newFinishDate(booking.finishAt, "add");
 
             setHeightStyle((prev) => {
-                const sum = Math.round(prev) + 2;
-
-                if (greatherAndOdd(sum) || isGreaterThen18(sum)) {
-                    return sum + INCREASER;
-                }
-
-                return sum;
+                return Math.round(prev) + BASE_VALUE;
             });
 
             // call my function
@@ -94,11 +74,9 @@ const useResizableCardHook = ({
         if (timeDiff === MIN_DIFF_TIME_THRESHOLD) return;
 
         setHeightStyle((prev) => {
-            if (prev > 10) return prev - 2;
-            return prev - 2;
+            return prev - BASE_VALUE;
         });
 
-        // call my function
         if (onSubTime) onSubTime(newFinish);
     };
 
@@ -157,7 +135,7 @@ const useResizableCardHook = ({
 
     const updateHeightStyle = (finishMock: Date, startMock: Date) => {
         setHeightStyle(
-            DateUtils.timeDiffInSeconds(finishMock, startMock) / 7.3,
+            DateUtils.timeDiffInSeconds(finishMock, startMock) / 7.5,
         );
     };
 
