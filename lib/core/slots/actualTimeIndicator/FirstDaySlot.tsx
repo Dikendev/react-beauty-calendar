@@ -1,21 +1,16 @@
+import { Badge } from "../../../components/ui/Badge";
+
 interface FirstDaySlotProps {
-    isRendered: boolean;
     dateToRender: string;
 }
 
-const FirstDaySlot = ({ isRendered, dateToRender }: FirstDaySlotProps) => {
-    const constraintToRenderTime = isRendered && dateToRender;
-
+const FirstDaySlot = ({ dateToRender }: FirstDaySlotProps) => {
     return (
-        <>
-            {constraintToRenderTime && (
-                <div className="first_day_slot">
-                    <span>
-                        <strong>{dateToRender}</strong>
-                    </span>
-                </div>
-            )}
-        </>
+        <div className="first_day_slot">
+            <span>
+                <Badge>{dateToRender}</Badge>
+            </span>
+        </div>
     );
 };
 

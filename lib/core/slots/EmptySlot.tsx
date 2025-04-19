@@ -1,4 +1,4 @@
-import { type CSSProperties, useCallback, useMemo } from "react";
+import { type CSSProperties, useCallback } from "react";
 import type { Booking } from "../../@types";
 import type { BookingDateAndTime } from "../../@types/booking";
 
@@ -47,22 +47,22 @@ const EmptySlot = ({
 }: EmptySlotProps) => {
     const { setEmptySlotNode, emptySlotNodes } = useEmptySlotStore();
 
-    const firstSlot = useCardContentRender({
+    const firstSlot = CardContentRender({
         bookings,
         blockTimeString: "00",
         slotData: dayHour,
     });
-    const secondSlot = useCardContentRender({
+    const secondSlot = CardContentRender({
         bookings,
         blockTimeString: "15",
         slotData: dayHour,
     });
-    const thirdSlot = useCardContentRender({
+    const thirdSlot = CardContentRender({
         bookings,
         blockTimeString: "30",
         slotData: dayHour,
     });
-    const fourthSlot = useCardContentRender({
+    const fourthSlot = CardContentRender({
         bookings,
         blockTimeString: "45",
         slotData: dayHour,
@@ -175,31 +175,29 @@ const EmptySlot = ({
     );
 };
 
-interface useCardContentRender {
+interface CardContentRenderProps {
     bookings?: Booking[];
     blockTimeString: string;
     slotData?: BookingDateAndTime;
 }
 
-const useCardContentRender = ({
+const CardContentRender = ({
     bookings,
     blockTimeString,
     slotData,
-}: useCardContentRender) => {
-    return useMemo(() => {
-        if (bookings?.length && slotData?.day && slotData?.hour) {
-            const booking = bookings.find((booking) => {
-                const actualSlotTimeString = DateUtils.dateAndHourDateToString(
-                    new Date(booking.startAt),
-                );
+}: CardContentRenderProps) => {
+    if (bookings?.length && slotData?.day && slotData?.hour) {
+        const booking = bookings.find((booking) => {
+            const actualSlotTimeString = DateUtils.dateAndHourDateToString(
+                new Date(booking.startAt),
+            );
 
-                return actualSlotTimeString.split(":")[1] === blockTimeString;
-            });
+            return actualSlotTimeString.split(":")[1] === blockTimeString;
+        });
 
-            if (booking) return <Card booking={booking} slotData={slotData} />;
-        }
-        return null;
-    }, [blockTimeString, bookings, slotData]);
+        if (booking) return <Card booking={booking} slotData={slotData} />;
+    }
+    return null;
 };
 
 export default EmptySlot;

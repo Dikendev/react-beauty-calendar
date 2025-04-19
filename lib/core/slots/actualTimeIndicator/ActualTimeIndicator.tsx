@@ -9,7 +9,7 @@ import { Separator } from "../../../components/ui/Separator";
 import { BOOKING_VIEW_TYPE } from "../../../constants";
 import type { BlocksTimeStructure } from "../EmptySlot";
 
-import FirstDaySlot from "./FIrstDaySlot";
+import FirstDaySlot from "./FirstDaySlot";
 import {
     TimeEquality,
     TimeIndicatorPosition,
@@ -28,8 +28,9 @@ export const ActualTimerIndicator = ({
 }: ActualTimerIndicatorProps) => {
     const { timesRendered, bookingViewType } = useGlobalStore();
 
-    const [renderTimeIndicator, setTimeIndicator] = useState<boolean>(false);
     const [dateToRender, setDateToRender] = useState<string>("");
+    const [showTime, setShowTime] = useState<boolean>(false);
+    const [renderTimeIndicator, setTimeIndicator] = useState<boolean>(false);
 
     const isToday = useMemo(() => {
         const now = new Date();
@@ -41,6 +42,52 @@ export const ActualTimerIndicator = ({
         );
     }, [slotData.key]);
 
+    const updateDateToRender = (dateToRender: string) => {
+        setDateToRender(dateToRender);
+    };
+
+    const showTimeInfo = (): void => {
+        setShowTime(true);
+    };
+
+    const hideTimeInfo = (): void => {
+        setShowTime(false);
+    };
+
+    const positionBasedOnSeconds = useMemo((): number => {
+        const timeIndicatorPosition = new TimeIndicatorPosition();
+
+        return timeIndicatorPosition.positionBasedOnSeconds(
+            slotData.time,
+            dateToRender,
+            timesRendered,
+        );
+    }, [slotData.time, dateToRender, timesRendered]);
+
+    const separatorContainer = useMemo((): string => {
+        if (isFirstDay) {
+            return bookingViewType === BOOKING_VIEW_TYPE.DAY ? "101%" : "100vw";
+        }
+
+        return bookingViewType === BOOKING_VIEW_TYPE.DAY ? "102%" : "104%";
+    }, [isFirstDay, bookingViewType]);
+
+    const conditionalStyle = useMemo(() => {
+        if (isToday) {
+            return {
+                top: `${positionBasedOnSeconds - 2}px`,
+                left: isFirstDay ? "-18px" : "-3px",
+                width: isFirstDay ? "102%" : "104%",
+            };
+        }
+
+        return {
+            top: `${positionBasedOnSeconds - 1}px`,
+            left: isFirstDay ? "-18px" : "-9px",
+            width: separatorContainer,
+        };
+    }, [isToday, isFirstDay, separatorContainer, positionBasedOnSeconds]);
+
     useEffect(() => {
         const slotDataTime = slotData.time;
         const timeEquality = new TimeEquality();
@@ -51,7 +98,7 @@ export const ActualTimerIndicator = ({
             const nowFullTime = timeEquality.normalizeDateNow(dateNow);
             const actualTime = DateUtils.dateAndHourDateToString(dateNow);
 
-            setDateToRender(actualTime);
+            if (dateToRender !== actualTime) updateDateToRender(actualTime);
 
             if (nowFullTime === slotDataTime) {
                 setTimeIndicator(true);
@@ -69,84 +116,38 @@ export const ActualTimerIndicator = ({
         return () => {
             return clearInterval(intervalId);
         };
-    }, [slotData.time]);
-
-    const positionBasedOnSeconds = useMemo((): number => {
-        const timeIndicatorPosition = new TimeIndicatorPosition();
-
-        return timeIndicatorPosition.positionBasedOnSeconds(
-            slotData.time,
-            dateToRender,
-            timesRendered,
-        );
-    }, [slotData.time, dateToRender, timesRendered]);
-
-    const separatorContainer = useMemo((): string => {
-        if (isFirstDay)
-            return bookingViewType === BOOKING_VIEW_TYPE.DAY ? "101%" : "100vw";
-
-        return bookingViewType === BOOKING_VIEW_TYPE.DAY ? "102%" : "104%";
-    }, [isFirstDay, bookingViewType]);
+    }, [slotData.time, dateToRender]);
 
     if (!renderTimeIndicator) return;
 
     return (
-        <>
-            {isToday ? (
-                <div
-                    style={{
-                        top: `${positionBasedOnSeconds - 2}px`,
-                        left: isFirstDay ? "-18px" : "-3px",
-                        width: isFirstDay ? "102%" : "104%",
-                    }}
-                    className={cn("timeIndicator_today", separatorContainer)}
-                >
-                    <div style={{ position: "relative" }}>
-                        <Separator
-                            style={{ height: "4px", backgroundColor: color }}
-                        />
+        <div
+            style={{ ...conditionalStyle }}
+            className={cn("timeIndicator_today", isToday && separatorContainer)}
+            onMouseEnter={showTimeInfo}
+            onMouseOut={hideTimeInfo}
+            onBlur={() => {}}
+        >
+            <Separator
+                style={{
+                    height: isToday ? "4px" : "2px",
+                    backgroundColor: color,
+                }}
+            />
 
-                        {isFirstDay && (
-                            <div className="today_first_day">
-                                <Separator
-                                    orientation="vertical"
-                                    style={{
-                                        height: "11px",
-                                        backgroundColor: color,
-                                    }}
-                                />
-                            </div>
-                        )}
-
-                        <FirstDaySlot
-                            isRendered={isFirstDay}
-                            dateToRender={dateToRender}
-                        />
-                    </div>
-                </div>
-            ) : (
-                <div
-                    style={{
-                        top: `${positionBasedOnSeconds - 1}px`,
-                        left: isFirstDay ? "-18px" : "-9px",
-                        width: separatorContainer,
-                    }}
-                    className={cn("timeIndicator_today")}
-                >
+            {isToday && isFirstDay && (
+                <div className="today_first_day">
                     <Separator
+                        orientation="vertical"
                         style={{
-                            height: "2px",
+                            height: "11px",
                             backgroundColor: color,
                         }}
                     />
-
-                    <FirstDaySlot
-                        isRendered={isFirstDay}
-                        dateToRender={dateToRender}
-                    />
                 </div>
             )}
-        </>
+            {showTime && <FirstDaySlot dateToRender={dateToRender} />}
+        </div>
     );
 };
 
