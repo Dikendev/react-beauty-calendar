@@ -2,11 +2,17 @@ import { Badge } from "../../../components/ui/Badge";
 
 interface FirstDaySlotProps {
     dateToRender: string;
+    isFirstDay: boolean;
 }
 
-const FirstDaySlot = ({ dateToRender }: FirstDaySlotProps) => {
+const FirstDaySlot = ({ dateToRender, isFirstDay }: FirstDaySlotProps) => {
     return (
-        <div className="first_day_slot">
+        <div
+            style={{
+                left: isFirstDay ? "19px" : "10px",
+            }}
+            className="first_day_slot"
+        >
             <span>
                 <Badge>{dateToRender}</Badge>
             </span>

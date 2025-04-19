@@ -146,7 +146,12 @@ export const ActualTimerIndicator = ({
                     />
                 </div>
             )}
-            {showTime && <FirstDaySlot dateToRender={dateToRender} />}
+            {showTime && (
+                <FirstDaySlot
+                    isFirstDay={isFirstDay}
+                    dateToRender={dateToRender}
+                />
+            )}
         </div>
     );
 };

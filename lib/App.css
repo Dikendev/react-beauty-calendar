@@ -540,7 +540,6 @@
 
 .first_day_slot {
   position: absolute;
-  left: 0;
   top: -23px;
   z-index: 50;
 }
