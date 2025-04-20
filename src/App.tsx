@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import type {
     Booking,
     BookingDateAndTime,
@@ -10,6 +11,8 @@ import { useCalendarInstance } from "../lib/main";
 import { mockBooking } from "../lib/mock/booking-mock";
 
 const App = () => {
+    const [bookings, setBookings] = useState<Booking[]>(mockBooking);
+
     const onChangeViewType = (bookingViewType: BookingViewType) => {
         console.log("on change view Type", bookingViewType);
     };
@@ -38,15 +41,31 @@ const App = () => {
         booking: Booking,
         overId: string,
         slotData: BookingDateAndTime,
+        newBooking: Booking,
     ) => {
         console.log("onCardDropCallback");
         console.log("booking", booking);
         console.log("overId", overId);
         console.log("slotData", slotData);
+        console.log("newBooking", newBooking);
+
+        setBookings((prevBookings) => {
+            const updatedBooking = prevBookings.map((localBooking) => {
+                if (localBooking.id === newBooking.id) {
+                    return {
+                        ...newBooking,
+                        finishAt: newBooking.finishAt,
+                        startAt: newBooking.startAt,
+                    };
+                }
+                return localBooking;
+            });
+            return [...updatedBooking];
+        });
     };
 
     const calendarInstance = useCalendarInstance({
-        bookings: mockBooking,
+        bookings: bookings,
         viewModes: ["day", "week"],
         onChangeViewType,
         onSlotClick,
@@ -57,6 +76,10 @@ const App = () => {
         onCardDropCallback,
         createBookingModal: <TabsContentCore />,
     });
+
+    useEffect(() => {
+        console.log("Booking updated", bookings);
+    }, [bookings]);
 
     return (
         <div className="h-[100vh]">

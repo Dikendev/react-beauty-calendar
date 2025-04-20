@@ -68,8 +68,9 @@ const bookingInfoStore: StateCreator<BookingInfoState> = (
                     if (
                         bookingStartDay === slotDay &&
                         booking.id === prevBooking.id
-                    )
+                    ) {
                         return booking;
+                    }
                     return prevBooking;
                 },
             );

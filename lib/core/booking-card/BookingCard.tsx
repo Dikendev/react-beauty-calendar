@@ -15,12 +15,14 @@ interface BookingCardProps {
     slotData: BookingDateAndTime;
     customClasses?: string;
     heightStyleTransformer?: string;
+    innerCard?: boolean;
     onClick?: () => void;
 }
 
 const BookingCard = ({
     booking,
     slotData,
+    innerCard,
     onClick,
     heightStyleTransformer,
     customClasses,
@@ -100,7 +102,11 @@ const BookingCard = ({
                 key={booking.id}
                 ref={setNodeRef}
                 className={cn("cardContent_render", customClasses)}
-                style={{ ...style, ...cardContextStyle }}
+                style={{
+                    ...style,
+                    ...cardContextStyle,
+                    width: innerCard ? "97%" : "100%",
+                }}
                 {...listeners}
                 {...attributes}
             >

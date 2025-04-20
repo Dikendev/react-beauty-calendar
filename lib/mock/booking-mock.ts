@@ -49,8 +49,8 @@ const mockBooking: Booking[] = [
     },
     {
         id: "3",
-        startAt: new Date("2025-03-17T11:00:00Z"),
-        finishAt: new Date("2025-03-17T11:30:00Z"),
+        startAt: new Date("2025-03-15T11:30:00Z"),
+        finishAt: new Date("2025-03-15T12:15:00Z"),
     },
     {
         id: "4",

@@ -475,18 +475,24 @@
   top: 0;
 }
 
+.inner_cards_parent {
+  display: flex;
+  justify-content: end;
+}
+
 .cardContent_render {
-  border-color: rgb(255, 89, 6);
+  border: 1px solid white;
+  border-color: rgb(0 127 255);
   border-left-width: thick;
   border-radius: 0.25rem;
   overflow: hidden;
 }
 
 .cardContent_render:hover {
-  border-style: inset;
   border-top: 1px solid rgb(255, 89, 6);
   border-right: 1px solid rgb(255, 89, 6);
   border-bottom: 1px solid rgb(255, 89, 6);
+  border-left: 5px solid rgb(255, 89, 6);
   /* background-color: white; */
 }
 

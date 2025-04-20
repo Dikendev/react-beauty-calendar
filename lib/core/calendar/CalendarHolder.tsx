@@ -73,14 +73,15 @@ const CalendarHolder = () => {
         return newDay;
     };
 
-    const bookingTimeRange = (booking: Booking, overId: string) => {
+    const bookingTimeRange = (booking: Booking, overId: string): Booking => {
         const newStartAt = new Date(overId);
         const timeDiff = getTimeDiff(booking.startAt, booking.finishAt);
         const newFinishDate = newFinishAt(overId, timeDiff);
 
         return {
-            newStartAt,
-            newFinishDate,
+            id: booking.id,
+            startAt: newStartAt,
+            finishAt: newFinishDate,
         };
     };
 
@@ -90,12 +91,13 @@ const CalendarHolder = () => {
         slotData: BookingDateAndTime,
     ) => {
         try {
-            const { newStartAt, newFinishDate } = bookingTimeRange(
-                booking,
-                overId,
-            );
-            optimisticCardUpdate(booking, newStartAt, newFinishDate, slotData);
-            await onCardDropCallback(booking, overId, slotData);
+            const { startAt, finishAt } = bookingTimeRange(booking, overId);
+            optimisticCardUpdate(booking, startAt, finishAt, slotData);
+            await onCardDropCallback(booking, overId, slotData, {
+                id: booking.id,
+                startAt,
+                finishAt,
+            });
         } catch (error) {
             // TODO: implement the rollback if the update return error.
             console.warn(error);

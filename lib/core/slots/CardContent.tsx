@@ -3,6 +3,7 @@ import {
     type Ref,
     type SyntheticEvent,
     useEffect,
+    useMemo,
     useState,
 } from "react";
 
@@ -23,6 +24,7 @@ import {
 } from "react-resizable";
 import { BOOKING_VIEW_TYPE } from "../../constants";
 import useDragStore from "../../context/drag/dragStore";
+import useBookingModal from "../../hooks/use-booking-model";
 
 interface ResizableState {
     height: number;
@@ -75,6 +77,8 @@ const CardContent = ({
 
     const updateIsDragging = useDragStore((state) => state.updateIsDragging);
 
+    const { bookings } = useBookingModal();
+
     const handleStyleCardContent: CSSProperties =
         bookingViewType === BOOKING_VIEW_TYPE.DAY
             ? { width: "99%" }
@@ -110,6 +114,25 @@ const CardContent = ({
         }
     };
 
+    const innerCardsHandle = useMemo(() => {
+        const startAt = new Date(bookingInit.startAt);
+
+        const onlyBookingsAtSameDay = bookings.filter((booking) => {
+            const day = new Date(booking.startAt).getDate();
+            const startAtDay = startAt.getDate();
+            return day === startAtDay && booking.id !== bookingInit.id;
+        });
+
+        return (
+            onlyBookingsAtSameDay.length > 0 &&
+            onlyBookingsAtSameDay.some((booking) => {
+                const isGreaterThan = startAt > new Date(booking.startAt);
+                const isLessThan = startAt < new Date(booking.finishAt);
+                return isGreaterThan && isLessThan;
+            })
+        );
+    }, [bookings, bookingInit.startAt]);
+
     if (!open && !bookingInit.finishAt) return null;
 
     if (resizableParam?.state?.height) {
@@ -121,6 +144,7 @@ const CardContent = ({
                     "cardContent_resizable",
                     resizableParam.customClass,
                     customClass,
+                    innerCardsHandle && "inner_cards_parent",
                 )}
                 height={state?.height}
                 width={state?.width}
@@ -149,6 +173,7 @@ const CardContent = ({
                         booking={bookingInit}
                         slotData={slotData}
                         onClick={onClick}
+                        innerCard={innerCardsHandle}
                     />
                 </div>
             </Resizable>

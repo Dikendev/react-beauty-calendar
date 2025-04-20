@@ -39,6 +39,7 @@ export interface RootEventsProps {
         booking: Booking,
         overId: string,
         slotData: BookingDateAndTime,
+        newBooking: Booking,
     ) => Promise<void>;
     onDayChange: (date: Date[], actionType: ActionType) => void;
     onModalClose: () => void;
