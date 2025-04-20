@@ -2,7 +2,6 @@ import { type SyntheticEvent, useState } from "react";
 import type { ResizeCallbackData, ResizeHandle } from "react-resizable";
 import type { Booking } from "../../@types";
 import { DateUtils } from "../../utils/date-utils";
-import { INITIAL_HEIGHT, MIN_DIFF_TIME_THRESHOLD } from "./Card";
 import { TIME_INTERVAL_IN_MINUTES } from "./service/StartAt";
 
 interface useResizableCardHookProps {
@@ -13,7 +12,9 @@ interface useResizableCardHookProps {
     starter?: boolean;
 }
 
-const BASE_VALUE = 1.95;
+export const INITIAL_HEIGHT = 600;
+export const MIN_DIFF_TIME_THRESHOLD = 15;
+const BASE_VALUE = 1.98;
 
 const useResizableCardHook = ({
     booking,
@@ -30,19 +31,17 @@ const useResizableCardHook = ({
         width: 600,
     });
 
-    const calculateHeight = () => {
-        const diffInMinutes = DateUtils.timeDiffInSeconds(
-            booking.finishAt,
-            booking.startAt,
-        );
-
+    const calculateHeight = (finish: Date, start: Date) => {
+        const diffInMinutes = DateUtils.timeDiffInSeconds(finish, start);
         const increment = 2;
         const blocks = Math.ceil(diffInMinutes / TIME_INTERVAL_IN_MINUTES);
         return BASE_VALUE + (blocks - 1) * increment;
     };
 
     const [heightStyle, setHeightStyle] = useState<number>(
-        starter ? calculateHeight() : BASE_VALUE,
+        starter
+            ? calculateHeight(booking.finishAt, booking.startAt)
+            : BASE_VALUE,
     );
 
     const addTime = async (
@@ -134,9 +133,7 @@ const useResizableCardHook = ({
     };
 
     const updateHeightStyle = (finishMock: Date, startMock: Date) => {
-        setHeightStyle(
-            DateUtils.timeDiffInSeconds(finishMock, startMock) / 7.5,
-        );
+        setHeightStyle(calculateHeight(finishMock, startMock));
     };
 
     const resetState = () => {

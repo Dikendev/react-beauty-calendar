@@ -78,22 +78,11 @@ const SlotTrigger = ({
 
     const bookingViewType = useGlobalStore((state) => state.bookingViewType);
 
-    const startMock = useMemo(() => {
-        return DateUtils.convertStringTimeToDateFormat(startAt);
-    }, [startAt]);
-
-    const finishMock = useMemo(() => {
-        return DateUtils.convertStringTimeToDateFormat(finishAt);
-    }, [finishAt]);
-
     const bookingMock: Booking = useMemo(() => {
-        const newFinishAt = DateUtils.convertStringTimeToDateFormat(finishAt);
-        const newStartAt = DateUtils.convertStringTimeToDateFormat(startAt);
-
         return {
-            id: "3",
-            startAt: newStartAt,
-            finishAt: newFinishAt,
+            id: "dragging_booking_preview",
+            startAt: DateUtils.convertStringTimeToDateFormat(startAt),
+            finishAt: DateUtils.convertStringTimeToDateFormat(finishAt),
         };
     }, [finishAt, startAt]);
 
@@ -233,10 +222,25 @@ const SlotTrigger = ({
         }
     }, [isDragging]);
 
-    // TODO: Improve this, are calling so many times.
     useEffect(() => {
-        updateHeightStyle(finishMock, startMock);
-    }, [finishMock, startMock, updateHeightStyle]);
+        if (!finishAt || !startAt) return;
+
+        const finishAtConverted =
+            DateUtils.convertStringTimeToDateFormat(finishAt);
+        const startAtConverted =
+            DateUtils.convertStringTimeToDateFormat(startAt);
+
+        if (
+            Number.isNaN(finishAtConverted) ||
+            Number.isNaN(startAtConverted) ||
+            !(finishAtConverted instanceof Date) ||
+            !(startAtConverted instanceof Date)
+        ) {
+            return;
+        }
+
+        updateHeightStyle(finishAtConverted, startAtConverted);
+    }, [finishAt, startAt]);
 
     useEffect(() => {
         if (!renderEvent) return;

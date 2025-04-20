@@ -33,7 +33,7 @@ const CalendarHolder = () => {
     const { bookings } = useBookingModal();
 
     const activationConstraint = {
-        distance: 1,
+        distance: 5,
     };
 
     const { setBookingBulkData, optimisticCardUpdate } = useGlobalStore();

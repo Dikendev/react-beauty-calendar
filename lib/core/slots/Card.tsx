@@ -1,4 +1,4 @@
-import { type Ref, useImperativeHandle, useRef, useState } from "react";
+import { useRef, useState } from "react";
 
 import type { Booking, BookingDateAndTime } from "../../@types/booking";
 
@@ -15,21 +15,12 @@ import useResizableCardHook from "./useResizableCardHook";
 interface CardProps {
     booking: Booking;
     slotData: BookingDateAndTime;
-    ref?: Ref<CardRef>;
 }
 
-export const INITIAL_HEIGHT = 600;
-export const MIN_DIFF_TIME_THRESHOLD = 15;
-
-export interface CardRef {
-    bookingId: string;
-}
-
-const Card = ({ booking, slotData, ref }: CardProps) => {
+const Card = ({ booking, slotData }: CardProps) => {
     const { bookingViewType, optimisticCardUpdate } = useGlobalStore();
 
     const [bookingInit, setBookingInit] = useState<Booking>({ ...booking });
-
     const [isEditingOpen, setIsEditingOpen] = useState<boolean>(false);
 
     const sideOption = useRef<Side>("left");
@@ -140,14 +131,6 @@ const Card = ({ booking, slotData, ref }: CardProps) => {
     //     };
     //   }
     // };
-
-    useImperativeHandle(
-        ref,
-        () => ({
-            bookingId: booking.id,
-        }),
-        [booking.id],
-    );
 
     return (
         <BookingInfoOptions

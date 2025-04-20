@@ -42,57 +42,19 @@ const TimeInfo = ({
     const [finishAt, setFinishAt] = useState<string>(
         DateUtils.addMinutesToHour(slotData.time, 15),
     );
-
     const [isDraggingOnClick, setIsDraggingOnClick] = useState<boolean>(false);
 
     const withChildrenStyle: CSSProperties = isDraggingOnClick
         ? { backgroundColor: "white", border: "none" }
         : {};
 
-    const startMock = useMemo((): Date => {
-        return DateUtils.convertStringTimeToDateFormat(startAt);
-    }, [startAt]);
-
-    const finishMock = useMemo((): Date => {
-        return DateUtils.convertStringTimeToDateFormat(finishAt);
-    }, [finishAt]);
-
-    const bookingMock: Booking = useMemo(() => {
+    const bookingPreview: Booking = useMemo(() => {
         return {
-            id: "",
-            client: {
-                id: "",
-                profile: {
-                    id: "",
-                    name: "",
-                },
-                createdAt: new Date(),
-                updatedAt: new Date(),
-            },
-            user: {
-                id: "",
-                profile: {
-                    id: "",
-                    name: "",
-                },
-                roles: [],
-                proLaborePercent: 0,
-                updatedAt: new Date(),
-                createdAt: new Date(),
-            },
-            procedures: [],
-            payment: {
-                type: "CREDIT_CARD",
-                status: "PENDING",
-                total: 0,
-            },
-            observation: "",
-            startAt: startMock,
-            finishAt: finishMock,
-            createdAt: new Date(),
-            updatedAt: new Date(),
+            id: "dragging_booking_preview",
+            startAt: DateUtils.convertStringTimeToDateFormat(startAt),
+            finishAt: DateUtils.convertStringTimeToDateFormat(finishAt),
         };
-    }, [finishMock, startMock]);
+    }, [finishAt, startAt]);
 
     const startCounter = () => {
         setIsDraggingOnClick(true);
@@ -104,14 +66,6 @@ const TimeInfo = ({
         resetLocalStates();
     };
 
-    const addTime = async (dateTime: Date): Promise<void> => {
-        setFinishAt(DateUtils.dateTimeAsString(dateTime));
-    };
-
-    const subTime = async (dateTime: Date): Promise<void> => {
-        setFinishAt(DateUtils.dateTimeAsString(dateTime));
-    };
-
     const {
         state,
         resetState,
@@ -120,9 +74,13 @@ const TimeInfo = ({
         onResize,
         updateHeightStyle,
     } = useResizableCardHook({
-        booking: bookingMock,
-        onAddTime: addTime,
-        onSubTime: subTime,
+        booking: bookingPreview,
+        onAddTime: (dateTime) => {
+            setFinishAt(DateUtils.dateTimeAsString(dateTime));
+        },
+        onSubTime: (dateTime) => {
+            setFinishAt(DateUtils.dateTimeAsString(dateTime));
+        },
     });
 
     const onUnmountCardContent = () => {
@@ -142,8 +100,24 @@ const TimeInfo = ({
     }, [resetFinishAt, resetHeightStyle, resetPrevView, resetState]);
 
     useEffect(() => {
-        updateHeightStyle(finishMock, startMock);
-    }, [finishMock, startMock, updateHeightStyle]);
+        if (!finishAt || !startAt) return;
+
+        const finishAtConverted =
+            DateUtils.convertStringTimeToDateFormat(finishAt);
+        const startAtConverted =
+            DateUtils.convertStringTimeToDateFormat(startAt);
+
+        if (
+            Number.isNaN(finishAtConverted) ||
+            Number.isNaN(startAtConverted) ||
+            !(finishAtConverted instanceof Date) ||
+            !(startAtConverted instanceof Date)
+        ) {
+            return;
+        }
+
+        updateHeightStyle(finishAtConverted, startAtConverted);
+    }, [finishAt, startAt]);
 
     useEffect(() => {
         return () => {
@@ -177,7 +151,7 @@ const TimeInfo = ({
                 {isDraggingOnClick ? (
                     <div className="timeInfo_core_dragging">
                         <CardContent
-                            bookingInit={bookingMock}
+                            bookingInit={bookingPreview}
                             bookingViewType={bookingViewType}
                             slotData={{
                                 day: new Date().toISOString(),
