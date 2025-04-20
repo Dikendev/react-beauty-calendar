@@ -1,44 +1,11 @@
 import { DateUtils } from "../../../utils/date-utils";
-import type { HourWithActionsRef } from "../../calendar/HourWithActions";
 
 class TimeIndicatorPosition {
-    positionBasedOnSeconds = (
-        slotDataTime: string,
-        dateToRender: string,
-        timesRendered: Map<string, HourWithActionsRef>,
-    ): number => {
-        const [dateToRenderHour, dateToRenderMinutes] = dateToRender.split(":");
-
+    positionBasedOnSeconds = (dateToRender: string): number => {
+        const [, dateToRenderMinutes] = dateToRender.split(":");
         if (!dateToRender.length) return -3;
-
         const minutes = Number(dateToRenderMinutes);
-        this.toggleTimeVisibility(
-            slotDataTime,
-            dateToRenderHour,
-            minutes,
-            timesRendered,
-        );
-
         return this.normalizingMinutes(minutes);
-    };
-
-    toggleTimeVisibility = (
-        slotDataTime: string,
-        dateToRenderHour: string,
-        minutes: number,
-        timesRendered: Map<string, HourWithActionsRef>,
-    ): void => {
-        const timeRendered = timesRendered.get(slotDataTime);
-
-        if (timeRendered && this.isSameHour(dateToRenderHour, slotDataTime)) {
-            const initialMinute = this.isInitialMinute(minutes);
-
-            if (!initialMinute) {
-                timeRendered.setActivateHour();
-            } else {
-                timeRendered.setDisabledHour();
-            }
-        }
     };
 
     normalizingMinutes = (minutes: number): number => {

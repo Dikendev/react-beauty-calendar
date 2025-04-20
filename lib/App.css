@@ -161,14 +161,6 @@
   background-size: 200% 200%;
 }
 
-.disableVisibilityTime {
-  display: none;
-}
-
-.activateVisibilityTime {
-  display: block;
-}
-
 /* calendar holder */
 .calendarHolder {
   z-index: 100;

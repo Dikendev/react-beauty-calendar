@@ -17,7 +17,6 @@ export interface HourWithActionsProps {
 }
 
 export interface HourWithActionsRef {
-    setDisabledHour: () => void;
     setActivateHour: () => void;
 }
 
@@ -27,12 +26,6 @@ const HourWithActions = ({ hour, ref }: HourWithActionsProps) => {
     const hourOptionsLabel = "Hour options";
 
     const timeRef = useRef<HTMLSpanElement>(null);
-
-    const setDisabledHour = () => {
-        if (timeRef?.current) {
-            timeRef.current.setAttribute("class", "disableVisibilityTime");
-        }
-    };
 
     const hourWithActionsClasses =
         "border-solid hover:border-b-2 hover:border-b-purple-600 border-b-white";
@@ -47,7 +40,6 @@ const HourWithActions = ({ hour, ref }: HourWithActionsProps) => {
     };
 
     useImperativeHandle(ref, () => ({
-        setDisabledHour,
         setActivateHour,
     }));
 
