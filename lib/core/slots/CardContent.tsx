@@ -25,6 +25,7 @@ import {
 import { BOOKING_VIEW_TYPE } from "../../constants";
 import useDragStore from "../../context/drag/dragStore";
 import useBookingModal from "../../hooks/use-booking-model";
+import { InnerCardsHandle } from "./innerCardHandle/inner-card-handle";
 
 interface ResizableState {
     height: number;
@@ -114,24 +115,12 @@ const CardContent = ({
         }
     };
 
-    const innerCardsHandle = useMemo(() => {
-        const startAt = new Date(bookingInit.startAt);
-
-        const onlyBookingsAtSameDay = bookings.filter((booking) => {
-            const day = new Date(booking.startAt).getDate();
-            const startAtDay = startAt.getDate();
-            return day === startAtDay && booking.id !== bookingInit.id;
-        });
-
-        return (
-            onlyBookingsAtSameDay.length > 0 &&
-            onlyBookingsAtSameDay.some((booking) => {
-                const isGreaterThan = startAt > new Date(booking.startAt);
-                const isLessThan = startAt < new Date(booking.finishAt);
-                return isGreaterThan && isLessThan;
-            })
+    const layerCount = useMemo((): number => {
+        return InnerCardsHandle.calculateOverlappingBookings(
+            bookingInit,
+            bookings,
         );
-    }, [bookings, bookingInit.startAt]);
+    }, [bookingInit, bookings]);
 
     if (!open && !bookingInit.finishAt) return null;
 
@@ -144,7 +133,7 @@ const CardContent = ({
                     "cardContent_resizable",
                     resizableParam.customClass,
                     customClass,
-                    innerCardsHandle && "inner_cards_parent",
+                    layerCount > 0 && "inner_cards_parent",
                 )}
                 height={state?.height}
                 width={state?.width}
@@ -173,7 +162,7 @@ const CardContent = ({
                         booking={bookingInit}
                         slotData={slotData}
                         onClick={onClick}
-                        innerCard={innerCardsHandle}
+                        layerCount={layerCount}
                     />
                 </div>
             </Resizable>

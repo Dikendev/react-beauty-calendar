@@ -56,12 +56,7 @@ export const ActualTimerIndicator = ({
 
     const positionBasedOnSeconds = useMemo((): number => {
         const timeIndicatorPosition = new TimeIndicatorPosition();
-
-        return timeIndicatorPosition.positionBasedOnSeconds(
-            slotData.time,
-            dateToRender,
-            timesRendered,
-        );
+        return timeIndicatorPosition.positionBasedOnSeconds(dateToRender);
     }, [slotData.time, dateToRender, timesRendered]);
 
     const separatorContainer = useMemo((): string => {
@@ -77,7 +72,7 @@ export const ActualTimerIndicator = ({
             return {
                 top: `${positionBasedOnSeconds - 2}px`,
                 left: isFirstDay ? "-18px" : "-3px",
-                width: isFirstDay ? "102%" : "104%",
+                width: isFirstDay ? "110%" : "104%",
             };
         }
 

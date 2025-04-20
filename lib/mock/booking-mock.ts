@@ -12,60 +12,111 @@ const mockUser: User = {
     updatedAt: new Date(),
 };
 
-//TODO: need to add some dynamic data to the card booking.
-
-// const mockProcedure: Procedure = {
-//     id: "procedure-123",
-//     name: "Haircut",
-//     requiredTimeMin: 30,
-//     description: "",
-//     color: "",
-//     organizationFeePercent: 10,
-//     // duration: 30,
-//     amount: 60,
-//     createdAt: new Date(),
-//     updatedAt: new Date(),
-//     // price: 50,
-// };
-
-// const mockPayment: Payment = {
-//     total: 50,
-//     type: "CREDIT_CARD",
-//     // method: "Credit Card",
-//     status: "PAID",
-//     // Add other properties as needed
-// };
-
 const mockBooking: Booking[] = [
     {
         id: "1",
-        startAt: new Date("2025-03-16T11:00:00Z"),
-        finishAt: new Date("2025-03-16T11:15:00Z"),
+        startAt: new Date("2025-03-22T11:00:00Z"),
+        finishAt: new Date("2025-03-22T13:15:00Z"),
     },
     {
         id: "2",
-        startAt: new Date("2025-03-15T11:00:00Z"),
-        finishAt: new Date("2025-03-15T12:00:00Z"),
+        startAt: new Date("2025-03-22T12:45:00Z"),
+        finishAt: new Date("2025-03-22T13:00:00Z"),
     },
     {
         id: "3",
-        startAt: new Date("2025-03-15T11:30:00Z"),
-        finishAt: new Date("2025-03-15T12:15:00Z"),
+        startAt: new Date("2025-03-22T11:30:00Z"),
+        finishAt: new Date("2025-03-22T12:30:00Z"),
     },
     {
         id: "4",
-        startAt: new Date("2025-03-14T11:00:00Z"),
-        finishAt: new Date("2025-03-14T11:45:00Z"),
+        startAt: new Date("2025-03-22T12:00:00Z"),
+        finishAt: new Date("2025-03-22T12:15:00Z"),
     },
     {
         id: "5",
-        startAt: new Date("2025-03-23T13:00:00Z"),
-        finishAt: new Date("2025-03-23T13:30:00Z"),
+        startAt: new Date("2025-03-22T11:45:00Z"),
+        finishAt: new Date("2025-03-22T12:00:00Z"),
     },
     {
         id: "6",
-        startAt: new Date("2025-03-23T14:30:00Z"),
+        startAt: new Date("2025-03-23T14:00:00Z"),
         finishAt: new Date("2025-03-23T15:30:00Z"),
+    },
+    {
+        id: "7",
+        startAt: new Date("2025-03-24T13:00:00Z"),
+        finishAt: new Date("2025-03-24T13:30:00Z"),
+    },
+    {
+        id: "8",
+        startAt: new Date("2025-03-26T14:30:00Z"),
+        finishAt: new Date("2025-03-26T15:30:00Z"),
+    },
+    {
+        id: "9",
+        startAt: new Date("2025-03-14T10:00:00Z"),
+        finishAt: new Date("2025-03-14T11:00:00Z"),
+    },
+    {
+        id: "10",
+        startAt: new Date("2025-03-20T11:15:00Z"),
+        finishAt: new Date("2025-03-20T12:45:00Z"),
+    },
+    {
+        id: "11",
+        startAt: new Date("2025-03-25T11:30:00Z"),
+        finishAt: new Date("2025-03-25T13:00:00Z"),
+    },
+    {
+        id: "12",
+        startAt: new Date("2025-03-25T12:00:00Z"),
+        finishAt: new Date("2025-03-25T12:30:00Z"),
+    },
+    {
+        id: "13",
+        startAt: new Date("2025-03-26T08:00:00Z"),
+        finishAt: new Date("2025-03-26T09:00:00Z"),
+    },
+    {
+        id: "14",
+        startAt: new Date("2025-03-26T10:30:00Z"),
+        finishAt: new Date("2025-03-26T11:45:00Z"),
+    },
+    {
+        id: "15",
+        startAt: new Date("2025-03-27T13:00:00Z"),
+        finishAt: new Date("2025-03-27T14:30:00Z"),
+    },
+    {
+        id: "16",
+        startAt: new Date("2025-03-27T15:00:00Z"),
+        finishAt: new Date("2025-03-27T16:00:00Z"),
+    },
+    {
+        id: "17",
+        startAt: new Date("2025-03-28T09:00:00Z"),
+        finishAt: new Date("2025-03-28T10:15:00Z"),
+    },
+    {
+        id: "18",
+        startAt: new Date("2025-03-28T11:00:00Z"),
+        finishAt: new Date("2025-03-28T12:30:00Z"),
+    },
+    {
+        id: "19",
+        startAt: new Date("2025-03-29T14:00:00Z"),
+        finishAt: new Date("2025-03-29T15:00:00Z"),
+    },
+    {
+        id: "20",
+        startAt: new Date("2025-03-29T15:30:00Z"),
+        finishAt: new Date("2025-03-29T16:45:00Z"),
+    },
+    {
+        id: "21",
+        startAt: new Date("2025-03-23T19:30:00Z"),
+        finishAt: new Date("2025-03-23T23:00:00Z"),
     },
 ];
 
