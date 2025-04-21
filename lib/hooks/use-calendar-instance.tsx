@@ -39,6 +39,11 @@ const useCalendarInstance = (
         return calendarRef.current.updateFinishAt(hour24Format);
     };
 
+    const changeLoading = (status: boolean) => {
+        if (!calendarRef?.current) throw new ReferenceErrorCustom();
+        return calendarRef.current.changeLoading(status);
+    };
+
     const getCalendar = () => {
         return <Root ref={calendarRef} {...props} />;
     };
@@ -50,6 +55,7 @@ const useCalendarInstance = (
         updateTodayDayAndViewType,
         updateSelectedNode,
         updateFinishAt,
+        changeLoading,
     };
 };
 

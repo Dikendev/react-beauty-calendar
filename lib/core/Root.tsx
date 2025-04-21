@@ -1,4 +1,4 @@
-import { useEffect, useImperativeHandle, useRef } from "react";
+import { useEffect, useImperativeHandle, useRef, useState } from "react";
 import type { RootProps } from "../@types/calendar-instance";
 import { BookingModalProvider, BookingProvider } from "../context";
 import { initialBookingFormState } from "../context/booking/booking-store";
@@ -27,6 +27,7 @@ const Root = ({
     bookings,
     ref,
 }: RootProps) => {
+    const [loading, setLoading] = useState<boolean>(false);
     const newEventProviderRef = useRef<NewEventFormRef>(null);
 
     const {
@@ -48,6 +49,7 @@ const Root = ({
         updateTodayDayAndViewType: (date) => setTodayDayAndViewType(date),
         updateSelectedNode: (nodeKey: string) => setSelectedNode(nodeKey),
         updateFinishAt: (hour24Format: string) => updateFinishAt(hour24Format),
+        changeLoading: (status: boolean) => setLoading(status),
     }));
 
     useEffect(() => {
@@ -71,7 +73,7 @@ const Root = ({
                     ref={newEventProviderRef}
                     {...initialFormState}
                 >
-                    <CalendarHolder />
+                    <CalendarHolder isLoading={loading} />
                 </NewEventProvider>
             </BookingModalProvider>
         </BookingProvider>

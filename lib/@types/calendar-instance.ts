@@ -15,6 +15,7 @@ export interface CalendarRootRef {
     updateTodayDayAndViewType: (date: Date) => Date;
     updateSelectedNode: (nodeKey: string) => void;
     updateFinishAt: (selectedHour: string) => void;
+    changeLoading: (status: boolean) => void;
 }
 
 export type UseBookingInstanceProps = RootProps;

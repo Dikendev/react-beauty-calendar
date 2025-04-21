@@ -8,7 +8,7 @@ import type { OnSlotClick } from "../lib/@types/calendar-instance";
 import type { ActionType } from "../lib/core/header-calendar/Header";
 import TabsContentCore from "../lib/core/slots/TabsContent";
 import { useCalendarInstance } from "../lib/main";
-import { mockBooking } from "../lib/mock/booking-mock";
+import { mockBooking, nextWeekBookingMock } from "../lib/mock/booking-mock";
 
 const App = () => {
     const [bookings, setBookings] = useState<Booking[]>(mockBooking);
@@ -27,6 +27,20 @@ const App = () => {
 
     const onDayChange = (date: Date[], actionType: ActionType) => {
         console.log("on day change", date, actionType);
+        calendarInstance?.changeLoading(true);
+
+        setTimeout(() => {
+            calendarInstance?.changeLoading(false);
+            switch (actionType) {
+                case "next": {
+                    setBookings(nextWeekBookingMock);
+                    break;
+                }
+                case "previous": {
+                    setBookings(mockBooking);
+                }
+            }
+        }, 500);
     };
 
     const onModalClose = () => {

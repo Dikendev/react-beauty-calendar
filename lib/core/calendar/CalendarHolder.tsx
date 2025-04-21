@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from "react";
+import { type CSSProperties, useCallback, useEffect } from "react";
 
 import {
     DndContext,
@@ -26,10 +26,15 @@ import { initialMonthDescriptionState } from "../../context/month-description/mo
 import { useGlobalStore } from "../../hooks";
 import useBookingModal from "../../hooks/use-booking-model";
 
+import { GridLoader } from "react-spinners";
 // import { snapCenterToCursor } from "@dnd-kit/modifiers";
 import { mockUser } from "../../mock/booking-mock";
 
-const CalendarHolder = () => {
+interface CalendarHolderProps {
+    isLoading: boolean;
+}
+
+const CalendarHolder = ({ isLoading }: CalendarHolderProps) => {
     const { bookings } = useBookingModal();
 
     const activationConstraint = {
@@ -127,6 +132,14 @@ const CalendarHolder = () => {
         }
     };
 
+    const override: CSSProperties = {
+        position: "absolute",
+        top: "50%",
+        left: "50%",
+        transform: "translate('-50%',  '-50%')",
+        zIndex: 100,
+    };
+
     useEffect(() => {
         const bookData: BookingBulkData = {
             user: mockUser,
@@ -156,6 +169,15 @@ const CalendarHolder = () => {
                     </div>
                 </div>
             </MonthDescriptionProvider>
+
+            <GridLoader
+                color={"#000000aa"}
+                loading={isLoading}
+                cssOverride={override}
+                size={15}
+                aria-label="Loading Spinner"
+                data-testid="GridLoader"
+            />
         </div>
     );
 };
