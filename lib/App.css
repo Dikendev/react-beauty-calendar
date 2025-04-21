@@ -366,15 +366,15 @@
 }
 
 .slotWeek {
-  max-width: 12rem;
-  min-width: 12rem;
+  max-width: 13rem;
+  min-width: 13rem;
 }
 
 /* DaysOfWeek */
 .daysOfWeek {
   padding: 0.5rem;
   border-radius: 100%;
-  min-width: 12rem;
+  min-width: 13rem;
   width: 100vw;
 }
 
@@ -471,6 +471,47 @@
 .inner_cards_parent {
   display: flex;
   justify-content: end;
+}
+
+.inner_cards_parent_last_card {
+  width: 88% !important;
+}
+
+.inner_cards_parent_last_card_layer_2 {
+  width: 82% !important;
+}
+
+.inner_cards_parent_1_layer {
+  width: 95.5%;
+}
+
+.inner_cards_parent_2_layer {
+  width: 91%;
+}
+
+.inner_cards_parent_3_layer {
+  width: 86%;
+}
+
+.inner_cards_parent_3_layer_half {
+  width: 94%;
+}
+
+.inner_cards_parent_resizable {
+  inset: 0 0.5rem;
+}
+
+.inner_cards_parent_resizable_layer_2 {
+  inset: 0 1rem;
+}
+
+/* com half é 0.1rem */
+.inner_cards_parent_resizable_layer_3 {
+  inset: 0 1.6rem;
+}
+
+.inner_cards_parent_resizable_layer_3_half {
+  inset: 0 1rem
 }
 
 .cardContent_render {

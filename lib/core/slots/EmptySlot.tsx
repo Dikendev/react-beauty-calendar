@@ -185,18 +185,34 @@ const CardContentRender = ({
     blockTimeString,
     slotData,
 }: CardContentRenderProps) => {
-    if (bookings?.length && slotData?.day && slotData?.hour) {
-        const booking = bookings.find((booking) => {
-            const actualSlotTimeString = DateUtils.dateAndHourDateToString(
-                new Date(booking.startAt),
-            );
+    if (!bookings || (!slotData?.day && !slotData?.hour)) return null;
 
-            return actualSlotTimeString.split(":")[1] === blockTimeString;
-        });
+    const bookingToRender = bookings.filter((booking) => {
+        const actualSlotTimeString = DateUtils.dateAndHourDateToString(
+            new Date(booking.startAt),
+        );
+        return actualSlotTimeString.split(":")[1] === blockTimeString;
+    });
 
-        if (booking) return <Card booking={booking} slotData={slotData} />;
+    if (!bookingToRender || !bookingToRender?.length) return;
+
+    if (bookingToRender.length === 1) {
+        return <Card booking={bookingToRender[0]} slotData={slotData} />;
     }
-    return null;
+
+    return (
+        <div style={{ display: "flex", flexDirection: "row", height: "100%" }}>
+            {bookingToRender.map((booking, index) => (
+                <Card
+                    key={booking.id}
+                    booking={booking}
+                    half
+                    slotData={slotData}
+                    lastCard={bookingToRender.length - 1 === index}
+                />
+            ))}
+        </div>
+    );
 };
 
 export default EmptySlot;

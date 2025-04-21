@@ -53,6 +53,8 @@ interface CardContentProps {
     onClick?: () => void;
     customClasses?: string;
     open?: boolean;
+    lastCard?: boolean;
+    half?: boolean;
     resizableParam?: ResizableParam;
     events?: {
         onUnmount: () => void;
@@ -72,6 +74,8 @@ const CardContent = ({
     resizableParam,
     events,
     open = true,
+    lastCard,
+    half,
     ref,
 }: CardContentProps) => {
     const [customClass, setCustomClass] = useState<string>("");
@@ -122,6 +126,40 @@ const CardContent = ({
         );
     }, [bookingInit, bookings]);
 
+    const getResizableClassNames = ({
+        resizableParam,
+        customClass,
+        half,
+        layerCount,
+        lastCard,
+    }: {
+        resizableParam: ResizableParam;
+        customClass: string;
+        layerCount: number;
+        half?: boolean;
+        lastCard?: boolean;
+    }): string => {
+        return cn(
+            resizableParam.customClass,
+            customClass,
+            half && layerCount > 0 && "",
+            half ? "" : layerCount > 0 && "inner_cards_parent",
+            lastCard && layerCount && "inner_cards_parent_last_card",
+            lastCard &&
+                layerCount === 2 &&
+                "inner_cards_parent_last_card_layer_2",
+            layerCount === 1 &&
+                "inner_cards_parent_resizable inner_cards_parent_1_layer",
+            layerCount === 2 &&
+                "inner_cards_parent_resizable_layer_2 inner_cards_parent_2_layer",
+            half &&
+                layerCount === 3 &&
+                "inner_cards_parent_resizable_layer_3_half inner_cards_parent_3_layer_half",
+            layerCount === 3 &&
+                "inner_cards_parent_resizable_layer_3 inner_cards_parent_3_layer",
+        );
+    };
+
     if (!open && !bookingInit.finishAt) return null;
 
     if (resizableParam?.state?.height) {
@@ -130,10 +168,13 @@ const CardContent = ({
         return (
             <Resizable
                 className={cn(
-                    "cardContent_resizable",
-                    resizableParam.customClass,
-                    customClass,
-                    layerCount > 0 && "inner_cards_parent",
+                    getResizableClassNames({
+                        resizableParam,
+                        customClass,
+                        layerCount,
+                        half,
+                        lastCard,
+                    }),
                 )}
                 height={state?.height}
                 width={state?.width}
@@ -163,6 +204,7 @@ const CardContent = ({
                         slotData={slotData}
                         onClick={onClick}
                         layerCount={layerCount}
+                        half={half}
                     />
                 </div>
             </Resizable>

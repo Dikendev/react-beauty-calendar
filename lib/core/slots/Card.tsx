@@ -15,6 +15,8 @@ import useResizableCardHook from "./useResizableCardHook";
 interface CardProps {
     booking: Booking;
     slotData: BookingDateAndTime;
+    lastCard?: boolean;
+    half?: boolean;
     ref?: Ref<CardRef>;
 }
 
@@ -22,7 +24,13 @@ export interface CardRef {
     bookingId: string;
 }
 
-const Card = ({ booking, slotData, ref }: CardProps) => {
+const Card = ({
+    booking,
+    slotData,
+    lastCard = false,
+    half = false,
+    ref,
+}: CardProps) => {
     const { bookingViewType, optimisticCardUpdate } = useGlobalStore();
 
     const [bookingInit, setBookingInit] = useState<Booking>({ ...booking });
@@ -164,6 +172,8 @@ const Card = ({ booking, slotData, ref }: CardProps) => {
                 slotData={slotData}
                 heightStyleTransformer={`${heightStyle}rem`}
                 onClick={openEditingModal}
+                half={half}
+                lastCard={lastCard}
                 // style={ backgroundColor: "black" }
             />
         </BookingInfoOptions>

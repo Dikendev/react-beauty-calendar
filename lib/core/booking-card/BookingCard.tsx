@@ -1,4 +1,4 @@
-import { type CSSProperties, useCallback, useMemo } from "react";
+import { type CSSProperties, useCallback } from "react";
 
 import type { Booking, BookingDateAndTime } from "../../@types/booking";
 import { cn } from "../../lib/utils";
@@ -16,6 +16,7 @@ interface BookingCardProps {
     customClasses?: string;
     heightStyleTransformer?: string;
     layerCount?: number;
+    half?: boolean;
     onClick?: () => void;
 }
 
@@ -26,6 +27,7 @@ const BookingCard = ({
     booking,
     slotData,
     layerCount,
+    // half,
     onClick,
     heightStyleTransformer,
     customClasses,
@@ -99,11 +101,12 @@ const BookingCard = ({
         return { backgroundColor: "#000456c0" };
     };
 
-    const calculateCardWidth = useMemo(() => {
-        if (!layerCount) return `${MAX_WIDTH_PERCENTAGE}%`;
-        const widthReduction = layerCount * WIDTH_DECREMENT_STEP;
-        return `${MAX_WIDTH_PERCENTAGE - widthReduction}%`;
-    }, [layerCount]);
+    // const calculateCardWidth = useMemo(() => {
+    //     if (!layerCount) return `${MAX_WIDTH_PERCENTAGE}%`;
+    //     const widthReduction = layerCount * WIDTH_DECREMENT_STEP;
+
+    //     return `${MAX_WIDTH_PERCENTAGE - widthReduction}%`;
+    // }, [layerCount]);
 
     if (!isDragging) {
         return (
@@ -114,7 +117,7 @@ const BookingCard = ({
                 style={{
                     ...style,
                     ...cardContextStyle,
-                    width: calculateCardWidth,
+                    // width: calculateCardWidth,
                 }}
                 {...listeners}
                 {...attributes}

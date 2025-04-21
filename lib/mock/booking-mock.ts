@@ -30,14 +30,14 @@ const mockBooking: Booking[] = [
     },
     {
         id: "4",
-        startAt: new Date("2025-04-22T12:00:00Z"),
+        startAt: new Date("2025-04-22T11:30:00Z"),
         finishAt: new Date("2025-04-22T12:15:00Z"),
     },
-    {
-        id: "5",
-        startAt: new Date("2025-04-22T11:45:00Z"),
-        finishAt: new Date("2025-04-22T12:00:00Z"),
-    },
+    // {
+    //     id: "5",
+    //     startAt: new Date("2025-04-22T11:45:00Z"),
+    //     finishAt: new Date("2025-04-22T12:00:00Z"),
+    // },
     {
         id: "6",
         startAt: new Date("2025-04-23T14:00:00Z"),
@@ -64,6 +64,11 @@ const mockBooking: Booking[] = [
         finishAt: new Date("2025-04-20T12:45:00Z"),
     },
     {
+        id: "60",
+        startAt: new Date("2025-04-20T11:15:00Z"),
+        finishAt: new Date("2025-04-20T13:00:00Z"),
+    },
+    {
         id: "11",
         startAt: new Date("2025-04-25T11:30:00Z"),
         finishAt: new Date("2025-04-25T13:00:00Z"),
@@ -75,12 +80,12 @@ const mockBooking: Booking[] = [
     },
     {
         id: "13",
-        startAt: new Date("2025-04-26T08:00:00Z"),
-        finishAt: new Date("2025-04-26T09:00:00Z"),
+        startAt: new Date("2025-04-26T12:00:00Z"),
+        finishAt: new Date("2025-04-26T12:30:00Z"),
     },
     {
         id: "14",
-        startAt: new Date("2025-04-26T10:30:00Z"),
+        startAt: new Date("2025-04-26T11:30:00Z"),
         finishAt: new Date("2025-04-26T11:45:00Z"),
     },
 
