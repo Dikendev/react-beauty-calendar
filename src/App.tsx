@@ -27,6 +27,8 @@ const App = () => {
 
     const onDayChange = (date: Date[], actionType: ActionType) => {
         console.log("on day change", date, actionType);
+        setBookings([]);
+
         calendarInstance?.changeLoading(true);
 
         setTimeout(() => {
@@ -97,8 +99,6 @@ const App = () => {
 
     return (
         <div className="h-[100vh]">
-            <div className="sticky top-0 right-0 left-0">HEADER EXAMPLE</div>
-
             <div className="mt-2 left-0 right-0 w-full p-3.5 center">
                 {calendarInstance.getCalendar()}
             </div>
