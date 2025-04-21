@@ -33,10 +33,10 @@ interface IconsViewType {
 }
 
 const VIEW_TYPE_ICONS = {
-    [BOOKING_VIEW_TYPE.DAY]: <GalleryVertical size="20px" />,
-    [BOOKING_VIEW_TYPE.WEEK]: <Columns4 size="20px" />,
-    [BOOKING_VIEW_TYPE.TABLE]: <CalendarDays size="20px" />,
-    [BOOKING_VIEW_TYPE.MONTH]: <Grid3x3 size="20px" />,
+    [BOOKING_VIEW_TYPE.DAY]: <GalleryVertical width={"90%"} />,
+    [BOOKING_VIEW_TYPE.WEEK]: <Columns4 width={"90%"} />,
+    [BOOKING_VIEW_TYPE.TABLE]: <CalendarDays width={"90%"} />,
+    [BOOKING_VIEW_TYPE.MONTH]: <Grid3x3 width={"90%"} />,
 };
 
 const HeaderViewType = () => {
@@ -78,15 +78,13 @@ const HeaderViewType = () => {
     return (
         <DropdownMenu>
             <DropdownMenuTrigger>
-                <Button variant="ghost" className="w-8 h-8" asChild>
-                    <WithTooltip content="Calendar Modes">
-                        <Button variant="ghost">
-                            {findSelectedIcon || (
-                                <CalendarCog className="w-full h-full" />
-                            )}
-                        </Button>
-                    </WithTooltip>
-                </Button>
+                <WithTooltip content="Calendar Modes">
+                    <Button variant="ghost" asChild>
+                        {findSelectedIcon || (
+                            <CalendarCog className="w-full h-full" />
+                        )}
+                    </Button>
+                </WithTooltip>
             </DropdownMenuTrigger>
             <DropdownMenuContent>
                 {options.map((option) => (
