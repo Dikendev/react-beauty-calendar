@@ -20,13 +20,13 @@ interface BookingCardProps {
     onClick?: () => void;
 }
 
-const WIDTH_DECREMENT_STEP = 4;
-const MAX_WIDTH_PERCENTAGE = 100;
+// const WIDTH_DECREMENT_STEP = 4;
+// const MAX_WIDTH_PERCENTAGE = 100;
 
 const BookingCard = ({
     booking,
     slotData,
-    layerCount,
+    // layerCount,
     // half,
     onClick,
     heightStyleTransformer,
