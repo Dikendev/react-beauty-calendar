@@ -27,7 +27,6 @@ import { useGlobalStore } from "../../hooks";
 import useBookingModal from "../../hooks/use-booking-model";
 
 import { GridLoader } from "react-spinners";
-// import { snapCenterToCursor } from "@dnd-kit/modifiers";
 import { mockUser } from "../../mock/booking-mock";
 
 interface CalendarHolderProps {
@@ -162,7 +161,6 @@ const CalendarHolder = ({ isLoading }: CalendarHolderProps) => {
                             onDragEnd={handleDragEnd}
                             onDragStart={onDragStart}
                             sensors={sensors}
-                            // modifiers={[snapCenterToCursor]}
                         >
                             <HandleViewType bookingViewType={bookingViewType} />
                         </DndContext>

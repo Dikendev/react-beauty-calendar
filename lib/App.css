@@ -304,9 +304,9 @@
 }
 
 /* CalendarView */
-
 .calendarCore {
   z-index: 0;
+  width: 100%;
   height: 75vh;
   overflow: auto;
 }
@@ -348,7 +348,6 @@
 } 
 
 /* slots */
-
 .slot {
   background-color: white;
   border: 1px solid #d1d5dc;
@@ -383,7 +382,7 @@
   flex-direction: column;
   gap: 3px;
   color: #6a7282; 
-  max-width: 11rem;
+  /* max-width: 11rem; */
   text-align: center;
 }
 
@@ -474,7 +473,7 @@
 }
 
 .inner_cards_parent_last_card {
-  width: 88% !important;
+  width: 91% !important;
 }
 
 .inner_cards_parent_last_card_layer_2 {

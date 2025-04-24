@@ -35,21 +35,38 @@ const Root = ({
         setWeekAndViewType,
         setTodayDayAndViewType,
         bookingViewType,
+        setTodayDay,
+        todayWeek,
     } = useGlobalStore();
 
     const { setSelectedNode } = useEmptySlotStore((store) => store);
 
     const updateFinishAt = (hour24Format: string) => {
+        console.log("hour24Format", hour24Format);
         newEventProviderRef?.current?.updateFinishAt(hour24Format);
+    };
+
+    const goToDay = (date: Date): void => {
+        setTodayDay(new Date(date));
+    };
+
+    const goToWeek = (date: Date): void => {
+        todayWeek(new Date(date));
     };
 
     useImperativeHandle(ref, () => ({
         updateViewType: (bookingType) => setBookingViewType(bookingType),
         updateWeekAndViewType: (date) => setWeekAndViewType(date),
         updateTodayDayAndViewType: (date) => setTodayDayAndViewType(date),
-        updateSelectedNode: (nodeKey: string) => setSelectedNode(nodeKey),
+        updateSelectedNode: (nodeKey: string) => {
+            setTimeout(() => {
+                setSelectedNode(nodeKey);
+            }, 10);
+        },
         updateFinishAt: (hour24Format: string) => updateFinishAt(hour24Format),
         changeLoading: (status: boolean) => setLoading(status),
+        goToDay: (date) => goToDay(date),
+        goToWeek: (date) => goToWeek(date),
     }));
 
     useEffect(() => {

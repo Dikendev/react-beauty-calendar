@@ -11,11 +11,13 @@ export interface CalendarInstanceRef extends CalendarRootRef {
 
 export interface CalendarRootRef {
     updateViewType: (bookingType: BookingViewType) => void;
-    updateWeekAndViewType: (date?: Date) => NextAndPreviousWeek;
-    updateTodayDayAndViewType: (date: Date) => Date;
+    updateWeekAndViewType: (date: Date) => NextAndPreviousWeek | undefined;
+    updateTodayDayAndViewType: (date: Date) => Date | undefined;
     updateSelectedNode: (nodeKey: string) => void;
     updateFinishAt: (selectedHour: string) => void;
     changeLoading: (status: boolean) => void;
+    goToDay: (date: Date) => void;
+    goToWeek: (date: Date) => void;
 }
 
 export type UseBookingInstanceProps = RootProps;
