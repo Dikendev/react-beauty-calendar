@@ -9,6 +9,7 @@ import { BOOKING_VIEW_TYPE, MONTH } from "../../constants";
 import { DateUtils, WEEK_DAYS } from "../../utils/date-utils";
 
 import type { BookingViewType } from "../../@types/booking";
+import useEmptySlotStore from "../../context/emptySlotsStore.ts/useEmptySlotStore";
 import type { MonthDescriptionProps } from "../../context/month-description/month-description-store";
 import useBookingModal from "../../hooks/use-booking-model";
 import { cn } from "../../lib/utils";
@@ -25,6 +26,10 @@ const DaysWeek = ({ daysOfWeek, bookingViewType }: DaysWeekProps) => {
     );
     const { onViewTypeChange } = useDaysSelectedView();
     const { onHeaderDayClick } = useBookingModal();
+
+    const { resetSelectedNode, resetNodes } = useEmptySlotStore(
+        (state) => state,
+    );
 
     const handleClickDay = useCallback(
         (day: Date) => {
@@ -78,7 +83,16 @@ const DaysWeek = ({ daysOfWeek, bookingViewType }: DaysWeekProps) => {
                             "daysOfWeek_day",
                     )}
                 >
-                    <div style={tableStyle} className="daysOfWeek_parent">
+                    <div
+                        style={{
+                            ...tableStyle,
+                            maxWidth:
+                                bookingViewType === BOOKING_VIEW_TYPE.DAY
+                                    ? "11rem"
+                                    : undefined,
+                        }}
+                        className="daysOfWeek_parent"
+                    >
                         <span
                             className={cn(
                                 ifIsToday(day) && "daysOfWeek_day_today_title",
@@ -115,6 +129,8 @@ const DaysWeek = ({ daysOfWeek, bookingViewType }: DaysWeekProps) => {
     useEffect(() => {
         switch (bookingViewType) {
             case BOOKING_VIEW_TYPE.DAY: {
+                resetNodes();
+                resetSelectedNode();
                 updateHeaderDateLabel(daysOfWeek[0]);
                 break;
             }
