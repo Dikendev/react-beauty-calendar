@@ -1,7 +1,7 @@
 import { use } from "react";
 import BookingModalContext from "../context/bookingModal/booking-modal-context";
 
-export const useBookingModal = () => {
+const useBookingModal = () => {
     const context = use(BookingModalContext);
 
     if (!context) {

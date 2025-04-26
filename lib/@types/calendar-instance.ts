@@ -1,4 +1,5 @@
 import type { JSX, Ref } from "react";
+import type { SystemColor } from "../context/global/config/config-store";
 import type { NextAndPreviousWeek } from "../context/global/days-and-week/day-and-week-store";
 import type { ActionType } from "../core/header-calendar/Header";
 import type { BlockTimeData } from "../core/slots/EmptySlot";
@@ -24,6 +25,8 @@ export type UseBookingInstanceProps = RootProps;
 
 export interface RootProps extends RootEventsProps {
     bookings: Booking[];
+    isTimeInfoVisible?: boolean;
+    systemColor?: SystemColor;
     createBookingModal: JSX.Element;
     viewModes: ViewModes;
     ref?: Ref<CalendarRootRef>;

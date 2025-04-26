@@ -14,6 +14,8 @@ import type { BlocksTimeStructure } from "./EmptySlot";
 
 import { Resizable } from "react-resizable";
 
+import type { SystemColor } from "../../context/global/config/config-store";
+import useGlobalConfig from "../../hooks/useGlobalConfig";
 import { cn } from "../../lib/utils";
 import { DateUtils } from "../../utils/date-utils";
 import useResizableCardHook from "./useResizableCardHook";
@@ -28,6 +30,8 @@ interface TimeInfoEvents {
 interface TimeInfoProps {
     isDragging: boolean;
     slotData: BlocksTimeStructure;
+    systemColor: SystemColor;
+    isDisabled: boolean;
     events: TimeInfoEvents;
 }
 
@@ -38,6 +42,9 @@ const TimeInfo = ({
 }: TimeInfoProps) => {
     const startAt = useNewEventStore((state) => state.startAt);
     const bookingViewType = useGlobalStore((state) => state.bookingViewType);
+    const { systemColor, isTimeInfoVisible } = useGlobalConfig(
+        (state) => state,
+    );
 
     const [finishAt, setFinishAt] = useState<string>(
         DateUtils.addMinutesToHour(slotData.time, 15),
@@ -129,6 +136,10 @@ const TimeInfo = ({
         <div
             style={{
                 ...withChildrenStyle,
+                border:
+                    isTimeInfoVisible && !isDragging
+                        ? `1.5px solid ${systemColor}`
+                        : "none",
             }}
             className={cn("timeInfo_core", withChildrenStyle)}
         >
@@ -169,7 +180,15 @@ const TimeInfo = ({
                 ) : (
                     <div className="timeInfo_core_timeParent">
                         {!isDragging && (
-                            <span className="timeInfo_core_timeParent_time">
+                            <span
+                                className="timeInfo_core_timeParent_time"
+                                style={{
+                                    color: systemColor,
+                                    display: isTimeInfoVisible
+                                        ? "initial"
+                                        : "none",
+                                }}
+                            >
                                 {slotData.time}
                             </span>
                         )}

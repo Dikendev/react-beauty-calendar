@@ -83,6 +83,8 @@ const App = () => {
     const calendarInstance = useCalendarInstance({
         bookings: bookings,
         viewModes: ["day", "week"],
+        systemColor: "#b50000",
+        isTimeInfoVisible: true,
         onChangeViewType,
         onSlotClick,
         onHeaderDayClick,

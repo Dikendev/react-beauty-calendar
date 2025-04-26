@@ -1,18 +1,25 @@
 import { useEffect, useImperativeHandle, useRef, useState } from "react";
 import type { RootProps } from "../@types/calendar-instance";
-import { BookingModalProvider, BookingProvider } from "../context";
+
 import { initialBookingFormState } from "../context/booking/booking-store";
 import useEmptySlotStore from "../context/emptySlotsStore.ts/useEmptySlotStore";
-import { NewEventProvider } from "../context/new-event/new-event-context";
+
 import {
     type NewEventFormRef,
     initialFormState,
 } from "../context/new-event/new-event-store";
+
 import { useGlobalStore } from "../hooks";
 
 import CalendarHolder from "./calendar/CalendarHolder";
 
 import "./../App.css";
+import {
+    BookingModalProvider,
+    BookingProvider,
+    ConfigProvider,
+    NewEventProvider,
+} from "../context";
 
 const Root = ({
     viewModes,
@@ -25,6 +32,8 @@ const Root = ({
     onSlotClick,
     onModalClose,
     bookings,
+    isTimeInfoVisible,
+    systemColor,
     ref,
 }: RootProps) => {
     const [loading, setLoading] = useState<boolean>(false);
@@ -74,26 +83,31 @@ const Root = ({
     }, [bookingViewType]);
 
     return (
-        <BookingProvider {...initialBookingFormState}>
-            <BookingModalProvider
-                createBookingModal={createBookingModal}
-                viewModes={viewModes}
-                onHeaderDayClick={onHeaderDayClick}
-                onTodayClick={onTodayClick}
-                onCardDropCallback={onCardDropCallback}
-                onDayChange={onDayChange}
-                onSlotClick={onSlotClick}
-                onModalClose={onModalClose}
-                bookings={bookings}
-            >
-                <NewEventProvider
-                    ref={newEventProviderRef}
-                    {...initialFormState}
+        <ConfigProvider
+            isTimeInfoVisible={isTimeInfoVisible}
+            systemColor={systemColor}
+        >
+            <BookingProvider {...initialBookingFormState}>
+                <BookingModalProvider
+                    createBookingModal={createBookingModal}
+                    viewModes={viewModes}
+                    onHeaderDayClick={onHeaderDayClick}
+                    onTodayClick={onTodayClick}
+                    onCardDropCallback={onCardDropCallback}
+                    onDayChange={onDayChange}
+                    onSlotClick={onSlotClick}
+                    onModalClose={onModalClose}
+                    bookings={bookings}
                 >
-                    <CalendarHolder isLoading={loading} />
-                </NewEventProvider>
-            </BookingModalProvider>
-        </BookingProvider>
+                    <NewEventProvider
+                        ref={newEventProviderRef}
+                        {...initialFormState}
+                    >
+                        <CalendarHolder isLoading={loading} />
+                    </NewEventProvider>
+                </BookingModalProvider>
+            </BookingProvider>
+        </ConfigProvider>
     );
 };
 
