@@ -521,6 +521,13 @@
   overflow: hidden;
 }
 
+.cardContent_render_dragging {
+  border-top: 1px solid rgb(255, 89, 6);
+  border-right: 1px solid rgb(255, 89, 6);
+  border-bottom: 1px solid rgb(255, 89, 6);
+  border-left: 5px solid rgb(255, 89, 6);
+}
+
 .cardContent_render:hover {
   border-top: 1px solid rgb(255, 89, 6);
   border-right: 1px solid rgb(255, 89, 6);
@@ -535,7 +542,7 @@
   height: 100%;
   z-index: -1px;
   align-content: center;
-  border: 1px solid black;
+  border: 1.5px solid black;
   border-radius: 0.25rem;
   cursor: default;
 }

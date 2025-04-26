@@ -35,19 +35,22 @@ const BookingCard = ({
     const { day, hour } = slotData;
     const { bookingViewType } = useGlobalStore();
 
-    const { updateIsDragging, isDragging: isDraggingStore } = useDragStore(
-        (state) => state,
-    );
+    const { updateIsDragging, isDragging } = useDragStore((state) => state);
 
-    const { attributes, listeners, setNodeRef, isDragging, transform } =
-        useDraggable({
-            id: booking.id,
-            data: {
-                type: "booking-slots",
-                booking: booking,
-                slotData,
-            },
-        });
+    const {
+        attributes,
+        listeners,
+        setNodeRef,
+        isDragging: isResizing,
+        transform,
+    } = useDraggable({
+        id: booking.id,
+        data: {
+            type: "booking-slots",
+            booking: booking,
+            slotData,
+        },
+    });
 
     const style = transform
         ? {
@@ -79,7 +82,7 @@ const BookingCard = ({
         height: heightStyleTransformer,
         position: "relative",
         zIndex: 50,
-        cursor: isDraggingStore ? "ns-resize" : "pointer",
+        cursor: isDragging ? "ns-resize" : "pointer",
         ...style,
         ...handleStyleCardContent,
     };
@@ -108,12 +111,16 @@ const BookingCard = ({
     //     return `${MAX_WIDTH_PERCENTAGE - widthReduction}%`;
     // }, [layerCount]);
 
-    if (!isDragging) {
+    if (!isResizing) {
         return (
             <div
                 key={booking.id}
                 ref={setNodeRef}
-                className={cn("cardContent_render", customClasses)}
+                className={cn(
+                    "cardContent_render",
+                    isDragging && "cardContent_render_dragging",
+                    customClasses,
+                )}
                 style={{
                     ...style,
                     ...cardContextStyle,
