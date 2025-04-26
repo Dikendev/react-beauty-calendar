@@ -1,4 +1,10 @@
-import { type CSSProperties, useCallback } from "react";
+import {
+    type CSSProperties,
+    type Ref,
+    useCallback,
+    useImperativeHandle,
+    useState,
+} from "react";
 
 import type { Booking, BookingDateAndTime } from "../../@types/booking";
 import { cn } from "../../lib/utils";
@@ -10,6 +16,10 @@ import useDragStore from "../../context/drag/dragStore";
 import { useGlobalStore } from "../../hooks";
 import CardOverlay from "../slots/CardOverlay";
 
+export interface BookingCardRef {
+    changeCurrentCardResize: () => void;
+}
+
 interface BookingCardProps {
     booking: Booking;
     slotData: BookingDateAndTime;
@@ -18,6 +28,7 @@ interface BookingCardProps {
     layerCount?: number;
     half?: boolean;
     onClick?: () => void;
+    ref?: Ref<BookingCardRef>;
 }
 
 // const WIDTH_DECREMENT_STEP = 4;
@@ -31,10 +42,12 @@ const BookingCard = ({
     onClick,
     heightStyleTransformer,
     customClasses,
+    ref,
 }: BookingCardProps) => {
     const { day, hour } = slotData;
-    const { bookingViewType } = useGlobalStore();
+    const [isResizingCard, setIsResizingCard] = useState<boolean>(false);
 
+    const { bookingViewType } = useGlobalStore();
     const { updateIsDragging, isDragging } = useDragStore((state) => state);
 
     const {
@@ -110,6 +123,9 @@ const BookingCard = ({
 
     //     return `${MAX_WIDTH_PERCENTAGE - widthReduction}%`;
     // }, [layerCount]);
+    useImperativeHandle(ref, () => ({
+        changeCurrentCardResize: () => setIsResizingCard((prev) => !prev),
+    }));
 
     if (!isResizing) {
         return (
@@ -118,7 +134,7 @@ const BookingCard = ({
                 ref={setNodeRef}
                 className={cn(
                     "cardContent_render",
-                    isDragging && "cardContent_render_dragging",
+                    isResizingCard && "cardContent_render_dragging",
                     customClasses,
                 )}
                 style={{

@@ -3,6 +3,7 @@ import {
     useCallback,
     useEffect,
     useMemo,
+    useRef,
     useState,
 } from "react";
 
@@ -14,10 +15,10 @@ import type { BlocksTimeStructure } from "./EmptySlot";
 
 import { Resizable } from "react-resizable";
 
-import type { SystemColor } from "../../context/global/config/config-store";
 import useGlobalConfig from "../../hooks/useGlobalConfig";
 import { cn } from "../../lib/utils";
 import { DateUtils } from "../../utils/date-utils";
+import type { BookingCardRef } from "../booking-card/BookingCard";
 import useResizableCardHook from "./useResizableCardHook";
 
 interface TimeInfoEvents {
@@ -30,8 +31,6 @@ interface TimeInfoEvents {
 interface TimeInfoProps {
     isDragging: boolean;
     slotData: BlocksTimeStructure;
-    systemColor: SystemColor;
-    isDisabled: boolean;
     events: TimeInfoEvents;
 }
 
@@ -46,10 +45,14 @@ const TimeInfo = ({
         (state) => state,
     );
 
+    const [isResizing, setIsResizing] = useState<boolean>(false);
+
     const [finishAt, setFinishAt] = useState<string>(
         DateUtils.addMinutesToHour(slotData.time, 15),
     );
     const [isDraggingOnClick, setIsDraggingOnClick] = useState<boolean>(false);
+
+    const cardContentRef = useRef<BookingCardRef>(null);
 
     const withChildrenStyle: CSSProperties = isDraggingOnClick
         ? { backgroundColor: "white", border: "none" }
@@ -64,14 +67,22 @@ const TimeInfo = ({
     }, [finishAt, startAt]);
 
     const startCounter = () => {
+        setIsResizing(true);
         setIsDraggingOnClick(true);
         renderPreviewCard();
     };
 
     const mouseUp = () => {
+        setIsResizing(false);
         onClick(finishAt);
         resetLocalStates();
     };
+
+    useEffect(() => {
+        if (isResizing) {
+            cardContentRef.current?.changeCurrentCardResize();
+        }
+    }, [isResizing]);
 
     const {
         state,
@@ -169,6 +180,7 @@ const TimeInfo = ({
                                 hour: "09:00",
                             }}
                             heightStyleTransformer={`${heightStyle}rem`}
+                            cardContentRef={cardContentRef}
                             resizableParam={{
                                 state,
                                 onResize,

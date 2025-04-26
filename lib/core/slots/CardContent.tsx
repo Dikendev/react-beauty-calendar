@@ -3,7 +3,9 @@ import {
     type Ref,
     type SyntheticEvent,
     useEffect,
+    useImperativeHandle,
     useMemo,
+    useRef,
     useState,
 } from "react";
 
@@ -11,8 +13,6 @@ import { cn } from "../../lib/utils";
 
 import type { Booking } from "../../@types";
 import type { BookingDateAndTime } from "../../@types/booking";
-
-import BookingCard from "../booking-card/BookingCard";
 
 import type { DraggableAttributes } from "@dnd-kit/core";
 import type { SyntheticListenerMap } from "@dnd-kit/core/dist/hooks/utilities";
@@ -22,9 +22,13 @@ import {
     type ResizeCallbackData,
     type ResizeHandle,
 } from "react-resizable";
+
 import { BOOKING_VIEW_TYPE } from "../../constants";
+
 import useDragStore from "../../context/drag/dragStore";
 import useBookingModal from "../../hooks/use-booking-model";
+
+import BookingCard, { type BookingCardRef } from "../booking-card/BookingCard";
 import { InnerCardsHandle } from "./innerCardHandle/inner-card-handle";
 
 interface ResizableState {
@@ -59,6 +63,7 @@ interface CardContentProps {
     events?: {
         onUnmount: () => void;
     };
+    cardContentRef?: Ref<BookingCardRef>;
     ref?: Ref<CardContentForward>;
 }
 
@@ -76,24 +81,20 @@ const CardContent = ({
     open = true,
     lastCard,
     half,
+    cardContentRef: dataRef,
     ref,
 }: CardContentProps) => {
     const [customClass, setCustomClass] = useState<string>("");
 
     const updateIsDragging = useDragStore((state) => state.updateIsDragging);
-
     const { bookings } = useBookingModal();
+
+    const bookingCardRef = useRef<BookingCardRef>(null);
 
     const handleStyleCardContent: CSSProperties =
         bookingViewType === BOOKING_VIEW_TYPE.DAY
             ? { width: "99%" }
             : { width: "100%" };
-
-    useEffect(() => {
-        return () => {
-            if (events?.onUnmount) events?.onUnmount();
-        };
-    }, []);
 
     const onResizableStart = (
         e: React.SyntheticEvent,
@@ -105,12 +106,15 @@ const CardContent = ({
         if (resizableParam?.onResizeStart) {
             resizableParam.onResizeStart(e, data);
         }
+
+        bookingCardRef.current?.changeCurrentCardResize();
     };
 
     const onResizableStop = (
         e: React.SyntheticEvent,
         data: ResizeCallbackData,
     ) => {
+        bookingCardRef.current?.changeCurrentCardResize();
         setCustomClass("");
         updateIsDragging(false);
 
@@ -160,6 +164,18 @@ const CardContent = ({
         );
     };
 
+    useEffect(() => {
+        return () => {
+            if (events?.onUnmount) events?.onUnmount();
+        };
+    }, []);
+
+    useImperativeHandle(dataRef, () => ({
+        changeCurrentCardResize: () => {
+            bookingCardRef.current?.changeCurrentCardResize();
+        },
+    }));
+
     if (!open && !bookingInit.finishAt) return null;
 
     if (resizableParam?.state?.height) {
@@ -198,6 +214,7 @@ const CardContent = ({
                     }}
                 >
                     <BookingCard
+                        ref={bookingCardRef}
                         key={bookingInit.id}
                         heightStyleTransformer={heightStyleTransformer}
                         booking={bookingInit}
