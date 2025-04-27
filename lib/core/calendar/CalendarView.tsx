@@ -23,7 +23,6 @@ const CalendarView = () => {
         bookingBulkData,
         addTimesRendered,
     } = useGlobalStore();
-
     const { selectedNode, emptySlotNodes } = useEmptySlotStore();
     const { finishAt, updateFinishAtWithOffset } = useNewEventStore(
         (state) => state,

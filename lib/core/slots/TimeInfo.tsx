@@ -50,6 +50,7 @@ const TimeInfo = ({
     const [finishAt, setFinishAt] = useState<string>(
         DateUtils.addMinutesToHour(slotData.time, 15),
     );
+
     const [isDraggingOnClick, setIsDraggingOnClick] = useState<boolean>(false);
 
     const cardContentRef = useRef<BookingCardRef>(null);

@@ -61,7 +61,7 @@ export const ActualTimerIndicator = ({
 
     const separatorContainer = useMemo((): string => {
         if (isFirstDay) {
-            return bookingViewType === BOOKING_VIEW_TYPE.DAY ? "101%" : "100vw";
+            return "101%";
         }
 
         return bookingViewType === BOOKING_VIEW_TYPE.DAY ? "102%" : "104%";
@@ -71,14 +71,14 @@ export const ActualTimerIndicator = ({
         if (isToday) {
             return {
                 top: `${positionBasedOnSeconds - 2}px`,
-                left: isFirstDay ? "-18px" : "-3px",
-                width: isFirstDay ? "110%" : "104%",
+                left: isFirstDay ? "-1px" : "-3px",
+                width: isFirstDay ? "101%" : "104%",
             };
         }
 
         return {
             top: `${positionBasedOnSeconds - 1}px`,
-            left: isFirstDay ? "-18px" : "-9px",
+            left: isFirstDay ? "-1px" : "0px",
             width: separatorContainer,
         };
     }, [isToday, isFirstDay, separatorContainer, positionBasedOnSeconds]);
@@ -118,19 +118,24 @@ export const ActualTimerIndicator = ({
     return (
         <div
             style={{ ...conditionalStyle }}
-            className={cn("timeIndicator_today", isToday && separatorContainer)}
+            className={cn(
+                "timeIndicator_today",
+                isToday && separatorContainer,
+                isToday && "timeIndicator_today_circle",
+            )}
             onMouseEnter={showTimeInfo}
             onMouseOut={hideTimeInfo}
             onBlur={() => {}}
         >
             <Separator
+                className="focus-effect"
                 style={{
                     height: isToday ? "4px" : "2px",
                     backgroundColor: color,
                 }}
             />
 
-            {isToday && isFirstDay && (
+            {/* {isToday && isFirstDay && (
                 <div className="today_first_day">
                     <Separator
                         orientation="vertical"
@@ -140,7 +145,7 @@ export const ActualTimerIndicator = ({
                         }}
                     />
                 </div>
-            )}
+            )} */}
             {showTime && (
                 <FirstDaySlot
                     isFirstDay={isFirstDay}

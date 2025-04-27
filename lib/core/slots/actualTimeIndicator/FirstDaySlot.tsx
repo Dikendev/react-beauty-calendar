@@ -9,7 +9,7 @@ const FirstDaySlot = ({ dateToRender, isFirstDay }: FirstDaySlotProps) => {
     return (
         <div
             style={{
-                left: isFirstDay ? "19px" : "10px",
+                left: isFirstDay ? "3px" : "10px",
             }}
             className="first_day_slot"
         >

@@ -28,6 +28,7 @@ import useBookingModal from "../../hooks/use-booking-model";
 
 import { GridLoader } from "react-spinners";
 import { mockUser } from "../../mock/booking-mock";
+import { DateUtils } from "../../utils/date-utils";
 
 interface CalendarHolderProps {
     isLoading: boolean;
@@ -55,32 +56,13 @@ const CalendarHolder = ({ isLoading }: CalendarHolderProps) => {
         if (active.id === "booking_info") return;
     }, []);
 
-    const getTimeDiff = (startTime: Date, endTime: Date) => {
-        const diffInMs =
-            Number(new Date(endTime)) - Number(new Date(startTime));
-        const diffInMinutes = Math.floor(diffInMs / 1000 / 60);
-
-        const hours = Math.floor(diffInMinutes / 60);
-        const minutes = diffInMinutes % 60;
-        return `${hours}:${minutes.toString().padStart(2, "0")}`;
-    };
-
-    const newFinishAt = (newStartAt: string, timeString: string) => {
-        const newDay = new Date(newStartAt);
-
-        const splitTimeString = timeString.split(":");
-        const hour = Number(splitTimeString[0]);
-        const minutes = Number(splitTimeString[1]);
-
-        newDay.setHours(newDay.getHours() + hour);
-        newDay.setMinutes(newDay.getMinutes() + minutes);
-        return newDay;
-    };
-
     const bookingTimeRange = (booking: Booking, overId: string): Booking => {
         const newStartAt = new Date(overId);
-        const timeDiff = getTimeDiff(booking.startAt, booking.finishAt);
-        const newFinishDate = newFinishAt(overId, timeDiff);
+        const timeDiff = DateUtils.getTimeDiff(
+            booking.startAt,
+            booking.finishAt,
+        );
+        const newFinishDate = DateUtils.getNewFinishAt(overId, timeDiff);
 
         return {
             id: booking.id,

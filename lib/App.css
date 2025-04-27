@@ -528,6 +528,13 @@
   border-left: 5px solid rgb(255, 89, 6);
 }
 
+.focus-effect:hover {
+  border-top: 1px solid rgb(255, 89, 6);
+  border-right: 1px solid rgb(255, 89, 6);
+  border-bottom: 1px solid rgb(255, 89, 6);
+  border-left: 5px solid rgb(255, 89, 6);
+}
+
 .cardContent_render:hover {
   border-top: 1px solid rgb(255, 89, 6);
   border-right: 1px solid rgb(255, 89, 6);
@@ -571,6 +578,19 @@
 .timeIndicator_today {
   position: absolute;
   right: 0;
+  z-index: 100;
+}
+
+.timeIndicator_today_circle::before {
+  content: "";
+  display: block;
+  position: absolute;
+  top: -2px;
+  left: -3.5px;
+  border-radius: 100%;
+  width: 0.5rem;
+  height: 0.5rem;
+  background-color: rgb(0, 0, 0);
   z-index: 100;
 }
 

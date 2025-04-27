@@ -96,6 +96,28 @@ export const DateUtils = {
         return `${hours}:${minutes}`;
     },
 
+    getTimeDiff(startTime: Date, endTime: Date): string {
+        const diffInMs =
+            Number(new Date(endTime)) - Number(new Date(startTime));
+        const diffInMinutes = Math.floor(diffInMs / 1000 / 60);
+
+        const hours = Math.floor(diffInMinutes / 60);
+        const minutes = diffInMinutes % 60;
+        return `${hours}:${minutes.toString().padStart(2, "0")}`;
+    },
+
+    getNewFinishAt(newStartAt: string, timeString: string): Date {
+        const newDay = new Date(newStartAt);
+
+        const splitTimeString = timeString.split(":");
+        const hour = Number(splitTimeString[0]);
+        const minutes = Number(splitTimeString[1]);
+
+        newDay.setHours(newDay.getHours() + hour);
+        newDay.setMinutes(newDay.getMinutes() + minutes);
+        return newDay;
+    },
+
     minuteDifference(date1: Date, date2: Date): number {
         return differenceInMinutes(date1, date2);
     },
@@ -166,7 +188,7 @@ export const DateUtils = {
         const newDate = new Date(date);
         newDate.setHours(Number(hour.split(":")[0]));
         newDate.setMinutes(Number(hour.split(":")[1]));
-        return newDate.toISOString();
+        return newDate.toString();
     },
 
     addMinutesToHour(startAt: string, interval: number): string {
