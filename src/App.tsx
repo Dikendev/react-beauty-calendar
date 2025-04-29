@@ -42,7 +42,7 @@ const App = () => {
                     setBookings(mockBooking);
                 }
             }
-        }, 500);
+        }, 100);
     };
 
     const onModalClose = () => {

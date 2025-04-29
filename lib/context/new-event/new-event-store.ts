@@ -10,6 +10,7 @@ export interface NewEventFormProps {
     date: string;
     startAt: string;
     finishAt: string;
+    slotStartAt: string;
     ref?: Ref<NewEventFormRef>;
 }
 
@@ -24,12 +25,14 @@ export interface NewEventFormState extends NewEventFormProps {
         increasingMinutes?: number,
     ) => string;
     resetForm: () => void;
+    updatePrevStartAt: (slotStartAt: string) => void;
 }
 
 export const initialFormState: NewEventFormProps = {
     date: "",
     startAt: "",
     finishAt: "",
+    slotStartAt: "",
 };
 
 export type NewEventStore = ReturnType<typeof newEventFormStore>;
@@ -78,6 +81,12 @@ const newEventFormStore = (initProps?: Partial<NewEventFormState>) => {
 
         updateDate: (dateAsString: string) =>
             set((prev) => ({ ...prev, date: dateAsString })),
+
+        updatePrevStartAt: (slotStartAt: string) =>
+            set((prev) => ({
+                ...prev,
+                slotStartAt,
+            })),
 
         resetForm: () => set(initialFormState),
     }));

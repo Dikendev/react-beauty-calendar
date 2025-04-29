@@ -13,7 +13,7 @@ import CardContent from "../slots/CardContent";
 import type { BlocksTimeStructure } from "../slots/EmptySlot";
 import EventTabs from "../slots/EventsTab";
 import type { TimesBlock } from "../slots/Slots";
-import TimeInfo from "../slots/TimeInfo";
+import TimeInfo, { type TimeInfoRef } from "../slots/TimeInfo";
 import useResizableCardHook from "../slots/useResizableCardHook";
 
 import useDragStore from "../../context/drag/dragStore";
@@ -65,6 +65,7 @@ const SlotTrigger = ({
 
     const { emptySlotNodes, setSelectedNode, resetSelectedNode } =
         useEmptySlotStore();
+
     const { onModalClose, onSlotClick } = useBookingModal();
 
     const {
@@ -77,6 +78,20 @@ const SlotTrigger = ({
     } = useNewEventStore((state) => state);
 
     const bookingViewType = useGlobalStore((state) => state.bookingViewType);
+
+    const timeInfoRef = useRef<TimeInfoRef>(null);
+
+    const showTimeInfo = () => {
+        timeInfoRef.current?.show();
+    };
+
+    const hideTimeInfo = () => {
+        timeInfoRef.current?.hide();
+    };
+
+    const changeIsOpen = (isOpen: boolean) => {
+        timeInfoRef.current?.changeIsOpen(isOpen);
+    };
 
     const bookingMock: Booking = useMemo(() => {
         return {
@@ -91,18 +106,17 @@ const SlotTrigger = ({
     });
 
     const [renderEvent, setRenderEvent] = useState<boolean>(false);
-    const [open, setOpen] = useState(false);
-    const [showTimeInfo, setShowTimeInfo] = useState<boolean>(false);
+    const [isOpenCustomModal, setIsOpenCustomModal] = useState(false);
     const [isDraggingOnClick, setIsDraggingOnClick] = useState<boolean>(false);
 
     const renderedCardPreviewRef = useRef<HTMLDivElement>(null);
 
     const onMouseEnterEvent = useCallback((): void => {
-        if (isDragging || open) return;
+        if (isDragging || isOpenCustomModal || renderEvent || children) return;
 
         const result = events.onMouseEnterEvent();
-        if (result === slotPosition) setShowTimeInfo(true);
-    }, [slotPosition, events, isDragging, open]);
+        if (result === slotPosition) showTimeInfo();
+    }, [slotPosition, isDragging, isOpenCustomModal]);
 
     const resetDataAndDragging = () => {
         resetForm();
@@ -123,18 +137,19 @@ const SlotTrigger = ({
 
         event?.stopPropagation();
         event?.preventDefault();
-        setOpen(false);
+        setIsOpenCustomModal(false);
     };
 
     const onOpenChange = (status: boolean): void => {
         if (!status) onCloseCreationModal();
         setRenderEvent(status);
-        setShowTimeInfo(status);
-        setOpen(status);
+        changeIsOpen(status);
+        setIsOpenCustomModal(status);
     };
 
     const openModal = useCallback(
         (finishAt?: string): void => {
+            resetDataAndDragging();
             if (isDragging && !finishAt) return;
 
             updateIsDragging(false);
@@ -158,7 +173,7 @@ const SlotTrigger = ({
 
             // User instance calendar callback
             onSlotClick({ slotData, finishTime: finishAtUpdated });
-            setOpen(true);
+            setIsOpenCustomModal(true);
         },
         [
             slotData,
@@ -174,8 +189,8 @@ const SlotTrigger = ({
     );
 
     const handleOnMouseLeave = (): void => {
-        if (isDragging || open) return;
-        setShowTimeInfo(false);
+        if (isDragging || isOpenCustomModal) return;
+        hideTimeInfo();
     };
 
     const activeStyle =
@@ -201,7 +216,7 @@ const SlotTrigger = ({
     ]);
 
     const openOptions = () => {
-        setOpen(true);
+        setIsOpenCustomModal(true);
     };
 
     const resetPrevView = useCallback(() => {
@@ -209,8 +224,8 @@ const SlotTrigger = ({
     }, []);
 
     const prepareToShowModal = () => {
-        setShowTimeInfo(false);
-        setOpen(true);
+        hideTimeInfo();
+        setIsOpenCustomModal(true);
         setRenderEvent(true);
     };
 
@@ -243,7 +258,10 @@ const SlotTrigger = ({
     }, [finishAt, startAt]);
 
     useEffect(() => {
-        if (!renderEvent) return;
+        if (!renderEvent) {
+            hideTimeInfo();
+            return;
+        }
 
         if (renderedCardPreviewRef?.current) {
             renderedCardPreviewRef.current.scrollIntoView({
@@ -254,8 +272,15 @@ const SlotTrigger = ({
     }, [renderEvent]);
 
     useEffect(() => {
-        if (!children) setShowTimeInfo(false);
-    }, [children]);
+        if (!children) hideTimeInfo();
+        if (isDraggingOnClick) showTimeInfo();
+    }, [children, isDraggingOnClick]);
+
+    useEffect(() => {
+        if (isDraggingOnClick) {
+            showTimeInfo();
+        }
+    }, [isDraggingOnClick]);
 
     useImperativeHandle(ref, () => ({
         showEvent: (time: string) => {
@@ -263,13 +288,13 @@ const SlotTrigger = ({
             prepareToShowModal();
         },
         closeEvent: () => {
-            setOpen(false);
+            setIsOpenCustomModal(false);
             setRenderEvent(false);
-            setShowTimeInfo(false);
+            hideTimeInfo();
             resetPrevView();
         },
         onOpenCloseChange: (status: boolean) => {
-            setShowTimeInfo(status);
+            changeIsOpen(status);
             setRenderEvent(status);
             resetPrevView();
         },
@@ -295,19 +320,17 @@ const SlotTrigger = ({
                 onMouseLeave={handleOnMouseLeave}
                 onFocus={() => {}}
             >
-                {((!children && showTimeInfo && !renderEvent) ||
-                    isDraggingOnClick) && (
-                    <TimeInfo
-                        isDragging={isDragging}
-                        slotData={slotData}
-                        events={{
-                            onClick: openModal,
-                            openOptions,
-                            renderPreviewCard,
-                            resetPrevView,
-                        }}
-                    />
-                )}
+                <TimeInfo
+                    ref={timeInfoRef}
+                    isDragging={isDragging}
+                    slotData={slotData}
+                    events={{
+                        onClick: openModal,
+                        openOptions,
+                        renderPreviewCard,
+                        resetPrevView,
+                    }}
+                />
 
                 {actualTimerIndicatorChildren}
 
@@ -328,7 +351,7 @@ const SlotTrigger = ({
                 {children}
             </div>
 
-            {open && (
+            {isOpenCustomModal && (
                 <DndContext>
                     <EventTabs
                         onClose={onCloseCreationModal}

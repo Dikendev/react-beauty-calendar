@@ -4,10 +4,8 @@ import { DateUtils } from "../../../utils/date-utils";
 import { type Times, generateTimes } from "../../../utils/hours";
 
 // Make a default to the calendar, but the user can change the start and the end time by props.
-// The interval is always 60 min (1 hour).
-const START_TIME = "08:00";
-const END_TIME = "23:30";
-const INTERVAL = 60;
+export const START_TIME = 1;
+export const END_24_HOUR_FORMAT = 24;
 
 export type DaysOfWeek = Date[];
 
@@ -34,7 +32,7 @@ export interface DayAndWeekState extends DayAndWeekProps {
 const initValuesWeek = DateUtils.generateWeekDays();
 
 const dayAndWeekStore: StateCreator<DayAndWeekState> = (set, get) => ({
-    hours: generateTimes(START_TIME, END_TIME, INTERVAL),
+    hours: generateTimes(START_TIME, END_24_HOUR_FORMAT),
     daysOfWeek: initValuesWeek.week,
     timesRendered: new Map(),
 

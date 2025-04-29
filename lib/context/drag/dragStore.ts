@@ -1,20 +1,24 @@
 import { create } from "zustand";
 
-export interface DragProps {
+const initialDragStore: DragStoreProps = {
+    isDragging: false,
+};
+
+export interface DragStoreProps {
     isDragging: boolean;
 }
 
-export interface DragState extends DragProps {
-    updateIsDragging: (status: boolean) => void;
+export interface DragStoreState extends DragStoreProps {
+    updateIsDragging: (isDragging: boolean) => void;
 }
 
-const useDragStore = create<DragState>((set) => ({
-    isDragging: false,
+const useDragStore = create<DragStoreState>((set) => ({
+    ...initialDragStore,
 
-    updateIsDragging: (status: boolean): void =>
+    updateIsDragging: (isDragging: boolean): void =>
         set((prev) => ({
             ...prev,
-            isDragging: status,
+            isDragging,
         })),
 }));
 

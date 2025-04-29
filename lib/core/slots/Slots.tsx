@@ -3,7 +3,7 @@ import { useMemo, useRef } from "react";
 
 import { DateUtils } from "../../utils/date-utils";
 
-import EmptySlot, { type BlocksTimeStructure } from "./EmptySlot";
+import type { BlocksTimeStructure } from "./EmptySlot";
 
 import type {
     Booking,
@@ -12,7 +12,9 @@ import type {
 } from "../../@types/booking";
 import { BOOKING_VIEW_TYPE } from "../../constants";
 
+import { useNewEventStore } from "../../hooks";
 import { cn } from "../../lib/utils";
+import SlotRender from "./SlotRender";
 
 export type TimesBlock = "first" | "second" | "third" | "fourth";
 
@@ -36,6 +38,10 @@ const Slots = ({
 }: SlotsProps) => {
     const disabledCss = useRef<string>("");
 
+    const updatePrevStartAt = useNewEventStore(
+        (store) => store.updatePrevStartAt,
+    );
+
     //TODO: create a issue to fix this, it is hard to understand and complex to maintain, need to improve this.
     const isTimeLunch = (hour: string) => {
         if (
@@ -48,37 +54,71 @@ const Slots = ({
         return false;
     };
 
-    const secondBlockTime = DateUtils.addMinuteToHour(dayHour.hour, 15); // example 08:15
-    const thirdBlockTime = DateUtils.addMinuteToHour(dayHour.hour, 30); // example 08:30
-    const fourthBlockTime = DateUtils.addMinuteToHour(dayHour.hour, 45); // example 08:40
+    const secondBlockTime = useMemo(() => {
+        return DateUtils.addMinuteToHour(dayHour.hour, 15);
+    }, [dayHour.hour]); // example 08:15
+
+    const thirdBlockTime = useMemo(() => {
+        return DateUtils.addMinuteToHour(dayHour.hour, 30);
+    }, [dayHour.hour]); // example 08:30
+
+    const fourthBlockTime = useMemo(() => {
+        return DateUtils.addMinuteToHour(dayHour.hour, 45);
+    }, [dayHour.hour]); // example 08:40
 
     const { isOver: isOverFirst, setNodeRef: setNodeRefFirst } = useDroppable({
         id: `${DateUtils.newDateKey(dayHour.day, dayHour.hour)}`,
         data: { accepts: ["booking-slots"] },
-        disabled: isTimeLunch(dayHour.hour),
+        // disabled: isTimeLunch(dayHour.hour),
     });
 
     const { isOver: isOverSecond, setNodeRef: setNodeRefSecond } = useDroppable(
         {
             id: `${DateUtils.newDateKey(dayHour.day, secondBlockTime)}`,
             data: { accepts: ["booking-slots"] },
-            disabled: isTimeLunch(secondBlockTime),
+            // disabled: isTimeLunch(secondBlockTime),
         },
     );
 
     const { isOver: isOverThird, setNodeRef: setNodeRefThird } = useDroppable({
         id: `${DateUtils.newDateKey(dayHour.day, thirdBlockTime)}`,
         data: { accepts: ["booking-slots"] },
-        disabled: isTimeLunch(thirdBlockTime),
+        // disabled: isTimeLunch(thirdBlockTime),
     });
 
     const { isOver: isOverFourth, setNodeRef: setNodeRefFourth } = useDroppable(
         {
             id: `${DateUtils.newDateKey(dayHour.day, fourthBlockTime)}`,
             data: { accepts: ["booking-slots"] },
-            disabled: isTimeLunch(fourthBlockTime),
+            // disabled: isTimeLunch(fourthBlockTime),
         },
     );
+
+    // useEffect(() => {
+    //     if (isOverFirst) {
+    //         updatePrevStartAt(
+    //             `${DateUtils.newDateKey(dayHour.day, dayHour.hour)}`,
+    //         );
+    //     }
+
+    //     if (isOverSecond) {
+    //         updatePrevStartAt(
+    //             `${DateUtils.newDateKey(dayHour.day, secondBlockTime)}`,
+    //         );
+    //     }
+
+    //     if (isOverThird) {
+    //         updatePrevStartAt(
+    //             `${DateUtils.newDateKey(dayHour.day, thirdBlockTime)}`,
+    //         );
+    //     }
+
+    //     if (isOverFourth) {
+    //         updatePrevStartAt(
+    //             `${DateUtils.newDateKey(dayHour.day, fourthBlockTime)}`,
+    //         );
+    //     }
+    // }, [isOverFirst, isOverSecond, isOverThird, isOverFourth]);
 
     const firstBlockTimeData: BlocksTimeStructure = useMemo(() => {
         return {
@@ -87,7 +127,7 @@ const Slots = ({
             key: DateUtils.newDateKey(dayHour.day, dayHour.hour),
             time: dayHour.hour,
         };
-    }, [dayHour.day, dayHour.hour, isOverFirst, setNodeRefFirst]);
+    }, [dayHour.day, isOverFirst, dayHour.hour, setNodeRefFirst]);
 
     const secondBlockTimeData: BlocksTimeStructure = useMemo(() => {
         return {
@@ -105,7 +145,7 @@ const Slots = ({
             key: DateUtils.newDateKey(dayHour.day, thirdBlockTime),
             time: thirdBlockTime,
         };
-    }, [dayHour.day, isOverThird, setNodeRefThird, thirdBlockTime]);
+    }, [dayHour.day, isOverThird, thirdBlockTime, setNodeRefThird]);
 
     const fourthBlockTimeData: BlocksTimeStructure = useMemo(() => {
         return {
@@ -116,60 +156,6 @@ const Slots = ({
         };
     }, [dayHour.day, fourthBlockTime, isOverFourth, setNodeRefFourth]);
 
-    const slotRender = useMemo(() => {
-        const { day, hour } = dayHour;
-
-        const bookings = bookingBulk.filter((bookingEvent) => {
-            const startTime = DateUtils.dateAndHourDateToString(
-                bookingEvent.startAt,
-            );
-
-            const bookingDay = new Date(bookingEvent.startAt).getDate();
-            const slotDay = new Date(day).getDate();
-
-            const slotHour = hour.split(":")[0];
-            const bookingHour = startTime.split(":")[0];
-
-            const sameHour = bookingHour === slotHour;
-            const isSameDay = bookingDay === slotDay;
-            return sameHour && isSameDay;
-        });
-
-        if (!bookings.length) {
-            return (
-                <EmptySlot
-                    first={firstBlockTimeData}
-                    second={secondBlockTimeData}
-                    third={thirdBlockTimeData}
-                    fourth={fourthBlockTimeData}
-                    disabledCss={disabledCss.current}
-                    firstDay={firstDay}
-                />
-            );
-        }
-
-        return (
-            <EmptySlot
-                dayHour={dayHour}
-                bookings={bookings}
-                first={firstBlockTimeData}
-                second={secondBlockTimeData}
-                third={thirdBlockTimeData}
-                fourth={fourthBlockTimeData}
-                disabledCss={disabledCss.current}
-                firstDay={firstDay}
-            />
-        );
-    }, [
-        bookingBulk,
-        dayHour,
-        firstDay,
-        firstBlockTimeData,
-        fourthBlockTimeData,
-        secondBlockTimeData,
-        thirdBlockTimeData,
-    ]);
-
     return (
         <td
             key={`${dayHour.day}-${dayHour.hour}-slot`}
@@ -178,7 +164,16 @@ const Slots = ({
                 bookingViewType === BOOKING_VIEW_TYPE.WEEK && "slotWeek",
             )}
         >
-            {slotRender}
+            <SlotRender
+                booking={bookingBulk}
+                dayHour={dayHour}
+                firstDay={firstDay}
+                disabledCss={disabledCss.current}
+                firstBlockTimeData={firstBlockTimeData}
+                secondBlockTimeData={secondBlockTimeData}
+                thirdBlockTimeData={thirdBlockTimeData}
+                fourthBlockTimeData={fourthBlockTimeData}
+            />
         </td>
     );
 };

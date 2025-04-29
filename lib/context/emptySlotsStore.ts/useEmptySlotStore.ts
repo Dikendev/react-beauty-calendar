@@ -1,6 +1,11 @@
+import { differenceInHours } from "date-fns";
 import { create } from "zustand";
 import type { SlotTriggerForwardRef } from "../../core/card-slots/SlotTrigger";
 import type { BlockTimeData } from "../../core/slots/EmptySlot";
+import {
+    END_24_HOUR_FORMAT,
+    START_TIME,
+} from "../global/days-and-week/day-and-week-store";
 import setEmptySlotKey from "./emptySlotKey";
 
 export type EmptySlotNodes = Map<string, SlotTriggerForwardRef>;
@@ -34,17 +39,25 @@ const useEmptySlotStore = create<EmptySlotState>((set, get) => ({
             // BUG SOLVED, WHEN THE PAGE RELOAD WITH THE OLD REF, IT DO NOT WORK TO THE NEW REFERENCES.
             // WHEN I TRY TO CALL WITH THE OLD REFERENCES IT CAUSE A BUG.
 
-            // 13 starting from 8:00 AM to 20:00 PM
+            const hoursDiff = differenceInHours(
+                new Date(`1970/01/01 ${END_24_HOUR_FORMAT}`),
+                new Date(2014, 6, 0, Number(START_TIME), 0),
+            );
+            const hourBlockQuantity = 4;
+            const daysOfWeek = 7;
+            const hourDiffMultiplyBy = (hoursDiff + 2) * hourBlockQuantity;
+            const quantityOfSlots = hourDiffMultiplyBy * daysOfWeek;
 
-            // rendered refs at window
-            //
-            // 13 X 4 = 52
-            // 52 x 7 = 364
-            // 0 ... 363
+            // rendered slot refs on window
+            // 24 X 4 = 96
+            // 96 x 7 = 672
+            // 0 ... 671
 
-            // conclusion: the mapSizeLimit will change based on the total size of time hours. today is 8am to 20pm
-            // if this range change, the mapSizeLimit need to change accordingly.
-            const mapSizeLimit = 447;
+            // CRIAR UMA ISSUE, DISSO.
+            // E COMO POSSO FAZER PARA O USUÁRIO ESCOLHER O TIPO DE VISUALIZAÇÃO? SE É 12 OU 24?
+            //TODO: AGORA FAZER ISSO SER DINÂMICO.
+
+            const mapSizeLimit = quantityOfSlots - 1;
 
             const oldEmptySlotNodesSize = prevEmptySlotNodes.size;
             if (oldEmptySlotNodesSize > mapSizeLimit)

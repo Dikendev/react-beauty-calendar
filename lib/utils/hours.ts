@@ -1,19 +1,17 @@
+import { eachHourOfInterval } from "date-fns";
 import { DateUtils } from "./date-utils";
 
 export type Times = string[];
 
-const generateTimes = (start: string, end: string, interval: number): Times => {
-    const times: string[] = [];
-    const startTime = new Date(`1970/01/01 ${start}`);
-    const endTime = new Date(`1970/01/01 ${end}`);
+const generateTimes = (start: number, end: number): Times => {
+    const result = eachHourOfInterval({
+        start: new Date(2014, 9, 6, start),
+        end: new Date(2014, 9, 6, end),
+    });
 
-    while (startTime < endTime) {
-        const formattedTime = DateUtils.dateTimeAsString(startTime);
-        startTime.setMinutes(startTime.getMinutes() + interval);
-        times.push(formattedTime);
-    }
-
-    return times;
+    return Object.values(result).map(
+        (date) => `${String(date.getHours()).padStart(2, "0")}:00`,
+    );
 };
 
 interface WorkingTimesSlots {

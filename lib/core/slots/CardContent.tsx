@@ -84,11 +84,10 @@ const CardContent = ({
     cardContentRef: dataRef,
     ref,
 }: CardContentProps) => {
-    const [customClass, setCustomClass] = useState<string>("");
-
     const updateIsDragging = useDragStore((state) => state.updateIsDragging);
     const { bookings } = useBookingModal();
 
+    const [customClass, setCustomClass] = useState<string>("");
     const bookingCardRef = useRef<BookingCardRef>(null);
 
     const handleStyleCardContent: CSSProperties =
