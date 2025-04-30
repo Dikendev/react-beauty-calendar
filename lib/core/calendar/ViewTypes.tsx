@@ -1,18 +1,17 @@
-import { useEffect, useMemo } from "react";
-import type { BookingViewType } from "../../@types/booking";
+import { type PropsWithChildren, useEffect } from "react";
 import { BOOKING_VIEW_TYPE } from "../../constants";
 
 import useEmptySlotStore from "../../context/emptySlotsStore.ts/useEmptySlotStore";
-import CalendarView from "./CalendarView";
+import { useGlobalStore } from "../../hooks";
 
-interface HandleViewTypeProps {
-    bookingViewType: BookingViewType;
-}
+type HandleViewTypePropsWithChildren = PropsWithChildren;
 
-const HandleViewType = ({ bookingViewType }: HandleViewTypeProps) => {
+const HandleViewType = ({ children }: HandleViewTypePropsWithChildren) => {
     const { resetSelectedNode, resetNodes } = useEmptySlotStore(
         (state) => state,
     );
+
+    const bookingViewType = useGlobalStore((state) => state.bookingViewType);
 
     useEffect(() => {
         if (
@@ -24,18 +23,14 @@ const HandleViewType = ({ bookingViewType }: HandleViewTypeProps) => {
         }
     }, [bookingViewType, resetNodes, resetSelectedNode]);
 
-    const render = useMemo(() => {
-        switch (bookingViewType) {
-            case BOOKING_VIEW_TYPE.DAY:
-            case BOOKING_VIEW_TYPE.WEEK: {
-                return <CalendarView />;
-            }
-            default:
-                return null;
+    switch (bookingViewType) {
+        case BOOKING_VIEW_TYPE.DAY:
+        case BOOKING_VIEW_TYPE.WEEK: {
+            return children;
         }
-    }, [bookingViewType]);
-
-    return render;
+        default:
+            return null;
+    }
 };
 
 export default HandleViewType;

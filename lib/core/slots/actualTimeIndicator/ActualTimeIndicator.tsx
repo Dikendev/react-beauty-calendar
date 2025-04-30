@@ -135,17 +135,6 @@ export const ActualTimerIndicator = ({
                 }}
             />
 
-            {/* {isToday && isFirstDay && (
-                <div className="today_first_day">
-                    <Separator
-                        orientation="vertical"
-                        style={{
-                            height: "11px",
-                            backgroundColor: color,
-                        }}
-                    />
-                </div>
-            )} */}
             {showTime && (
                 <FirstDaySlot
                     isFirstDay={isFirstDay}

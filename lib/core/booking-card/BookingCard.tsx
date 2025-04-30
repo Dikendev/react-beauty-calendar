@@ -2,6 +2,7 @@ import {
     type CSSProperties,
     type Ref,
     useCallback,
+    useEffect,
     useImperativeHandle,
     useState,
 } from "react";
@@ -11,8 +12,10 @@ import { cn } from "../../lib/utils";
 import { DateUtils } from "../../utils/date-utils";
 
 import { useDndMonitor, useDraggable } from "@dnd-kit/core";
+import { useShallow } from "zustand/shallow";
 import { BOOKING_VIEW_TYPE } from "../../constants";
 import useDragStore from "../../context/drag/dragStore";
+import useDragStartAtStore from "../../context/drag/useDragStateAtStore";
 import { useGlobalStore } from "../../hooks";
 import CardOverlay from "../slots/CardOverlay";
 
@@ -47,8 +50,13 @@ const BookingCard = ({
     const { day, hour } = slotData;
     const [isResizingCard, setIsResizingCard] = useState<boolean>(false);
 
-    const { bookingViewType } = useGlobalStore();
+    const bookingViewType = useGlobalStore(
+        useShallow((state) => state.bookingViewType),
+    );
+
     const { updateIsDragging, isDragging } = useDragStore((state) => state);
+
+    const dragStartAt = useDragStartAtStore((state) => state.startAt);
 
     const {
         attributes,
@@ -94,7 +102,7 @@ const BookingCard = ({
     const cardContextStyle: CSSProperties = {
         height: heightStyleTransformer,
         position: "relative",
-        zIndex: 50,
+        zIndex: 100,
         cursor: isDragging ? "ns-resize" : "pointer",
         ...style,
         ...handleStyleCardContent,
@@ -123,6 +131,51 @@ const BookingCard = ({
 
     //     return `${MAX_WIDTH_PERCENTAGE - widthReduction}%`;
     // }, [layerCount]);
+    const getTimeDiff = (startTime: Date, endTime: Date) => {
+        const diffInMs =
+            Number(new Date(endTime)) - Number(new Date(startTime));
+        const diffInMinutes = Math.floor(diffInMs / 1000 / 60);
+
+        const hours = Math.floor(diffInMinutes / 60);
+        const minutes = diffInMinutes % 60;
+        return `${hours}:${minutes.toString().padStart(2, "0")}`;
+    };
+
+    const newFinishAt = (newStartAt: string, timeString: string) => {
+        const newDay = new Date(newStartAt);
+
+        const splitTimeString = timeString.split(":");
+        const hour = Number(splitTimeString[0]);
+        const minutes = Number(splitTimeString[1]);
+
+        newDay.setHours(newDay.getHours() + hour);
+        newDay.setMinutes(newDay.getMinutes() + minutes);
+        return newDay;
+    };
+
+    const bookingTimeRange = (booking: Booking, overId: string): Booking => {
+        const newStartAt = new Date(overId);
+        const timeDiff = getTimeDiff(booking.startAt, booking.finishAt);
+        const newFinishDate = newFinishAt(overId, timeDiff);
+
+        return {
+            id: booking.id,
+            startAt: newStartAt,
+            finishAt: newFinishDate,
+        };
+    };
+
+    const [prevBooking, setPrevBooking] = useState<Booking>(booking);
+
+    useEffect(() => {
+        if (dragStartAt.length) {
+            const result = bookingTimeRange(booking, dragStartAt);
+            setPrevBooking({
+                ...result,
+            });
+        }
+    }, [dragStartAt]);
+
     useImperativeHandle(ref, () => ({
         changeCurrentCardResize: () => setIsResizingCard((prev) => !prev),
     }));
@@ -173,7 +226,7 @@ const BookingCard = ({
 
     return (
         <CardOverlay
-            bookingInit={booking}
+            bookingInit={prevBooking}
             slotData={slotData}
             heightStyle={String(heightStyleTransformer)}
         />

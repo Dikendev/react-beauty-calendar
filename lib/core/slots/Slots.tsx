@@ -1,5 +1,5 @@
 import { useDroppable } from "@dnd-kit/core";
-import { useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
 
 import { DateUtils } from "../../utils/date-utils";
 
@@ -12,7 +12,7 @@ import type {
 } from "../../@types/booking";
 import { BOOKING_VIEW_TYPE } from "../../constants";
 
-import { useNewEventStore } from "../../hooks";
+import useDragStartAtStore from "../../context/drag/useDragStateAtStore";
 import { cn } from "../../lib/utils";
 import SlotRender from "./SlotRender";
 
@@ -38,9 +38,7 @@ const Slots = ({
 }: SlotsProps) => {
     const disabledCss = useRef<string>("");
 
-    const updatePrevStartAt = useNewEventStore(
-        (store) => store.updatePrevStartAt,
-    );
+    const updateStartAt = useDragStartAtStore((store) => store.updateStartAt);
 
     //TODO: create a issue to fix this, it is hard to understand and complex to maintain, need to improve this.
     const isTimeLunch = (hour: string) => {
@@ -94,31 +92,29 @@ const Slots = ({
         },
     );
 
-    // useEffect(() => {
-    //     if (isOverFirst) {
-    //         updatePrevStartAt(
-    //             `${DateUtils.newDateKey(dayHour.day, dayHour.hour)}`,
-    //         );
-    //     }
+    useEffect(() => {
+        if (isOverFirst) {
+            updateStartAt(`${DateUtils.newDateKey(dayHour.day, dayHour.hour)}`);
+        }
 
-    //     if (isOverSecond) {
-    //         updatePrevStartAt(
-    //             `${DateUtils.newDateKey(dayHour.day, secondBlockTime)}`,
-    //         );
-    //     }
+        if (isOverSecond) {
+            updateStartAt(
+                `${DateUtils.newDateKey(dayHour.day, secondBlockTime)}`,
+            );
+        }
 
-    //     if (isOverThird) {
-    //         updatePrevStartAt(
-    //             `${DateUtils.newDateKey(dayHour.day, thirdBlockTime)}`,
-    //         );
-    //     }
+        if (isOverThird) {
+            updateStartAt(
+                `${DateUtils.newDateKey(dayHour.day, thirdBlockTime)}`,
+            );
+        }
 
-    //     if (isOverFourth) {
-    //         updatePrevStartAt(
-    //             `${DateUtils.newDateKey(dayHour.day, fourthBlockTime)}`,
-    //         );
-    //     }
-    // }, [isOverFirst, isOverSecond, isOverThird, isOverFourth]);
+        if (isOverFourth) {
+            updateStartAt(
+                `${DateUtils.newDateKey(dayHour.day, fourthBlockTime)}`,
+            );
+        }
+    }, [isOverFirst, isOverSecond, isOverThird, isOverFourth]);
 
     const firstBlockTimeData: BlocksTimeStructure = useMemo(() => {
         return {

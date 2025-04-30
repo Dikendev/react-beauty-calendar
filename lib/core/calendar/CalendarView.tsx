@@ -8,6 +8,7 @@ import {
 
 import Slots from "../slots/Slots";
 
+import { useShallow } from "zustand/shallow";
 import { Table, TableCell } from "../../components/ui/Table";
 import { BOOKING_VIEW_TYPE } from "../../constants";
 import useEmptySlotStore from "../../context/emptySlotsStore.ts/useEmptySlotStore";
@@ -22,7 +23,18 @@ const CalendarView = () => {
         bookingViewType,
         bookingBulkData,
         addTimesRendered,
-    } = useGlobalStore();
+    } = useGlobalStore(
+        useShallow((state) => {
+            return {
+                addTimesRendered: state.addTimesRendered,
+                bookingBulkData: state.bookingBulkData,
+                bookingViewType: state.bookingViewType,
+                daysOfWeek: state.daysOfWeek,
+                hours: state.hours,
+            };
+        }),
+    );
+
     const { selectedNode, emptySlotNodes } = useEmptySlotStore();
     const { finishAt, updateFinishAtWithOffset } = useNewEventStore(
         (state) => state,
@@ -58,20 +70,20 @@ const CalendarView = () => {
         [],
     );
 
-    const selectedTimeHour = (): string => {
+    const selectedTimeHour = useMemo(() => {
         return selectedNode.split(";")[1];
-    };
+    }, [selectedNode]);
 
     useEffect(() => {
         if (selectedNode) {
             const emptySlotNode = emptySlotNodes.get(selectedNode);
-            emptySlotNode?.showEvent(selectedTimeHour());
+            emptySlotNode?.showEvent(selectedTimeHour);
         }
     }, [selectedNode, emptySlotNodes]);
 
     useEffect(() => {
-        if (selectedTimeHour() === finishAt) {
-            updateFinishAtWithOffset(selectedTimeHour());
+        if (selectedTimeHour === finishAt) {
+            updateFinishAtWithOffset(selectedTimeHour);
         }
     }, [selectedNode, finishAt]);
 
@@ -136,12 +148,12 @@ const CalendarView = () => {
     }, [
         dayCss,
         hours,
-        lunchTimeBlock,
         noBorderFirstColumn,
-        bookingBulkData,
+        bookingBulkData.booking,
         addTimeRenderedStore,
         bookingViewType,
         daysOfWeek,
+        daysOfWeek.length,
     ]);
 
     return tableContent;

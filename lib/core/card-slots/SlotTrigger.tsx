@@ -320,17 +320,19 @@ const SlotTrigger = ({
                 onMouseLeave={handleOnMouseLeave}
                 onFocus={() => {}}
             >
-                <TimeInfo
-                    ref={timeInfoRef}
-                    isDragging={isDragging}
-                    slotData={slotData}
-                    events={{
-                        onClick: openModal,
-                        openOptions,
-                        renderPreviewCard,
-                        resetPrevView,
-                    }}
-                />
+                {!children && (
+                    <TimeInfo
+                        ref={timeInfoRef}
+                        isDragging={isDragging}
+                        slotData={slotData}
+                        events={{
+                            onClick: openModal,
+                            openOptions,
+                            renderPreviewCard,
+                            resetPrevView,
+                        }}
+                    />
+                )}
 
                 {actualTimerIndicatorChildren}
 

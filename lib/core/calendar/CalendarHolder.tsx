@@ -29,6 +29,7 @@ import useBookingModal from "../../hooks/use-booking-model";
 import { GridLoader } from "react-spinners";
 import { mockUser } from "../../mock/booking-mock";
 import { DateUtils } from "../../utils/date-utils";
+import CalendarView from "./CalendarView";
 
 interface CalendarHolderProps {
     isLoading: boolean;
@@ -139,13 +140,16 @@ const CalendarHolder = ({ isLoading }: CalendarHolderProps) => {
                             daysOfWeek={daysOfWeek}
                             bookingViewType={bookingViewType}
                         />
-                        <DndContext
-                            onDragEnd={handleDragEnd}
-                            onDragStart={onDragStart}
-                            sensors={sensors}
-                        >
-                            <HandleViewType bookingViewType={bookingViewType} />
-                        </DndContext>
+                        <HandleViewType>
+                            <DndContext
+                                onDragEnd={handleDragEnd}
+                                onDragStart={onDragStart}
+                                sensors={sensors}
+                                // modifiers={[snapCenterToCursor]}
+                            >
+                                <CalendarView />
+                            </DndContext>
+                        </HandleViewType>
                     </div>
                 </div>
             </MonthDescriptionProvider>
