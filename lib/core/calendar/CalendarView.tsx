@@ -135,7 +135,6 @@ const CalendarView = () => {
                                             bookingBulk={
                                                 bookingBulkData.booking
                                             }
-                                            bookingViewType={bookingViewType}
                                         />
                                     );
                                 })}

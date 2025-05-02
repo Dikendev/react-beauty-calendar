@@ -88,11 +88,15 @@ const mockBooking: Booking[] = [
         startAt: new Date("2025-04-26T11:30:00Z"),
         finishAt: new Date("2025-04-26T11:45:00Z"),
     },
-
     {
         id: "21",
         startAt: new Date("2025-04-23T19:30:00Z"),
         finishAt: new Date("2025-04-23T23:00:00Z"),
+    },
+    {
+        id: "22",
+        startAt: new Date("2025-04-23T00:00:00Z"),
+        finishAt: new Date("2025-04-23T01:00:00Z"),
     },
 ];
 
@@ -126,6 +130,11 @@ const nextWeekBookingMock: Booking[] = [
         id: "20",
         startAt: new Date("2025-03-29T15:30:00Z"),
         finishAt: new Date("2025-03-29T16:45:00Z"),
+    },
+    {
+        id: "20",
+        startAt: new Date("2025-03-29T00:00:00Z"),
+        finishAt: new Date("2025-03-29T01:00:00Z"),
     },
 ];
 

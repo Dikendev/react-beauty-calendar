@@ -5,14 +5,12 @@ import { DateUtils } from "../../utils/date-utils";
 
 import type { BlocksTimeStructure } from "./EmptySlot";
 
-import type {
-    Booking,
-    BookingDateAndTime,
-    BookingViewType,
-} from "../../@types/booking";
+import type { Booking, BookingDateAndTime } from "../../@types/booking";
 import { BOOKING_VIEW_TYPE } from "../../constants";
 
+import { useShallow } from "zustand/shallow";
 import useDragStartAtStore from "../../context/drag/useDragStateAtStore";
+import { useGlobalStore } from "../../hooks";
 import { cn } from "../../lib/utils";
 import SlotRender from "./SlotRender";
 
@@ -25,7 +23,6 @@ interface SlotsProps {
         finishAt: string;
     };
     firstDay: boolean;
-    bookingViewType: BookingViewType;
     bookingBulk: Booking[];
 }
 
@@ -34,11 +31,16 @@ const Slots = ({
     lunchTimeBlock,
     firstDay,
     bookingBulk,
-    bookingViewType,
 }: SlotsProps) => {
     const disabledCss = useRef<string>("");
 
     const updateStartAt = useDragStartAtStore((store) => store.updateStartAt);
+
+    const { bookingViewType } = useGlobalStore(
+        useShallow((state) => ({
+            bookingViewType: state.bookingViewType,
+        })),
+    );
 
     //TODO: create a issue to fix this, it is hard to understand and complex to maintain, need to improve this.
     const isTimeLunch = (hour: string) => {

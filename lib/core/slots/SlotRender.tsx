@@ -27,7 +27,7 @@ const SlotRender = memo(
         const { day, hour } = dayHour;
 
         const bookings = booking.filter((bookingEvent) => {
-            const startTime = DateUtils.dateAndHourDateToString(
+            const bookingStartTime = DateUtils.dateAndHourDateToString(
                 bookingEvent.startAt,
             );
 
@@ -35,11 +35,11 @@ const SlotRender = memo(
             const slotDay = new Date(day).getDate();
 
             const slotHour = hour.split(":")[0];
-            const bookingHour = startTime.split(":")[0];
+            const bookingHour = bookingStartTime.split(":")[0];
 
-            const sameHour = bookingHour === slotHour;
+            const isSameHour = bookingHour === slotHour;
             const isSameDay = bookingDay === slotDay;
-            return sameHour && isSameDay;
+            return isSameHour && isSameDay;
         });
 
         if (!bookings.length) {
