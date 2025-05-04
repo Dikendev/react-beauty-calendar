@@ -52,7 +52,7 @@ interface CardContentProps {
     bookingViewType: string;
     slotData: BookingDateAndTime;
     heightStyle: number;
-    topHeightIncrement?: number;
+    topHeightIncrement: number;
     listeners?: SyntheticListenerMap | undefined;
     attributes?: DraggableAttributes;
     onClick?: () => void;
@@ -76,7 +76,7 @@ const CardContent = ({
     bookingInit,
     slotData,
     heightStyle,
-    topHeightIncrement = 0,
+    topHeightIncrement,
     onClick,
     customClasses,
     bookingViewType,
@@ -217,7 +217,7 @@ const CardContent = ({
         }
 
         return {
-            inset: `${topHeightIncrement}rem ${rightMovement} ${heightStyle}rem`,
+            inset: `${topHeightIncrement || 0}rem ${rightMovement} ${heightStyle}rem`,
         };
     }, [
         half,
