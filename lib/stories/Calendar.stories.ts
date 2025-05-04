@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { fn } from "@storybook/test";
+import type { Booking } from "../@types";
 import Root from "../core/Root";
 import TabsContentCore from "../core/slots/TabsContent";
 import { mockBooking } from "../mock/booking-mock";
@@ -38,6 +39,9 @@ const meta = {
             console.log("booking", booking);
             console.log("overId", overId);
             console.log("slotData", slotData);
+        }),
+        onCardResizeEnd: fn(async (booking: Booking) => {
+            console.log("onCardResizeEnd", booking);
         }),
     },
 
