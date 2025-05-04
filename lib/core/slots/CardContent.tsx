@@ -52,7 +52,7 @@ interface CardContentProps {
     bookingViewType: string;
     slotData: BookingDateAndTime;
     heightStyle: number;
-    topHeightIncrement: number;
+    topHeightIncrement?: number;
     listeners?: SyntheticListenerMap | undefined;
     attributes?: DraggableAttributes;
     onClick?: () => void;

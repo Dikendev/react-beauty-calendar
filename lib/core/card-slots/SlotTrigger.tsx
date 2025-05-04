@@ -112,11 +112,61 @@ const SlotTrigger = ({
     const renderedCardPreviewRef = useRef<HTMLDivElement>(null);
 
     const onMouseEnterEvent = useCallback((): void => {
-        if (isDragging || isOpenCustomModal || renderEvent || children) return;
+        if (!children || typeof children !== "object") return;
+
+        if (
+            "props" in children &&
+            children.props &&
+            typeof children.props === "object" &&
+            "bookings" in children.props
+        ) {
+            if (
+                Array.isArray(children.props.bookings) &&
+                children.props?.bookings.length &&
+                "slotData" in children.props
+            ) {
+                if (
+                    typeof children?.props?.slotData === "object" &&
+                    children?.props?.slotData &&
+                    "hour" in children.props.slotData &&
+                    typeof children.props.slotData.hour === "string" &&
+                    "blockTimeString" in children.props &&
+                    typeof children.props.blockTimeString === "string"
+                ) {
+                    const blockTime = children.props.blockTimeString;
+                    const slotBlock = children.props.slotData.hour;
+                    const bookings = children.props.bookings as Booking[];
+
+                    const sameHour = bookings.findIndex((booking) => {
+                        const slotHour = Number(slotBlock.split(":")[0]);
+                        const slotMinutes = Number(blockTime);
+
+                        const bookingHour = booking.startAt.getHours();
+                        const bookingMinutes = booking.startAt.getMinutes();
+
+                        const isSameHour = slotHour === bookingHour;
+                        const isSameMinutes = slotMinutes === bookingMinutes;
+                        if (isSameHour && isSameMinutes) return true;
+                        return false;
+                    });
+
+                    if (sameHour !== -1) return;
+                }
+            }
+        }
+
+        if (isDragging || isOpenCustomModal || renderEvent) return;
 
         const result = events.onMouseEnterEvent();
         if (result === slotPosition) showTimeInfo();
-    }, [slotPosition, isDragging, isOpenCustomModal]);
+    }, [
+        slotPosition,
+        isDragging,
+        isOpenCustomModal,
+        renderEvent,
+        children,
+        events,
+    ]);
 
     const resetDataAndDragging = () => {
         resetForm();
@@ -320,35 +370,31 @@ const SlotTrigger = ({
                 onMouseLeave={handleOnMouseLeave}
                 onFocus={() => {}}
             >
-                {!children && (
-                    <TimeInfo
-                        ref={timeInfoRef}
-                        isDragging={isDragging}
-                        slotData={slotData}
-                        events={{
-                            onClick: openModal,
-                            openOptions,
-                            renderPreviewCard,
-                            resetPrevView,
-                        }}
-                    />
-                )}
+                <TimeInfo
+                    ref={timeInfoRef}
+                    isDragging={isDragging}
+                    slotData={slotData}
+                    events={{
+                        onClick: openModal,
+                        openOptions,
+                        renderPreviewCard,
+                        resetPrevView,
+                    }}
+                />
 
                 {actualTimerIndicatorChildren}
 
                 {renderEvent && (
-                    <div style={{ width: "100%" }}>
-                        <CardContent
-                            ref={renderedCardPreviewRef}
-                            bookingInit={bookingMock}
-                            bookingViewType={bookingViewType}
-                            slotData={{
-                                day: new Date().toISOString(),
-                                hour: "09:00",
-                            }}
-                            heightStyle={heightStyle}
-                        />
-                    </div>
+                    <CardContent
+                        ref={renderedCardPreviewRef}
+                        bookingInit={bookingMock}
+                        bookingViewType={bookingViewType}
+                        slotData={{
+                            day: new Date().toISOString(),
+                            hour: "09:00",
+                        }}
+                        heightStyle={heightStyle}
+                    />
                 )}
                 {children}
             </div>
