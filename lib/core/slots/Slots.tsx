@@ -28,7 +28,7 @@ interface SlotsProps {
 
 const Slots = ({
     dayHour,
-    lunchTimeBlock,
+    // lunchTimeBlock,
     firstDay,
     bookingBulk,
 }: SlotsProps) => {
@@ -43,16 +43,16 @@ const Slots = ({
     );
 
     //TODO: create a issue to fix this, it is hard to understand and complex to maintain, need to improve this.
-    const isTimeLunch = (hour: string) => {
-        if (
-            hour === lunchTimeBlock.startAt ||
-            hour === lunchTimeBlock.finishAt
-        ) {
-            disabledCss.current = "slot_disabled";
-            return true;
-        }
-        return false;
-    };
+    // const isTimeLunch = (hour: string) => {
+    //     if (
+    //         hour === lunchTimeBlock.startAt ||
+    //         hour === lunchTimeBlock.finishAt
+    //     ) {
+    //         disabledCss.current = "slot_disabled";
+    //         return true;
+    //     }
+    //     return false;
+    // };
 
     const secondBlockTime = useMemo(() => {
         return DateUtils.addMinuteToHour(dayHour.hour, 15);

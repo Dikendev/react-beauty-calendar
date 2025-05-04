@@ -33,6 +33,15 @@ export type DatesData = {
     week: Date[];
 };
 
+// const PT_LOCALE = "pt-br";
+
+// const formatter = new Intl.DateTimeFormat(PT_LOCALE, {
+//     hour: "2-digit",
+//     minute: "2-digit",
+//     hour12: false,
+//     timeZone: "UTC",
+// });
+
 export const DateUtils = {
     findIndexToStart(date: Date = new Date()): number {
         const actualDay = WEEK_DAYS[date.getDay()];
@@ -141,9 +150,9 @@ export const DateUtils = {
     dateAndHourDateToString(date: Date): string {
         const asDate = new Date(date);
 
-        return `${asDate.getHours().toString().padStart(2, "0")}:${asDate
+        return `${asDate.getHours().toLocaleString().padStart(2, "0")}:${asDate
             .getMinutes()
-            .toString()
+            .toLocaleString()
             .padStart(2, "0")}`;
     },
 
