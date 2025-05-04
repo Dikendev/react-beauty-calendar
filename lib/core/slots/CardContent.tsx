@@ -161,9 +161,18 @@ const CardContent = ({
         );
     }, [resizableParam, customClass, half, layerCount, lastCard]);
 
+    const rightSide = (cardIndex: number): string => {
+        if (cardIndex === 0) return "8rem";
+        return "4rem";
+    };
+
     const rightMovement = useMemo((): string | number => {
-        if (half && cardIndex === 0 && cardsQuantity === 3) return "8rem";
-        if (half && cardIndex === 1 && cardsQuantity === 3) return "4.5rem";
+        if (half && cardIndex === 0 && cardsQuantity === 3) {
+            return rightSide(cardIndex);
+        }
+        if (half && cardIndex === 1 && cardsQuantity === 3) {
+            return rightSide(cardIndex);
+        }
         if (layerCount === 2) return "0.8rem";
         if (lastCard && layerCount === 1) return "0.2rem";
         if (lastCard && layerCount) return "1rem";
@@ -172,45 +181,30 @@ const CardContent = ({
     }, [half, lastCard, layerCount, cardIndex, cardsQuantity]);
 
     const halfCardLastBooking = useMemo((): string | number => {
+        if (half && cardIndex === 0 && cardsQuantity === 3 && !layerCount) {
+            return "0rem";
+        }
         if (half && cardIndex === 0 && cardsQuantity === 3) return "0.4rem";
         if (half && cardIndex === 1 && cardsQuantity === 3) return "5rem";
-        if (lastCard && cardsQuantity === 3) return "8.5rem";
+        if (lastCard && cardsQuantity === 3) return "9rem";
         if (lastCard) return "6.5rem";
         return 0;
-    }, [half, lastCard, cardIndex, cardsQuantity]);
+    }, [half, lastCard, cardIndex, layerCount, cardsQuantity]);
 
     const insetCardHeight: CSSProperties = useMemo(() => {
-        if (half && cardIndex === 0 && cardsQuantity === 3) {
+        if (
+            (half &&
+                cardsQuantity === 3 &&
+                ((half && cardIndex === 0) || (half && cardIndex === 1))) ||
+            (half && lastCard && cardsQuantity === 3) ||
+            (half && lastCard)
+        ) {
             return {
                 inset: `${topHeightIncrement}rem ${rightMovement} ${heightStyle}rem ${halfCardLastBooking}`,
             };
         }
 
-        if (half && cardIndex === 1 && cardsQuantity === 3) {
-            return {
-                inset: `${topHeightIncrement}rem ${rightMovement} ${heightStyle}rem ${halfCardLastBooking}`,
-            };
-        }
-
-        if (half && lastCard && cardsQuantity === 3) {
-            return {
-                inset: `${topHeightIncrement}rem ${rightMovement} ${heightStyle}rem ${halfCardLastBooking}`,
-            };
-        }
-
-        if (half && cardsQuantity === 3) {
-            return {
-                inset: `${topHeightIncrement}rem 6.5rem ${heightStyle}rem ${rightMovement}`,
-            };
-        }
-
-        if (half && lastCard) {
-            return {
-                inset: `${topHeightIncrement}rem ${rightMovement} ${heightStyle}rem ${halfCardLastBooking}`,
-            };
-        }
-
-        if (half) {
+        if ((half && cardsQuantity === 3) || half) {
             return {
                 inset: `${topHeightIncrement}rem 6.5rem ${heightStyle}rem ${rightMovement}`,
             };
@@ -221,6 +215,7 @@ const CardContent = ({
         };
     }, [
         half,
+        layerCount,
         heightStyle,
         topHeightIncrement,
         cardIndex,

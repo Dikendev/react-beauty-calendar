@@ -57,28 +57,17 @@ const CalendarHolder = ({ isLoading }: CalendarHolderProps) => {
         if (active.id === "booking_info") return;
     }, []);
 
-    const bookingTimeRange = (booking: Booking, overId: string): Booking => {
-        const newStartAt = new Date(overId);
-        const timeDiff = DateUtils.getTimeDiff(
-            booking.startAt,
-            booking.finishAt,
-        );
-        const newFinishDate = DateUtils.getNewFinishAt(overId, timeDiff);
-
-        return {
-            id: booking.id,
-            startAt: newStartAt,
-            finishAt: newFinishDate,
-        };
-    };
-
     const handleOnDrop = async (
         booking: Booking,
         overId: string,
         slotData: BookingDateAndTime,
     ) => {
         try {
-            const { startAt, finishAt } = bookingTimeRange(booking, overId);
+            const { startAt, finishAt } = DateUtils.bookingTimeRange(
+                booking,
+                overId,
+            );
+
             optimisticCardUpdate(booking, startAt, finishAt, slotData);
             await onCardDropCallback(booking, overId, slotData, {
                 id: booking.id,
