@@ -53,6 +53,27 @@ const App = () => {
         console.log("onHeaderDayClick", date);
     };
 
+    const updateBooking = (targetBooking: Booking) => {
+        setBookings((prevBookings) => {
+            const updatedBooking = prevBookings.map((localBooking) => {
+                if (localBooking.id === targetBooking.id) {
+                    return {
+                        ...targetBooking,
+                        finishAt: targetBooking.finishAt,
+                        startAt: targetBooking.startAt,
+                    };
+                }
+                return localBooking;
+            });
+            return [...updatedBooking];
+        });
+    };
+
+    const onCardResizeEnd = async (booking: Booking): Promise<void> => {
+        console.log("onCardResizeEnd", booking);
+        updateBooking(booking);
+    };
+
     const onCardDropCallback = async (
         booking: Booking,
         overId: string,
@@ -65,19 +86,7 @@ const App = () => {
         console.log("slotData", slotData);
         console.log("newBooking", newBooking);
 
-        setBookings((prevBookings) => {
-            const updatedBooking = prevBookings.map((localBooking) => {
-                if (localBooking.id === newBooking.id) {
-                    return {
-                        ...newBooking,
-                        finishAt: newBooking.finishAt,
-                        startAt: newBooking.startAt,
-                    };
-                }
-                return localBooking;
-            });
-            return [...updatedBooking];
-        });
+        updateBooking(newBooking);
     };
 
     const calendarInstance = useCalendarInstance({
@@ -92,6 +101,7 @@ const App = () => {
         onDayChange,
         onModalClose,
         onCardDropCallback,
+        onCardResizeEnd,
         createBookingModal: <TabsContentCore />,
     });
 
