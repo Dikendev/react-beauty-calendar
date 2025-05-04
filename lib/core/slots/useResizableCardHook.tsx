@@ -35,6 +35,8 @@ const useResizableCardHook = ({
         width: INITIAL_SIZE,
     });
 
+    const [topHeightIncrement, setTopHeightIncrement] = useState<number>(0);
+
     const computeCardHeight = (finish: Date, start: Date): number => {
         const diffInMinutes = DateUtils.timeDiffInSeconds(finish, start);
         const blocks = Math.ceil(diffInMinutes / TIME_INTERVAL_IN_MINUTES);
@@ -47,24 +49,8 @@ const useResizableCardHook = ({
             : BASE_VALUE,
     );
 
-    const addTime = async (
-        handle: ResizeHandle[] = ["se", "s"],
-    ): Promise<void> => {
-        if (handle.includes("n")) {
-            const newFinish = newFinishDate(booking.startAt, "remove");
-
-            if (onAddStartTime) onAddStartTime(newFinish);
-        } else {
-            const newFinish = newFinishDate(booking.finishAt, "add");
-
-            setHeightStyle((prev) => {
-                if (prev === -Math.abs(0) || prev === 0) return BASE_VALUE;
-                return prev - 2;
-            });
-
-            // call the exposed function
-            if (onAddTime) onAddTime(newFinish);
-        }
+    const baseValueLimitMin = (prevHeight: number): boolean => {
+        return prevHeight === -Math.abs(0) || prevHeight === 0;
     };
 
     const isMinDiffTimeThreshold = (): boolean => {
@@ -75,14 +61,47 @@ const useResizableCardHook = ({
         return timeDiff === MIN_DIFF_TIME_THRESHOLD;
     };
 
-    const subTime = async (): Promise<void> => {
+    const addTime = async (handle: ResizeHandle[]): Promise<void> => {
+        if (handle.includes("n")) {
+            const newStartAt = newStartDate(booking.startAt, "add");
+
+            if (isMinDiffTimeThreshold()) return;
+
+            setTopHeightIncrement((prev) => {
+                // if (baseValueLimitMin(prev)) return BASE_VALUE;
+                return prev + 2;
+            });
+
+            // call the exposed function
+            if (onAddStartTime) onAddStartTime(newStartAt);
+        } else {
+            const newFinish = newFinishDate(booking.finishAt, "add");
+
+            setHeightStyle((prev) => {
+                if (baseValueLimitMin(prev)) return BASE_VALUE;
+                return prev - 2;
+            });
+
+            // call the exposed function
+            if (onAddTime) onAddTime(newFinish);
+        }
+    };
+
+    const subTime = async (handle: ResizeHandle[]): Promise<void> => {
+        if (handle.includes("n")) {
+            const newStartAt = newStartDate(booking.startAt, "remove");
+
+            setTopHeightIncrement((prev) => prev - 2);
+
+            if (onAddStartTime) onAddStartTime(newStartAt);
+            return;
+        }
+
         const newFinish = newFinishDate(booking.finishAt, "remove");
 
         if (isMinDiffTimeThreshold()) return;
 
-        setHeightStyle((prev) => {
-            return prev + Math.abs(2);
-        });
+        setHeightStyle((prev) => prev + 2);
 
         if (onSubTime) onSubTime(newFinish);
     };
@@ -100,6 +119,16 @@ const useResizableCardHook = ({
         return newFinishDate;
     };
 
+    const newStartDate = (startDate: Date, action: "add" | "remove"): Date => {
+        const newStartDate = new Date(startDate);
+        const minutes = newStartDate.getMinutes();
+
+        if (action === "add") newStartDate.setMinutes(minutes + 15);
+        if (action === "remove") newStartDate.setMinutes(minutes - 15);
+
+        return newStartDate;
+    };
+
     const onResize = (
         event: SyntheticEvent,
         { size, handle }: ResizeCallbackData,
@@ -111,28 +140,42 @@ const useResizableCardHook = ({
             case "se":
             case "s": {
                 setState((prev) => {
-                    if (Number(prev.height) < Number(size.height)) addTime();
-                    if (Number(prev.height) > Number(size.height)) subTime();
+                    if (Number(prev.height) < Number(size.height))
+                        addTime(["s", "se"]);
+                    if (Number(prev.height) > Number(size.height))
+                        subTime(["s", "se"]);
 
                     return {
                         ...prev,
                         height: size.height,
-                        width: size.width,
                     };
                 });
                 break;
             }
             case "n": {
                 setState((prev) => {
-                    if (Number(size.height) > Number(prev.height)) {
+                    const diffAbs = Math.abs(
+                        Number(size.height - Number(prev.height)),
+                    );
+
+                    if (diffAbs < 10) {
+                        return {
+                            ...prev,
+                            height: size.height,
+                        };
+                    }
+
+                    if (Number(prev.height < Number(size.height))) {
+                        subTime(["n"]);
+                    }
+
+                    if (Number(prev.height > Number(size.height))) {
                         addTime(["n"]);
                     }
-                    // if (Number(prev.height) > Number(size.height)) subTime();
 
                     return {
                         ...prev,
                         height: size.height,
-                        width: size.width,
                     };
                 });
                 break;
@@ -158,6 +201,7 @@ const useResizableCardHook = ({
         resetState,
         resetHeightStyle,
         heightStyle,
+        topHeightIncrement,
         onResize,
         updateHeightStyle,
     };

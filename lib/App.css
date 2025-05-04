@@ -15,6 +15,14 @@
   display: inline;
 }
 
+.react-resizable:hover .react-resizable-handle-n {
+  display: inline;
+}
+
+.show-handle.react-resizable .react-resizable-handle-n {
+  display: inline;
+}
+
 .react-resizable.slot-resizable > .react-resizable-handle {
   width: 100%;
   height: 100%;
@@ -103,6 +111,7 @@
 }
 
 .react-resizable-handle-n {
+  display: none;
   top: -5px;
   z-index: 100;
 }
@@ -451,7 +460,7 @@
 /* CardContent */
 
 .card_content_core {
-  display: "flex";
+  /* display: "flex"; */
   z-index: 99;
   position: absolute;
 }
@@ -467,8 +476,12 @@
   justify-content: end;
 }
 
+.inner_cards_parent_last_card_disable {
+  width: initial !important;
+}
+
 .inner_cards_parent_last_card {
-  width: 91% !important;
+  width: 91%;
 }
 
 .inner_cards_parent_last_card_layer_2 {
@@ -514,6 +527,9 @@
   border-left-width: thick;
   border-radius: 0.25rem;
   overflow: hidden;
+  position: absolute;
+  z-index: 100;
+  inset: 0;
 }
 
 .cardContent_render_dragging {

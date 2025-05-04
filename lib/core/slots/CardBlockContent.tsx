@@ -29,7 +29,7 @@ const CardBlockContent = ({
     }
 
     return (
-        <div style={{ display: "flex", flexDirection: "row", height: "100%" }}>
+        <>
             {bookingToRender.map((booking, index) => (
                 <Card
                     key={booking.id}
@@ -37,9 +37,11 @@ const CardBlockContent = ({
                     half
                     slotData={slotData}
                     lastCard={bookingToRender.length - 1 === index}
+                    cardsQuantity={bookingToRender.length}
+                    cardIndex={index}
                 />
             ))}
-        </div>
+        </>
     );
 };
 

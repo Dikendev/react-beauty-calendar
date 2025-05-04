@@ -17,6 +17,8 @@ interface CardProps {
     slotData: BookingDateAndTime;
     lastCard?: boolean;
     half?: boolean;
+    cardsQuantity?: number;
+    cardIndex?: number;
     ref?: Ref<CardRef>;
 }
 
@@ -27,11 +29,13 @@ export interface CardRef {
 const Card = ({
     booking,
     slotData,
+    cardsQuantity = 1,
+    cardIndex = 0,
     lastCard = false,
     half = false,
     ref,
 }: CardProps) => {
-    const { bookingViewType, optimisticCardUpdate } = useGlobalStore();
+    const { bookingViewType } = useGlobalStore();
 
     const [bookingInit, setBookingInit] = useState<Booking>({ ...booking });
     const [isEditingOpen, setIsEditingOpen] = useState<boolean>(false);
@@ -74,17 +78,6 @@ const Card = ({
     };
 
     const addStartTime = async (datetime: Date): Promise<void> => {
-        // isso funcionou, mas como todo o componente renderiza, está tirando o restando do drag.
-        // estudar como fazer isso funcionar.
-
-        // Desse modo nao vai funcinar por causa da atualização de todo o componente do calendário.
-        optimisticCardUpdate(
-            bookingInit,
-            datetime,
-            bookingInit.finishAt,
-            slotData,
-        );
-
         setBookingInit((prev) => ({
             ...prev,
             startAt: datetime,
@@ -111,13 +104,14 @@ const Card = ({
         }
     };
 
-    const { state, heightStyle, onResize } = useResizableCardHook({
-        booking: bookingInit,
-        onAddTime: addTime,
-        onAddStartTime: addStartTime,
-        onSubTime: subTime,
-        starter: true,
-    });
+    const { state, heightStyle, topHeightIncrement, onResize } =
+        useResizableCardHook({
+            booking: bookingInit,
+            onAddTime: addTime,
+            onAddStartTime: addStartTime,
+            onSubTime: subTime,
+            starter: true,
+        });
 
     // const onResizeStop = (
     //   event: SyntheticEvent,
@@ -164,16 +158,19 @@ const Card = ({
                 resizableParam={{
                     state,
                     onResize,
-                    resizeHandle: ["s"],
+                    resizeHandle: ["s", "n"],
                 }}
                 customClasses={"Draggable"}
                 bookingInit={bookingInit}
                 bookingViewType={bookingViewType}
                 slotData={slotData}
+                topHeightIncrement={topHeightIncrement}
                 heightStyle={heightStyle}
                 onClick={openEditingModal}
                 half={half}
                 lastCard={lastCard}
+                cardsQuantity={cardsQuantity}
+                cardIndex={cardIndex}
                 // style={ backgroundColor: "black" }
             />
         </BookingInfoOptions>

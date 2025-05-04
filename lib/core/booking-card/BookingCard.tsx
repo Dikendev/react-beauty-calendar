@@ -4,6 +4,7 @@ import {
     useCallback,
     useEffect,
     useImperativeHandle,
+    useMemo,
     useState,
 } from "react";
 
@@ -94,19 +95,12 @@ const BookingCard = ({
         return normalizedBookingDate <= "11:30";
     };
 
-    const handleStyleCardContent: CSSProperties =
-        bookingViewType === BOOKING_VIEW_TYPE.DAY
-            ? { width: "99%" }
-            : { width: "100%" };
-
-    const cardContextStyle: CSSProperties = {
-        height: heightStyleTransformer,
-        position: "relative",
-        zIndex: 100,
-        cursor: isDragging ? "ns-resize" : "pointer",
-        ...style,
-        ...handleStyleCardContent,
-    };
+    const cardContextStyle: CSSProperties = useMemo(() => {
+        return {
+            cursor: isDragging ? "ns-resize" : "pointer",
+            width: bookingViewType === BOOKING_VIEW_TYPE.DAY ? "99%" : "100%",
+        };
+    }, [isDragging, bookingViewType]);
 
     const cardTodayCustomStyle = (booking: Booking, day: Date) => {
         const normalizedBookingDate = DateUtils.dateAndHourDateToString(
@@ -172,7 +166,7 @@ const BookingCard = ({
                             "flex flex-col h-full text-white pl-2 lg:pl-2 justify-start items-start",
                         )}
                     >
-                        <p className="text-[0.8rem] h-[0.8rem]">
+                        <p style={{ height: "1.8rem", alignContent: "center" }}>
                             {`${DateUtils.dateAndHourDateToString(booking.startAt)} - ${DateUtils.dateAndHourDateToString(
                                 booking.finishAt,
                             )}`}

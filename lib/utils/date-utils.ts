@@ -1,5 +1,6 @@
 import { differenceInMinutes, subMinutes } from "date-fns";
 import dayjs from "dayjs";
+import type { Booking } from "../@types";
 import { MONTH } from "../constants";
 import type {
     DaysOfWeek,
@@ -104,6 +105,21 @@ export const DateUtils = {
         const hours = Math.floor(diffInMinutes / 60);
         const minutes = diffInMinutes % 60;
         return `${hours}:${minutes.toString().padStart(2, "0")}`;
+    },
+
+    bookingTimeRange: (booking: Booking, overId: string): Booking => {
+        const timeDiff = DateUtils.getTimeDiff(
+            booking.startAt,
+            booking.finishAt,
+        );
+
+        const newFinishDate = DateUtils.getNewFinishAt(overId, timeDiff);
+
+        return {
+            id: booking.id,
+            startAt: new Date(overId),
+            finishAt: newFinishDate,
+        };
     },
 
     getNewFinishAt(newStartAt: string, timeString: string): Date {

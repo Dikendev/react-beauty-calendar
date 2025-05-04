@@ -52,6 +52,7 @@ interface CardContentProps {
     bookingViewType: string;
     slotData: BookingDateAndTime;
     heightStyle: number;
+    topHeightIncrement?: number;
     listeners?: SyntheticListenerMap | undefined;
     attributes?: DraggableAttributes;
     onClick?: () => void;
@@ -59,6 +60,8 @@ interface CardContentProps {
     open?: boolean;
     lastCard?: boolean;
     half?: boolean;
+    cardsQuantity?: number;
+    cardIndex?: number;
     resizableParam?: ResizableParam;
     events?: {
         onUnmount: () => void;
@@ -73,6 +76,7 @@ const CardContent = ({
     bookingInit,
     slotData,
     heightStyle,
+    topHeightIncrement = 0,
     onClick,
     customClasses,
     bookingViewType,
@@ -82,10 +86,12 @@ const CardContent = ({
     lastCard,
     half,
     cardContentRef: dataRef,
+    cardsQuantity,
+    cardIndex,
     ref,
 }: CardContentProps) => {
     const updateIsDragging = useDragStore((state) => state.updateIsDragging);
-    const { bookings } = useBookingModal();
+    const { bookings, onCardResizeEnd } = useBookingModal();
 
     const [customClass, setCustomClass] = useState<string>("");
     const bookingCardRef = useRef<BookingCardRef>(null);
@@ -117,6 +123,8 @@ const CardContent = ({
         setCustomClass("");
         updateIsDragging(false);
 
+        onCardResizeEnd(bookingInit);
+
         if (resizableParam?.onResizeStop) {
             resizableParam.onResizeStop(e, data);
         }
@@ -135,14 +143,16 @@ const CardContent = ({
             customClass,
             half && layerCount > 0 && "",
             half ? "" : layerCount > 0 && "inner_cards_parent",
+            lastCard &&
+                layerCount &&
+                half &&
+                "inner_cards_parent_last_card_disable",
             lastCard && layerCount && "inner_cards_parent_last_card",
             lastCard &&
                 layerCount === 2 &&
                 "inner_cards_parent_last_card_layer_2",
-            layerCount === 1 &&
-                "inner_cards_parent_resizable inner_cards_parent_1_layer",
-            layerCount === 2 &&
-                "inner_cards_parent_resizable_layer_2 inner_cards_parent_2_layer",
+            layerCount === 1 && !half && "inner_cards_parent_1_layer",
+            layerCount === 2 && "inner_cards_parent_2_layer",
             half &&
                 layerCount === 3 &&
                 "inner_cards_parent_resizable_layer_3_half inner_cards_parent_3_layer_half",
@@ -151,9 +161,73 @@ const CardContent = ({
         );
     }, [resizableParam, customClass, half, layerCount, lastCard]);
 
+    const rightMovement = useMemo((): string | number => {
+        if (half && cardIndex === 0 && cardsQuantity === 3) return "8rem";
+        if (half && cardIndex === 1 && cardsQuantity === 3) return "4.5rem";
+        if (layerCount === 2) return "0.8rem";
+        if (lastCard && layerCount === 1) return "0.2rem";
+        if (lastCard && layerCount) return "1rem";
+        if (layerCount === 1) return "0.4rem";
+        return 0;
+    }, [half, lastCard, layerCount, cardIndex, cardsQuantity]);
+
+    const halfCardLastBooking = useMemo((): string | number => {
+        if (half && cardIndex === 0 && cardsQuantity === 3) return "0.4rem";
+        if (half && cardIndex === 1 && cardsQuantity === 3) return "5rem";
+        if (lastCard && cardsQuantity === 3) return "8.5rem";
+        if (lastCard) return "6.5rem";
+        return 0;
+    }, [half, lastCard, cardIndex, cardsQuantity]);
+
     const insetCardHeight: CSSProperties = useMemo(() => {
-        return { inset: `0rem 0 ${heightStyle}rem` };
-    }, [heightStyle]);
+        if (half && cardIndex === 0 && cardsQuantity === 3) {
+            return {
+                inset: `${topHeightIncrement}rem ${rightMovement} ${heightStyle}rem ${halfCardLastBooking}`,
+            };
+        }
+
+        if (half && cardIndex === 1 && cardsQuantity === 3) {
+            return {
+                inset: `${topHeightIncrement}rem ${rightMovement} ${heightStyle}rem ${halfCardLastBooking}`,
+            };
+        }
+
+        if (half && lastCard && cardsQuantity === 3) {
+            return {
+                inset: `${topHeightIncrement}rem ${rightMovement} ${heightStyle}rem ${halfCardLastBooking}`,
+            };
+        }
+
+        if (half && cardsQuantity === 3) {
+            return {
+                inset: `${topHeightIncrement}rem 6.5rem ${heightStyle}rem ${rightMovement}`,
+            };
+        }
+
+        if (half && lastCard) {
+            return {
+                inset: `${topHeightIncrement}rem ${rightMovement} ${heightStyle}rem ${halfCardLastBooking}`,
+            };
+        }
+
+        if (half) {
+            return {
+                inset: `${topHeightIncrement}rem 6.5rem ${heightStyle}rem ${rightMovement}`,
+            };
+        }
+
+        return {
+            inset: `${topHeightIncrement}rem ${rightMovement} ${heightStyle}rem`,
+        };
+    }, [
+        half,
+        heightStyle,
+        topHeightIncrement,
+        cardIndex,
+        cardsQuantity,
+        rightMovement,
+        halfCardLastBooking,
+    ]);
 
     useEffect(() => {
         return () => {
@@ -180,7 +254,7 @@ const CardContent = ({
                 onResize={onResize}
                 onResizeStart={onResizableStart}
                 onResizeStop={onResizableStop}
-                resizeHandles={["s"]}
+                resizeHandles={["s", "n"]}
                 draggableOpts={{ grid: [35, 35] }}
                 handleSize={[20, 20]}
                 maxConstraints={[
@@ -214,10 +288,10 @@ const CardContent = ({
     return (
         <div
             ref={ref}
+            className="card_content_core"
             style={{
-                display: "flex",
-                zIndex: 100,
                 ...handleStyleCardContent,
+                ...insetCardHeight,
             }}
         >
             <BookingCard

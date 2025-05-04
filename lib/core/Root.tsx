@@ -26,6 +26,7 @@ const Root = ({
     createBookingModal,
     onChangeViewType,
     onCardDropCallback,
+    onCardResizeEnd,
     onDayChange,
     onHeaderDayClick,
     onTodayClick,
@@ -94,6 +95,7 @@ const Root = ({
                     onHeaderDayClick={onHeaderDayClick}
                     onTodayClick={onTodayClick}
                     onCardDropCallback={onCardDropCallback}
+                    onCardResizeEnd={onCardResizeEnd}
                     onDayChange={onDayChange}
                     onSlotClick={onSlotClick}
                     onModalClose={onModalClose}
