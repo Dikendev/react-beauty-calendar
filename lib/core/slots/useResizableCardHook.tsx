@@ -12,9 +12,13 @@ interface useResizableCardHookProps {
     starter?: boolean;
 }
 
-export const INITIAL_HEIGHT = 600;
+export const INITIAL_SIZE = 600;
 export const MIN_DIFF_TIME_THRESHOLD = 15;
-const BASE_VALUE = 1.98;
+
+// Estou usando essa notação com o valor negativo por conta de como a propriedade do css inset
+// está dinamicamente sendo usado para renderizar o tamanho dos cards, sendo negativo o card aumenta.
+// Usando inset fica muito mais fácil esse controle, por conta do resize nos pontos [N] e no [S] dos cards.
+export const BASE_VALUE = -Math.abs(1.98);
 
 const useResizableCardHook = ({
     booking,
@@ -27,20 +31,19 @@ const useResizableCardHook = ({
         height: number;
         width: number;
     }>({
-        height: INITIAL_HEIGHT,
-        width: 600,
+        height: INITIAL_SIZE,
+        width: INITIAL_SIZE,
     });
 
-    const calculateHeight = (finish: Date, start: Date) => {
+    const computeCardHeight = (finish: Date, start: Date): number => {
         const diffInMinutes = DateUtils.timeDiffInSeconds(finish, start);
-        const increment = 2;
         const blocks = Math.ceil(diffInMinutes / TIME_INTERVAL_IN_MINUTES);
-        return BASE_VALUE + (blocks - 1) * increment;
+        return -Math.abs((blocks - 1) * 2);
     };
 
     const [heightStyle, setHeightStyle] = useState<number>(
         starter
-            ? calculateHeight(booking.finishAt, booking.startAt)
+            ? computeCardHeight(booking.finishAt, booking.startAt)
             : BASE_VALUE,
     );
 
@@ -55,25 +58,30 @@ const useResizableCardHook = ({
             const newFinish = newFinishDate(booking.finishAt, "add");
 
             setHeightStyle((prev) => {
-                return Math.round(prev) + BASE_VALUE;
+                if (prev === -Math.abs(0) || prev === 0) return BASE_VALUE;
+                return prev - 2;
             });
 
-            // call my function
+            // call the exposed function
             if (onAddTime) onAddTime(newFinish);
         }
     };
 
-    const subTime = async (): Promise<void> => {
-        const newFinish = newFinishDate(booking.finishAt, "remove");
+    const isMinDiffTimeThreshold = (): boolean => {
         const timeDiff = DateUtils.timeDiffInSeconds(
             booking.finishAt,
             booking.startAt,
         );
+        return timeDiff === MIN_DIFF_TIME_THRESHOLD;
+    };
 
-        if (timeDiff === MIN_DIFF_TIME_THRESHOLD) return;
+    const subTime = async (): Promise<void> => {
+        const newFinish = newFinishDate(booking.finishAt, "remove");
+
+        if (isMinDiffTimeThreshold()) return;
 
         setHeightStyle((prev) => {
-            return prev - BASE_VALUE;
+            return prev + Math.abs(2);
         });
 
         if (onSubTime) onSubTime(newFinish);
@@ -133,15 +141,15 @@ const useResizableCardHook = ({
     };
 
     const updateHeightStyle = (finishMock: Date, startMock: Date) => {
-        setHeightStyle(calculateHeight(finishMock, startMock));
+        setHeightStyle(computeCardHeight(finishMock, startMock));
     };
 
     const resetState = () => {
-        setState({ height: INITIAL_HEIGHT, width: 600 });
+        setState({ height: INITIAL_SIZE, width: INITIAL_SIZE });
     };
 
     const resetHeightStyle = () => {
-        setHeightStyle(2);
+        setHeightStyle(BASE_VALUE);
     };
 
     return {

@@ -51,7 +51,7 @@ interface CardContentProps {
     bookingInit: Booking;
     bookingViewType: string;
     slotData: BookingDateAndTime;
-    heightStyleTransformer: string;
+    heightStyle: number;
     listeners?: SyntheticListenerMap | undefined;
     attributes?: DraggableAttributes;
     onClick?: () => void;
@@ -72,7 +72,7 @@ type CardContentForward = HTMLDivElement;
 const CardContent = ({
     bookingInit,
     slotData,
-    heightStyleTransformer,
+    heightStyle,
     onClick,
     customClasses,
     bookingViewType,
@@ -129,21 +129,9 @@ const CardContent = ({
         );
     }, [bookingInit, bookings]);
 
-    const getResizableClassNames = ({
-        resizableParam,
-        customClass,
-        half,
-        layerCount,
-        lastCard,
-    }: {
-        resizableParam: ResizableParam;
-        customClass: string;
-        layerCount: number;
-        half?: boolean;
-        lastCard?: boolean;
-    }): string => {
+    const getResizableClassNames = useMemo(() => {
         return cn(
-            resizableParam.customClass,
+            resizableParam?.customClass,
             customClass,
             half && layerCount > 0 && "",
             half ? "" : layerCount > 0 && "inner_cards_parent",
@@ -161,7 +149,11 @@ const CardContent = ({
             layerCount === 3 &&
                 "inner_cards_parent_resizable_layer_3 inner_cards_parent_3_layer",
         );
-    };
+    }, [resizableParam, customClass, half, layerCount, lastCard]);
+
+    const insetCardHeight: CSSProperties = useMemo(() => {
+        return { inset: `0rem 0 ${heightStyle}rem` };
+    }, [heightStyle]);
 
     useEffect(() => {
         return () => {
@@ -182,15 +174,7 @@ const CardContent = ({
 
         return (
             <Resizable
-                className={cn(
-                    getResizableClassNames({
-                        resizableParam,
-                        customClass,
-                        layerCount,
-                        half,
-                        lastCard,
-                    }),
-                )}
+                className={cn(getResizableClassNames)}
                 height={state?.height}
                 width={state?.width}
                 onResize={onResize}
@@ -206,16 +190,15 @@ const CardContent = ({
                 transformScale={1}
             >
                 <div
+                    className="card_content_core"
                     style={{
-                        display: "flex",
-                        height: heightStyleTransformer,
-                        zIndex: 99,
+                        ...insetCardHeight,
                     }}
                 >
                     <BookingCard
                         ref={bookingCardRef}
                         key={bookingInit.id}
-                        heightStyleTransformer={heightStyleTransformer}
+                        heightStyle={heightStyle}
                         booking={bookingInit}
                         slotData={slotData}
                         onClick={onClick}
@@ -232,14 +215,13 @@ const CardContent = ({
         <div
             ref={ref}
             style={{
-                height: heightStyleTransformer,
                 display: "flex",
                 zIndex: 100,
                 ...handleStyleCardContent,
             }}
         >
             <BookingCard
-                heightStyleTransformer={heightStyleTransformer}
+                heightStyle={heightStyle}
                 customClasses={customClasses}
                 booking={bookingInit}
                 slotData={slotData}

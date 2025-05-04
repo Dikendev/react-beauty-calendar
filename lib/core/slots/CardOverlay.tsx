@@ -2,14 +2,14 @@ import { DragOverlay } from "@dnd-kit/core";
 import { restrictToWindowEdges } from "@dnd-kit/modifiers";
 
 import type { Booking } from "../../@types";
-
 import type { BookingDateAndTime } from "../../@types/booking";
+
 import BookingCard from "../booking-card/BookingCard";
 
 interface CardOverlayProps {
     bookingInit: Booking;
     slotData: BookingDateAndTime;
-    heightStyle: string;
+    heightStyle: number;
 }
 const CardOverlay = ({
     bookingInit,
@@ -25,18 +25,11 @@ const CardOverlay = ({
             }}
             className="Draggable dragging"
         >
-            <div
-                className="cardOverlay_content"
-                style={{
-                    height: heightStyle,
-                }}
-            >
-                <BookingCard
-                    booking={bookingInit}
-                    slotData={slotData}
-                    heightStyleTransformer={heightStyle}
-                />
-            </div>
+            <BookingCard
+                booking={bookingInit}
+                slotData={slotData}
+                heightStyle={heightStyle}
+            />
         </DragOverlay>
     );
 };

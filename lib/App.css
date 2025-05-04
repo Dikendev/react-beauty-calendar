@@ -256,18 +256,6 @@
   position: relative;
 }
 
-/* CardOverlay */
-
-.cardOverlay_content {
-  color: white;
-  position: absolute;
-  overflow: hidden;
-  width: 100%;
-  border: 1px solid;
-  border-radius: 0.25rem;
-  z-index: 10;
-}
-
 /* headerDayActions */
 .header_day_actions {
   display: flex;
@@ -461,6 +449,13 @@
 }
 
 /* CardContent */
+
+.card_content_core {
+  display: "flex";
+  z-index: 99;
+  position: absolute;
+}
+
 .cardContent_resizable {
   position: absolute;
   width: 100%;

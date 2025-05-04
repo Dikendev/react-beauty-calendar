@@ -27,7 +27,7 @@ interface BookingCardProps {
     booking: Booking;
     slotData: BookingDateAndTime;
     customClasses?: string;
-    heightStyleTransformer?: string;
+    heightStyle: number;
     layerCount?: number;
     half?: boolean;
     onClick?: () => void;
@@ -43,7 +43,7 @@ const BookingCard = ({
     // layerCount,
     // half,
     onClick,
-    heightStyleTransformer,
+    heightStyle,
     customClasses,
     ref,
 }: BookingCardProps) => {
@@ -125,51 +125,11 @@ const BookingCard = ({
         return { backgroundColor: "#000456c0" };
     };
 
-    // const calculateCardWidth = useMemo(() => {
-    //     if (!layerCount) return `${MAX_WIDTH_PERCENTAGE}%`;
-    //     const widthReduction = layerCount * WIDTH_DECREMENT_STEP;
-
-    //     return `${MAX_WIDTH_PERCENTAGE - widthReduction}%`;
-    // }, [layerCount]);
-    const getTimeDiff = (startTime: Date, endTime: Date) => {
-        const diffInMs =
-            Number(new Date(endTime)) - Number(new Date(startTime));
-        const diffInMinutes = Math.floor(diffInMs / 1000 / 60);
-
-        const hours = Math.floor(diffInMinutes / 60);
-        const minutes = diffInMinutes % 60;
-        return `${hours}:${minutes.toString().padStart(2, "0")}`;
-    };
-
-    const newFinishAt = (newStartAt: string, timeString: string) => {
-        const newDay = new Date(newStartAt);
-
-        const splitTimeString = timeString.split(":");
-        const hour = Number(splitTimeString[0]);
-        const minutes = Number(splitTimeString[1]);
-
-        newDay.setHours(newDay.getHours() + hour);
-        newDay.setMinutes(newDay.getMinutes() + minutes);
-        return newDay;
-    };
-
-    const bookingTimeRange = (booking: Booking, overId: string): Booking => {
-        const newStartAt = new Date(overId);
-        const timeDiff = getTimeDiff(booking.startAt, booking.finishAt);
-        const newFinishDate = newFinishAt(overId, timeDiff);
-
-        return {
-            id: booking.id,
-            startAt: newStartAt,
-            finishAt: newFinishDate,
-        };
-    };
-
     const [prevBooking, setPrevBooking] = useState<Booking>(booking);
 
     useEffect(() => {
         if (dragStartAt.length) {
-            const result = bookingTimeRange(booking, dragStartAt);
+            const result = DateUtils.bookingTimeRange(booking, dragStartAt);
             setPrevBooking({
                 ...result,
             });
@@ -228,7 +188,7 @@ const BookingCard = ({
         <CardOverlay
             bookingInit={prevBooking}
             slotData={slotData}
-            heightStyle={String(heightStyleTransformer)}
+            heightStyle={heightStyle}
         />
     );
 };

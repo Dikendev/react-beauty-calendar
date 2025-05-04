@@ -211,7 +211,7 @@ const TimeInfo = forwardRef<TimeInfoRef, TimeInfoProps>(
                                     day: new Date().toISOString(),
                                     hour: "09:00",
                                 }}
-                                heightStyleTransformer={`${heightStyle}rem`}
+                                heightStyle={heightStyle}
                                 cardContentRef={cardContentRef}
                                 resizableParam={{
                                     state,
