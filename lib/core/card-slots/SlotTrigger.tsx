@@ -11,7 +11,6 @@ import {
 
 import CardContent from "../slots/CardContent";
 import type { BlocksTimeStructure } from "../slots/EmptySlot";
-import EventTabs from "../slots/EventsTab";
 import type { TimesBlock } from "../slots/Slots";
 import TimeInfo, { type TimeInfoRef } from "../slots/TimeInfo";
 import useResizableCardHook from "../slots/useResizableCardHook";
@@ -23,12 +22,14 @@ import useEmptySlotStore from "../../context/emptySlotsStore.ts/useEmptySlotStor
 import { useGlobalStore, useNewEventStore } from "../../hooks";
 import useBookingModal from "../../hooks/use-booking-model";
 
-import { DndContext } from "@dnd-kit/core";
 import type { Booking } from "../../@types";
 
 import { BOOKING_VIEW_TYPE } from "../../constants";
 import { cn } from "../../lib/utils";
 import { DateUtils } from "../../utils/date-utils";
+import BookingCreate, {
+    type BookingCreateRef,
+} from "../booking-create/BookingCreate";
 
 interface SlotEvents {
     onMouseEnterEvent: () => string;
@@ -61,8 +62,6 @@ const SlotTrigger = ({
 }: SlotTriggerProps) => {
     const { isDragging, updateIsDragging } = useDragStore((state) => state);
 
-    const bookingModal = useBookingModal();
-
     const { emptySlotNodes, setSelectedNode, resetSelectedNode } =
         useEmptySlotStore();
 
@@ -79,7 +78,23 @@ const SlotTrigger = ({
 
     const bookingViewType = useGlobalStore((state) => state.bookingViewType);
 
+    const [renderEvent, setRenderEvent] = useState<boolean>(false);
+    const [isDraggingOnClick, setIsDraggingOnClick] = useState<boolean>(false);
+
+    const renderedCardPreviewRef = useRef<HTMLDivElement>(null);
     const timeInfoRef = useRef<TimeInfoRef>(null);
+    const bookingCreateRef = useRef<BookingCreateRef>(null);
+
+    const getBookingCreateModal = (): BookingCreateRef | null => {
+        return bookingCreateRef.current;
+    };
+    const isCustomModalVisible = (): void => {
+        bookingCreateRef.current?.isModalOpen();
+    };
+
+    const showBookingCreationModal = () => {
+        getBookingCreateModal()?.showCreationModal();
+    };
 
     const showTimeInfo = () => {
         timeInfoRef.current?.show();
@@ -104,12 +119,6 @@ const SlotTrigger = ({
     const { updateHeightStyle, heightStyle } = useResizableCardHook({
         booking: bookingMock,
     });
-
-    const [renderEvent, setRenderEvent] = useState<boolean>(false);
-    const [isOpenCustomModal, setIsOpenCustomModal] = useState(false);
-    const [isDraggingOnClick, setIsDraggingOnClick] = useState<boolean>(false);
-
-    const renderedCardPreviewRef = useRef<HTMLDivElement>(null);
 
     const onMouseEnterEvent = useCallback((): void => {
         if (!children || typeof children !== "object") return;
@@ -155,18 +164,11 @@ const SlotTrigger = ({
             }
         }
 
-        if (isDragging || isOpenCustomModal || renderEvent) return;
+        if (isDragging || isCustomModalVisible() || renderEvent) return;
 
         const result = events.onMouseEnterEvent();
         if (result === slotPosition) showTimeInfo();
-    }, [
-        slotPosition,
-        isDragging,
-        isOpenCustomModal,
-        renderEvent,
-        children,
-        events,
-    ]);
+    }, [slotPosition, isDragging, renderEvent, children, events]);
 
     const resetDataAndDragging = () => {
         resetForm();
@@ -187,14 +189,13 @@ const SlotTrigger = ({
 
         event?.stopPropagation();
         event?.preventDefault();
-        setIsOpenCustomModal(false);
+        getBookingCreateModal()?.closeModal();
     };
 
     const onOpenChange = (status: boolean): void => {
         if (!status) onCloseCreationModal();
         setRenderEvent(status);
         changeIsOpen(status);
-        setIsOpenCustomModal(status);
     };
 
     const openModal = useCallback(
@@ -223,7 +224,7 @@ const SlotTrigger = ({
 
             // User instance calendar callback
             onSlotClick({ slotData, finishTime: finishAtUpdated });
-            setIsOpenCustomModal(true);
+            showBookingCreationModal();
         },
         [
             slotData,
@@ -239,7 +240,7 @@ const SlotTrigger = ({
     );
 
     const handleOnMouseLeave = (): void => {
-        if (isDragging || isOpenCustomModal) return;
+        if (isDragging || isCustomModalVisible()) return;
         hideTimeInfo();
     };
 
@@ -266,7 +267,7 @@ const SlotTrigger = ({
     ]);
 
     const openOptions = () => {
-        setIsOpenCustomModal(true);
+        showBookingCreationModal();
     };
 
     const resetPrevView = useCallback(() => {
@@ -275,7 +276,7 @@ const SlotTrigger = ({
 
     const prepareToShowModal = () => {
         hideTimeInfo();
-        setIsOpenCustomModal(true);
+        showBookingCreationModal();
         setRenderEvent(true);
     };
 
@@ -338,7 +339,7 @@ const SlotTrigger = ({
             prepareToShowModal();
         },
         closeEvent: () => {
-            setIsOpenCustomModal(false);
+            getBookingCreateModal()?.closeModal();
             setRenderEvent(false);
             hideTimeInfo();
             resetPrevView();
@@ -399,22 +400,15 @@ const SlotTrigger = ({
                 {children}
             </div>
 
-            {isOpenCustomModal && (
-                <DndContext>
-                    <EventTabs
-                        onClose={onCloseCreationModal}
-                        onOpenChange={onOpenChange}
-                        buttonTrigger={<div key={slotData.key} />}
-                        side={
-                            bookingViewType === BOOKING_VIEW_TYPE.DAY
-                                ? "top"
-                                : "right"
-                        }
-                    >
-                        {bookingModal.createBookingModal}
-                    </EventTabs>
-                </DndContext>
-            )}
+            <BookingCreate
+                ref={bookingCreateRef}
+                onClose={onCloseCreationModal}
+                onOpenChange={onOpenChange}
+                buttonTrigger={<div key={slotData.key} />}
+                side={
+                    bookingViewType === BOOKING_VIEW_TYPE.DAY ? "top" : "right"
+                }
+            />
         </>
     );
 };

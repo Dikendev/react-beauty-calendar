@@ -15,13 +15,12 @@ import {
 } from "../../components/ui/Dropdown-menu";
 import { Label } from "../../components/ui/Label";
 import useDragStore from "../../context/drag/dragStore";
-import type { EmptySlotNodes } from "../../context/emptySlotsStore.ts/useEmptySlotStore";
 import type { Side } from "../booking-options/BookingInfoOptions";
 
 interface EventTabsProps {
-    emptySlotNodes?: EmptySlotNodes;
-    side: Side;
-    buttonTrigger: JSX.Element;
+    side?: Side;
+    buttonTrigger?: JSX.Element;
+    modal?: boolean;
     onClose: (event: React.MouseEvent) => void;
     onOpenChange: (status: boolean) => void;
 }
@@ -32,6 +31,7 @@ const EventTabs = ({
     side,
     onOpenChange,
     buttonTrigger,
+    modal = false,
     children,
 }: EventTabsWithChildren) => {
     const [position, setPosition] = useState({ x: 0, y: 0 });
@@ -74,8 +74,10 @@ const EventTabs = ({
     });
 
     return (
-        <DropdownMenu dir="ltr" modal={false} open onOpenChange={onOpenChange}>
-            <DropdownMenuTrigger asChild>{buttonTrigger}</DropdownMenuTrigger>
+        <DropdownMenu dir="ltr" modal={modal} open onOpenChange={onOpenChange}>
+            <DropdownMenuTrigger asChild>
+                {buttonTrigger || <div />}
+            </DropdownMenuTrigger>
 
             <DropdownMenuContent
                 ref={setNodeRef}

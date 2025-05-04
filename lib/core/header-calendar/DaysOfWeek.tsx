@@ -1,18 +1,32 @@
-import { type CSSProperties, useCallback, useEffect, useMemo } from "react";
+import { PlusCircle } from "lucide-react";
+import {
+    type CSSProperties,
+    useCallback,
+    useEffect,
+    useMemo,
+    useRef,
+} from "react";
 import {
     useDaysSelectedView,
     useGlobalStore,
     useMonthDescription,
 } from "../../hooks";
-
-import { BOOKING_VIEW_TYPE, MONTH } from "../../constants";
-import { DateUtils, WEEK_DAYS } from "../../utils/date-utils";
+import useBookingModal from "../../hooks/use-booking-model";
 
 import type { BookingViewType } from "../../@types/booking";
+import { BOOKING_VIEW_TYPE, MONTH } from "../../constants";
+import { cn } from "../../lib/utils";
+import { DateUtils, WEEK_DAYS } from "../../utils/date-utils";
+
+import { Button } from "../../components/ui/Button";
+import WithTooltip from "../../hoc/WithTooltip";
+
 import useEmptySlotStore from "../../context/emptySlotsStore.ts/useEmptySlotStore";
 import type { MonthDescriptionProps } from "../../context/month-description/month-description-store";
-import useBookingModal from "../../hooks/use-booking-model";
-import { cn } from "../../lib/utils";
+
+import BookingCreate, {
+    type BookingCreateRef,
+} from "../booking-create/BookingCreate";
 
 interface DaysWeekProps {
     daysOfWeek: Date[];
@@ -30,6 +44,16 @@ const DaysWeek = ({ daysOfWeek, bookingViewType }: DaysWeekProps) => {
     const { resetSelectedNode, resetNodes } = useEmptySlotStore(
         (state) => state,
     );
+
+    const bookingCreateRef = useRef<BookingCreateRef>(null);
+
+    const getBookingModalCreateRef = (): BookingCreateRef | null => {
+        return bookingCreateRef.current;
+    };
+
+    const openCreationBookingModal = (): void => {
+        getBookingModalCreateRef()?.showCreationModal();
+    };
 
     const handleClickDay = useCallback(
         (day: Date) => {
@@ -120,12 +144,6 @@ const DaysWeek = ({ daysOfWeek, bookingViewType }: DaysWeekProps) => {
         });
     }, [daysOfWeek, handleClickDay, bookingViewType]);
 
-    const emptyFirstHeaderColumnSlot = (
-        <th key="emptyBlocks" style={tableStyle} className={"calendarHeader"}>
-            <div className="daysOfWeek_emptySlot" />
-        </th>
-    );
-
     useEffect(() => {
         switch (bookingViewType) {
             case BOOKING_VIEW_TYPE.DAY: {
@@ -143,14 +161,33 @@ const DaysWeek = ({ daysOfWeek, bookingViewType }: DaysWeekProps) => {
     }, [daysOfWeek]);
 
     return (
-        <table className="daysOfWeek_emptySlot_table">
-            <tbody>
-                <tr>
-                    {emptyFirstHeaderColumnSlot}
-                    {daysOfWeekRender}
-                </tr>
-            </tbody>
-        </table>
+        <>
+            <table className="daysOfWeek_emptySlot_table">
+                <tbody>
+                    <tr>
+                        <th
+                            key="emptyBlocks"
+                            style={tableStyle}
+                            className="calendarHeader"
+                        >
+                            <div className="daysOfWeek_emptySlot">
+                                <WithTooltip content="Create booking">
+                                    <Button
+                                        variant="ghost"
+                                        onClick={openCreationBookingModal}
+                                    >
+                                        <PlusCircle />
+                                    </Button>
+                                </WithTooltip>
+                            </div>
+                        </th>
+                        {daysOfWeekRender}
+                    </tr>
+                </tbody>
+            </table>
+
+            <BookingCreate modal ref={bookingCreateRef} />
+        </>
     );
 };
 
