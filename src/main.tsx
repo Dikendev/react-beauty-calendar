@@ -3,6 +3,7 @@ import "./index.css";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Route, Routes } from "react-router";
 import App from "./App";
+import "./i18n";
 
 const queryClient = new QueryClient();
 const rootElement = document.getElementById("root");

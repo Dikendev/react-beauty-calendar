@@ -20,6 +20,7 @@ import {
     ConfigProvider,
     NewEventProvider,
 } from "../context";
+import I18n from "../context/i18n/I18n";
 
 const Root = ({
     viewModes,
@@ -105,7 +106,9 @@ const Root = ({
                         ref={newEventProviderRef}
                         {...initialFormState}
                     >
-                        <CalendarHolder isLoading={loading} />
+                        <I18n>
+                            <CalendarHolder isLoading={loading} />
+                        </I18n>
                     </NewEventProvider>
                 </BookingModalProvider>
             </BookingProvider>

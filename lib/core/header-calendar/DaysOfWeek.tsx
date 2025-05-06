@@ -24,6 +24,7 @@ import WithTooltip from "../../hoc/WithTooltip";
 import useEmptySlotStore from "../../context/emptySlotsStore.ts/useEmptySlotStore";
 import type { MonthDescriptionProps } from "../../context/month-description/month-description-store";
 
+import { useLanguage } from "../../context/global/language/useLanguage";
 import BookingCreate, {
     type BookingCreateRef,
 } from "../booking-create/BookingCreate";
@@ -34,6 +35,12 @@ interface DaysWeekProps {
 }
 
 const DaysWeek = ({ daysOfWeek, bookingViewType }: DaysWeekProps) => {
+    const [language, t] = useLanguage();
+
+    const createNewBookingLabel = useMemo(() => {
+        return t("create_new_booking");
+    }, [language]);
+
     const { setTodayDay, setBookingViewType } = useGlobalStore();
     const { updateMonthMessage, updateHeaderDateLabel } = useMonthDescription(
         (state) => state,
@@ -171,7 +178,7 @@ const DaysWeek = ({ daysOfWeek, bookingViewType }: DaysWeekProps) => {
                             className="calendarHeader"
                         >
                             <div className="daysOfWeek_emptySlot">
-                                <WithTooltip content="Create booking">
+                                <WithTooltip content={createNewBookingLabel}>
                                     <Button
                                         variant="ghost"
                                         onClick={openCreationBookingModal}
