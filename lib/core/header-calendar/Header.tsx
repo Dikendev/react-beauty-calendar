@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 
 import { useGlobalStore, useMonthDescription } from "../../hooks";
-import useBookingModal from "../../hooks/use-booking-model";
+import useBookingModal from "../../hooks/useBookingModel";
 
 import { DateUtils } from "../../utils/date-utils";
 

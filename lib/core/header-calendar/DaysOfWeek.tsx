@@ -11,7 +11,7 @@ import {
     useGlobalStore,
     useMonthDescription,
 } from "../../hooks";
-import useBookingModal from "../../hooks/use-booking-model";
+import useBookingModal from "../../hooks/useBookingModel";
 
 import type { BookingViewType } from "../../@types/booking";
 import { BOOKING_VIEW_TYPE, MONTH } from "../../constants";

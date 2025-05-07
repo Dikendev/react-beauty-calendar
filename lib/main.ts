@@ -1,6 +1,6 @@
-import useCalendarInstance from "./hooks/use-calendar-instance";
+import useCalendarInstance from "./hooks/useCalendarInstance";
 import "./App.css";
 export * from "./utils/types";
-export * from "./hooks/use-calendar-instance";
+export * from "./hooks/useCalendarInstance";
 
 export { useCalendarInstance };

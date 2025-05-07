@@ -20,7 +20,7 @@ import setEmptySlotKey from "../../context/emptySlotsStore.ts/emptySlotKey";
 import useEmptySlotStore from "../../context/emptySlotsStore.ts/useEmptySlotStore";
 
 import { useGlobalStore, useNewEventStore } from "../../hooks";
-import useBookingModal from "../../hooks/use-booking-model";
+import useBookingModal from "../../hooks/useBookingModel";
 
 import type { Booking } from "../../@types";
 

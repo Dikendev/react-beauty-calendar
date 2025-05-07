@@ -1,5 +1,5 @@
 import { BOOKING_VIEW_TYPE } from "../constants/booking-view-type.constant";
-import useGlobalStore from "./use-global-store";
+import useGlobalStore from "./useGlobalStore";
 
 const useDaysSelectedView = () => {
     const { setBookingViewType, todayWeek, setTodayDay, daysOfWeek, getWeek } =

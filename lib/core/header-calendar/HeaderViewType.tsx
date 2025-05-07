@@ -21,7 +21,7 @@ import {
     DropdownMenuContent,
     DropdownMenuTrigger,
 } from "../../components/ui/Dropdown-menu";
-import useBookingModal from "../../hooks/use-booking-model";
+import useBookingModal from "../../hooks/useBookingModel";
 import { StringUtils } from "../../utils/string.utils";
 import ShortcutCommands from "../shortcut-commands/ShortcutCommands";
 

@@ -24,7 +24,7 @@ import { MonthDescriptionProvider } from "../../context";
 import { initialMonthDescriptionState } from "../../context/month-description/month-description-store";
 
 import { useGlobalStore } from "../../hooks";
-import useBookingModal from "../../hooks/use-booking-model";
+import useBookingModal from "../../hooks/useBookingModel";
 
 import { GridLoader } from "react-spinners";
 import { mockUser } from "../../mock/booking-mock";

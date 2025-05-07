@@ -26,9 +26,11 @@ import {
 import { BOOKING_VIEW_TYPE } from "../../constants";
 
 import useDragStore from "../../context/drag/dragStore";
-import useBookingModal from "../../hooks/use-booking-model";
+import useBookingModal from "../../hooks/useBookingModel";
 
-import BookingCard, { type BookingCardRef } from "../booking-card/BookingCard";
+import { useShallow } from "zustand/shallow";
+import type { BookingCardRef } from "../booking-card/BookingCard";
+import BookingCard from "../booking-card/BookingCard";
 import { InnerCardsHandle } from "./innerCardHandle/inner-card-handle";
 
 interface ResizableState {
@@ -96,10 +98,11 @@ const CardContent = ({
     const [customClass, setCustomClass] = useState<string>("");
     const bookingCardRef = useRef<BookingCardRef>(null);
 
-    const handleStyleCardContent: CSSProperties =
-        bookingViewType === BOOKING_VIEW_TYPE.DAY
+    const handleStyleCardContent: CSSProperties = useMemo(() => {
+        return bookingViewType === BOOKING_VIEW_TYPE.DAY
             ? { width: "99%" }
             : { width: "100%" };
+    }, [bookingViewType]);
 
     const onResizableStart = (
         e: React.SyntheticEvent,
