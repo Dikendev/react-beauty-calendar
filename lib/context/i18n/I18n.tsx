@@ -19,7 +19,11 @@ const I18n = ({ children }: PropsWithChildren): JSX.Element | null => {
         return null;
     }
 
-    return <I18nextProvider i18n={i18n}>{children}</I18nextProvider>;
+    return (
+        <I18nextProvider i18n={i18n} defaultNS={"translation"}>
+            {children}
+        </I18nextProvider>
+    );
 };
 
 export default I18n;
