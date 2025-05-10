@@ -9,7 +9,13 @@ const generateTimes = (start: number, end: number): Times => {
         end: new Date(2014, 9, 6, end),
     });
 
-    return Object.values(result).map(
+    const sort = result.sort((a, b) => {
+        const horaA = new Date(a).getHours();
+        const horaB = new Date(b).getHours();
+        return horaA - horaB;
+    });
+
+    return Object.values(sort).map(
         (date) => `${String(date.getHours()).padStart(2, "0")}:00`,
     );
 };
