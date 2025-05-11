@@ -4,7 +4,7 @@ import { DndContext, useDndMonitor } from "@dnd-kit/core";
 
 import type { Booking } from "../../@types/booking";
 
-import { DateUtils, WEEK_DAYS_FULL_NAME } from "../../utils/date-utils";
+import { dateUtils } from "../../utils/date.utils";
 
 import useDragStore from "../../context/drag/dragStore";
 
@@ -16,6 +16,7 @@ import {
 
 import type { Transform } from "@dnd-kit/utilities";
 import { MONTH, type SIDE_OPTIONS } from "../../constants";
+import { WEEK_DAYS_FULL_NAME } from "../../constants/week.constant";
 import BookingInfoContext from "./BookingInfoContent";
 
 interface BookingInfoOptionsProps {
@@ -51,7 +52,7 @@ const BookingInfoOptions = ({
     const updateIsDragging = useDragStore((state) => state.updateIsDragging);
 
     const dateToString = useMemo(() => {
-        return `${DateUtils.dateAndHourDateToString(booking.startAt)} - ${DateUtils.dateAndHourDateToString(
+        return `${dateUtils.dateAndHourDateToString(booking.startAt)} - ${dateUtils.dateAndHourDateToString(
             booking.finishAt,
         )}`;
     }, [booking.startAt, booking.finishAt]);

@@ -6,17 +6,18 @@ import {
     useMemo,
     useRef,
 } from "react";
+
 import {
+    useBookingModal,
     useDaysSelectedView,
     useGlobalStore,
     useMonthDescription,
 } from "../../hooks";
-import useBookingModal from "../../hooks/useBookingModel";
 
 import type { BookingViewType } from "../../@types/booking";
 import { BOOKING_VIEW_TYPE, MONTH } from "../../constants";
 import { cn } from "../../lib/utils";
-import { DateUtils, WEEK_DAYS } from "../../utils/date-utils";
+import { dateUtils } from "../../utils/date.utils";
 
 import { Button } from "../../components/ui/Button";
 import WithTooltip from "../../hoc/WithTooltip";
@@ -24,6 +25,7 @@ import WithTooltip from "../../hoc/WithTooltip";
 import useEmptySlotStore from "../../context/emptySlotsStore.ts/useEmptySlotStore";
 import type { MonthDescriptionProps } from "../../context/month-description/month-description-store";
 
+import { WEEK_DAYS } from "../../constants/week.constant";
 import { useLanguage } from "../../context/global/language/useLanguage";
 import BookingCreate, {
     type BookingCreateRef,
@@ -142,7 +144,7 @@ const DaysWeek = ({ daysOfWeek, bookingViewType }: DaysWeekProps) => {
                                 )}
                                 onClick={() => handleClickDay(day)}
                             >
-                                {DateUtils.formatDate(day.toDateString())}
+                                {dateUtils.formatDate(day.toDateString())}
                             </button>
                         </div>
                     </div>
@@ -161,7 +163,7 @@ const DaysWeek = ({ daysOfWeek, bookingViewType }: DaysWeekProps) => {
             }
             case BOOKING_VIEW_TYPE.WEEK: {
                 const monthMessage =
-                    DateUtils.generateWeekMonthLabel(daysOfWeek);
+                    dateUtils.generateWeekMonthLabel(daysOfWeek);
                 updateMonthMessage({ monthMessage });
             }
         }

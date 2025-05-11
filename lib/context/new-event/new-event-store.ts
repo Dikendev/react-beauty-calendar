@@ -1,6 +1,6 @@
 import type { Ref } from "react";
 import { createStore } from "zustand";
-import { DateUtils } from "../../utils/date-utils";
+import { dateUtils } from "../../utils/date.utils";
 
 export interface NewEventFormRef {
     updateFinishAt: (selectedHour: string) => void;
@@ -61,7 +61,7 @@ const newEventFormStore = (initProps?: Partial<NewEventFormState>) => {
             time: string,
             increasingMinutes = 15,
         ): string => {
-            const convertDateToString = DateUtils.addMinutesToHour(
+            const convertDateToString = dateUtils.addMinutesToHour(
                 time,
                 increasingMinutes,
             );

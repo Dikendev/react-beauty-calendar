@@ -1,7 +1,7 @@
 import { type SyntheticEvent, useState } from "react";
 import type { ResizeCallbackData, ResizeHandle } from "react-resizable";
 import type { Booking } from "../../@types";
-import { DateUtils } from "../../utils/date-utils";
+import { dateUtils } from "../../utils/date.utils";
 import { TIME_INTERVAL_IN_MINUTES } from "./service/StartAt";
 
 interface useResizableCardHookProps {
@@ -38,7 +38,7 @@ const useResizableCardHook = ({
     const [topHeightIncrement, setTopHeightIncrement] = useState<number>(0);
 
     const computeCardHeight = (finish: Date, start: Date): number => {
-        const diffInMinutes = DateUtils.timeDiffInSeconds(finish, start);
+        const diffInMinutes = dateUtils.timeDiffInSeconds(finish, start);
         const blocks = Math.ceil(diffInMinutes / TIME_INTERVAL_IN_MINUTES);
         return -Math.abs((blocks - 1) * 2);
     };
@@ -54,7 +54,7 @@ const useResizableCardHook = ({
     };
 
     const isMinDiffTimeThreshold = (): boolean => {
-        const timeDiff = DateUtils.timeDiffInSeconds(
+        const timeDiff = dateUtils.timeDiffInSeconds(
             booking.finishAt,
             booking.startAt,
         );

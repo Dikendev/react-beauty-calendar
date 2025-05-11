@@ -11,7 +11,11 @@ import {
 import { BOOKING_VIEW_TYPE } from "../../constants";
 
 import WithTooltip from "../../hoc/WithTooltip";
-import { useDaysSelectedView, useGlobalStore } from "../../hooks";
+import {
+    useBookingModal,
+    useDaysSelectedView,
+    useGlobalStore,
+} from "../../hooks";
 
 import type { BookingViewType } from "../../@types/booking";
 import { Button } from "../../components/ui/Button";
@@ -21,7 +25,6 @@ import {
     DropdownMenuContent,
     DropdownMenuTrigger,
 } from "../../components/ui/Dropdown-menu";
-import useBookingModal from "../../hooks/useBookingModel";
 import { StringUtils } from "../../utils/string.utils";
 import ShortcutCommands from "../shortcut-commands/ShortcutCommands";
 

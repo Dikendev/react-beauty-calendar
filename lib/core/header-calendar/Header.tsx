@@ -1,9 +1,12 @@
 import { useEffect, useState } from "react";
 
-import { useGlobalStore, useMonthDescription } from "../../hooks";
-import useBookingModal from "../../hooks/useBookingModel";
+import {
+    useBookingModal,
+    useGlobalStore,
+    useMonthDescription,
+} from "../../hooks";
 
-import { DateUtils } from "../../utils/date-utils";
+import { dateUtils } from "../../utils/date.utils";
 
 import { BOOKING_VIEW_TYPE } from "../../constants";
 import useEmptySlotStore from "../../context/emptySlotsStore.ts/useEmptySlotStore";
@@ -38,9 +41,8 @@ const Header = () => {
         (state) => state,
     );
 
-    const { onTodayClick } = useBookingModal();
+    const { onTodayClick, onDayChange } = useBookingModal();
     const { fullYear, monthMessage } = useMonthDescription((state) => state);
-    const { onDayChange } = useBookingModal();
 
     const [mobileLayout, setMobileLayout] = useState<boolean>(false);
 
@@ -91,7 +93,7 @@ const Header = () => {
             case BOOKING_VIEW_TYPE.WEEK: {
                 const week = weekAction(actionType);
                 const { firstDayOfWeek, lastDayOfWeek } =
-                    DateUtils.firstAndLastWeekDays(week);
+                    dateUtils.firstAndLastWeekDays(week);
 
                 onDayChange([firstDayOfWeek, lastDayOfWeek], actionType);
                 break;

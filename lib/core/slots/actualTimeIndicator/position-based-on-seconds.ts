@@ -1,4 +1,4 @@
-import { DateUtils } from "../../../utils/date-utils";
+import { dateUtils } from "../../../utils/date.utils";
 
 class TimeIndicatorPosition {
     positionBasedOnSeconds = (dateToRender: string): number => {
@@ -39,10 +39,10 @@ class TimeEquality {
         );
 
         const newActual = new Date(actualTime);
-        const nowMinutes = DateUtils.roundMinutes(actualTime.getMinutes());
+        const nowMinutes = dateUtils.roundMinutes(actualTime.getMinutes());
         newActual.setHours(actualTime.getHours(), nowMinutes, 0, 0);
 
-        const minutesDiff = DateUtils.minuteDifference(
+        const minutesDiff = dateUtils.minuteDifference(
             slotTimeNormalize,
             newActual,
         );
@@ -51,7 +51,7 @@ class TimeEquality {
 
     normalizeDateNow = (dateNow: Date): string => {
         const nowHour = dateNow.getHours();
-        const nowMinutes = DateUtils.roundMinutes(dateNow.getMinutes());
+        const nowMinutes = dateUtils.roundMinutes(dateNow.getMinutes());
 
         const nowFullTime = `${nowHour.toString().padStart(2, "0")}:${nowMinutes
             .toString()

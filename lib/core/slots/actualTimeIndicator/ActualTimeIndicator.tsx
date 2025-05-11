@@ -3,7 +3,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useGlobalStore } from "../../../hooks";
 
 import { cn } from "../../../lib/utils";
-import { DateUtils } from "../../../utils/date-utils";
+import { dateUtils } from "../../../utils/date.utils";
 
 import { Separator } from "../../../components/ui/Separator";
 import { BOOKING_VIEW_TYPE } from "../../../constants";
@@ -91,7 +91,7 @@ export const ActualTimerIndicator = ({
             const dateNow = new Date();
 
             const nowFullTime = timeEquality.normalizeDateNow(dateNow);
-            const actualTime = DateUtils.dateAndHourDateToString(dateNow);
+            const actualTime = dateUtils.dateAndHourDateToString(dateNow);
 
             if (dateToRender !== actualTime) updateDateToRender(actualTime);
 
