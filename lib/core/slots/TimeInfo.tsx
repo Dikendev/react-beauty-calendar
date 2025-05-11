@@ -8,39 +8,20 @@ import {
     useRef,
     useState,
 } from "react";
+import { Resizable } from "react-resizable";
 
 import type { Booking } from "../../@types";
 import CardContent from "./CardContent";
 
 import { useGlobalStore, useNewEventStore } from "../../hooks";
-import type { BlocksTimeStructure } from "./EmptySlot";
-
-import { Resizable } from "react-resizable";
+import useResizableCardHook from "./useResizableCardHook";
 
 import useGlobalConfig from "../../hooks/useGlobalConfig";
 import { cn } from "../../lib/utils";
-import { DateUtils } from "../../utils/date-utils";
-import type { BookingCardRef } from "../booking-card/BookingCard";
-import useResizableCardHook from "./useResizableCardHook";
+import { dateUtils } from "../../utils/date.utils";
 
-interface TimeInfoEvents {
-    onClick: (finishAt?: string) => void;
-    renderPreviewCard: () => void;
-    openOptions: () => void;
-    resetPrevView: () => void;
-}
-
-export interface TimeInfoRef {
-    show: () => void;
-    hide: () => void;
-    changeIsOpen: (isOpen: boolean) => void;
-}
-
-interface TimeInfoProps {
-    isDragging: boolean;
-    slotData: BlocksTimeStructure;
-    events: TimeInfoEvents;
-}
+import type { BookingCardRef, TimeInfoRef } from "../../utils/forward";
+import type { TimeInfoProps } from "../../utils/props";
 
 const TimeInfo = forwardRef<TimeInfoRef, TimeInfoProps>(
     (
@@ -66,7 +47,7 @@ const TimeInfo = forwardRef<TimeInfoRef, TimeInfoProps>(
         const [isResizing, setIsResizing] = useState<boolean>(false);
 
         const [finishAt, setFinishAt] = useState<string>(
-            DateUtils.addMinutesToHour(slotData.time, 15),
+            dateUtils.addMinutesToHour(slotData.time, 15),
         );
 
         const [isDraggingOnClick, setIsDraggingOnClick] =
@@ -81,8 +62,8 @@ const TimeInfo = forwardRef<TimeInfoRef, TimeInfoProps>(
         const bookingPreview: Booking = useMemo(() => {
             return {
                 id: "dragging_booking_preview",
-                startAt: DateUtils.convertStringTimeToDateFormat(startAt),
-                finishAt: DateUtils.convertStringTimeToDateFormat(finishAt),
+                startAt: dateUtils.convertStringTimeToDateFormat(startAt),
+                finishAt: dateUtils.convertStringTimeToDateFormat(finishAt),
             };
         }, [finishAt, startAt]);
 
@@ -114,10 +95,10 @@ const TimeInfo = forwardRef<TimeInfoRef, TimeInfoProps>(
         } = useResizableCardHook({
             booking: bookingPreview,
             onAddTime: (dateTime) => {
-                setFinishAt(DateUtils.dateTimeAsString(dateTime));
+                setFinishAt(dateUtils.dateTimeAsString(dateTime));
             },
             onSubTime: (dateTime) => {
-                setFinishAt(DateUtils.dateTimeAsString(dateTime));
+                setFinishAt(dateUtils.dateTimeAsString(dateTime));
             },
         });
 
@@ -126,7 +107,7 @@ const TimeInfo = forwardRef<TimeInfoRef, TimeInfoProps>(
         };
 
         const resetFinishAt = useCallback(() => {
-            setFinishAt(DateUtils.addMinutesToHour(slotData.time, 15));
+            setFinishAt(dateUtils.addMinutesToHour(slotData.time, 15));
         }, [slotData.time]);
 
         const resetLocalStates = useCallback(() => {
@@ -141,9 +122,9 @@ const TimeInfo = forwardRef<TimeInfoRef, TimeInfoProps>(
             if (!finishAt || !startAt) return;
 
             const finishAtConverted =
-                DateUtils.convertStringTimeToDateFormat(finishAt);
+                dateUtils.convertStringTimeToDateFormat(finishAt);
             const startAtConverted =
-                DateUtils.convertStringTimeToDateFormat(startAt);
+                dateUtils.convertStringTimeToDateFormat(startAt);
 
             if (
                 Number.isNaN(finishAtConverted) ||
