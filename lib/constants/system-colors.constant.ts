@@ -1,4 +1,4 @@
-const SYSTEM_COLORS = {
+export const SYSTEM_COLORS = {
     option_1: "#2596be",
     option_2: "#ff0101",
     option_3: "#bf00e0",
@@ -8,5 +8,3 @@ const SYSTEM_COLORS = {
     option_7: "#3e0237",
     default: "#ae00ff",
 } as const;
-
-export default SYSTEM_COLORS;
