@@ -1,4 +1,5 @@
 import useBooking from "./useBooking";
+import useBookingModal from "./useBookingModal";
 import useDaysSelectedView from "./useDaysSelectedView";
 import useEventPrevention from "./useEventPrevention";
 import useGlobalStore from "./useGlobalStore";
@@ -18,4 +19,5 @@ export {
     useGlobalStore,
     useQueryData,
     useNewEventStore,
+    useBookingModal,
 };
