@@ -1,5 +1,5 @@
 import { eachHourOfInterval } from "date-fns";
-import { DateUtils } from "./date-utils";
+import { dateUtils } from "./date.utils";
 
 export type Times = string[];
 
@@ -36,7 +36,7 @@ const generateWorkingTimes = (
     const endTime = new Date(`1970/01/01 ${end}`);
 
     while (startTime <= endTime) {
-        const formattedTime = DateUtils.dateTimeAsString(startTime);
+        const formattedTime = dateUtils.dateTimeAsString(startTime);
 
         timesWithOriginal.push({
             time: formattedTime,
