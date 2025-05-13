@@ -1,7 +1,7 @@
 import { type PropsWithChildren, useEffect } from "react";
 import { BOOKING_VIEW_TYPE } from "../../constants";
 
-import useEmptySlotStore from "../../context/emptySlotsStore.ts/useEmptySlotStore";
+import useEmptySlotStore from "../../context/emptySlotsStore/useEmptySlotStore";
 import { useGlobalStore } from "../../hooks";
 
 type HandleViewTypePropsWithChildren = PropsWithChildren;

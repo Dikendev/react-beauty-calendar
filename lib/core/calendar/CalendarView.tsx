@@ -11,7 +11,7 @@ import Slots from "../slots/Slots";
 import { useShallow } from "zustand/shallow";
 import { Table, TableCell } from "../../components/ui/Table";
 import { BOOKING_VIEW_TYPE } from "../../constants";
-import useEmptySlotStore from "../../context/emptySlotsStore.ts/useEmptySlotStore";
+import useEmptySlotStore from "../../context/emptySlotsStore/useEmptySlotStore";
 import { useGlobalStore, useNewEventStore } from "../../hooks";
 import { cn } from "../../lib/utils";
 import HourWithActions, { type HourWithActionsRef } from "./HourWithActions";

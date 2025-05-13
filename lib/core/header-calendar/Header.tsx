@@ -9,7 +9,7 @@ import {
 import { dateUtils } from "../../utils/date.utils";
 
 import { BOOKING_VIEW_TYPE } from "../../constants";
-import useEmptySlotStore from "../../context/emptySlotsStore.ts/useEmptySlotStore";
+import useEmptySlotStore from "../../context/emptySlotsStore/useEmptySlotStore";
 
 import HeaderDayActions from "./HeaderDayActions";
 import HeaderTodayAction from "./HeaderTodayAction";

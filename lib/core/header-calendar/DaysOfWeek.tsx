@@ -22,7 +22,7 @@ import { dateUtils } from "../../utils/date.utils";
 import { Button } from "../../components/ui/Button";
 import WithTooltip from "../../hoc/WithTooltip";
 
-import useEmptySlotStore from "../../context/emptySlotsStore.ts/useEmptySlotStore";
+import useEmptySlotStore from "../../context/emptySlotsStore/useEmptySlotStore";
 import type { MonthDescriptionProps } from "../../context/month-description/month-description-store";
 
 import { WEEK_DAYS } from "../../constants/week.constant";

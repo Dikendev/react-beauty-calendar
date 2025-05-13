@@ -2,7 +2,7 @@ import { useEffect, useImperativeHandle, useRef, useState } from "react";
 import type { RootProps } from "../@types/calendar-instance";
 
 import { initialBookingFormState } from "../context/booking/booking-store";
-import useEmptySlotStore from "../context/emptySlotsStore.ts/useEmptySlotStore";
+import useEmptySlotStore from "../context/emptySlotsStore/useEmptySlotStore";
 
 import {
     type NewEventFormRef,
@@ -53,7 +53,6 @@ const Root = ({
     const { setSelectedNode } = useEmptySlotStore((store) => store);
 
     const updateFinishAt = (hour24Format: string) => {
-        console.log("hour24Format", hour24Format);
         newEventProviderRef?.current?.updateFinishAt(hour24Format);
     };
 
