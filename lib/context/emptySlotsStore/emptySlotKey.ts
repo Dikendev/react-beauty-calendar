@@ -1,5 +1,7 @@
 import type { BlockTimeData } from "../../core/slots/EmptySlot";
 
+// mudar o nome dessa função, e melhorar, está muito dificil usar isso se eu precisar pegar 1 slot na mão.
+
 const setEmptySlotKey = (slotData: BlockTimeData) => {
     const asDate = new Date(slotData.key);
     const day = asDate.getDate().toString().padStart(2, "0");

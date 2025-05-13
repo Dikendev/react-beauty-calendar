@@ -95,6 +95,23 @@ export const dateUtils = {
         return `${hours}:${minutes.toString().padStart(2, "0")}`;
     },
 
+    buildFutureDateList(
+        booking: Booking,
+        daysDifference: number,
+        dayOffSetQuantity = 1,
+    ): Date[] {
+        const updateDateWithOffset = (startAt: Date, index: number): Date => {
+            const newDay = new Date(startAt);
+            const nextDay = newDay.getDate() + index + dayOffSetQuantity;
+            newDay.setDate(nextDay);
+            return newDay;
+        };
+
+        return Array.from({ length: daysDifference }, (_, index) => {
+            return updateDateWithOffset(booking.startAt, index);
+        });
+    },
+
     bookingTimeRange: (booking: Booking, overId: string): Booking => {
         const timeDiff = dateUtils.getTimeDiff(
             booking.startAt,
@@ -124,6 +141,10 @@ export const dateUtils = {
 
     minuteDifference(date1: Date, date2: Date): number {
         return differenceInMinutes(date1, date2);
+    },
+
+    calculateDaysDifference(finishAt: Date, startAt: Date): number {
+        return finishAt.getDate() - startAt.getDate();
     },
 
     dateAndHourDateToString(date: Date): string {

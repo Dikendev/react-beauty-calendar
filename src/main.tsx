@@ -16,6 +16,7 @@ if (rootElement) {
                 <BrowserRouter>
                     <Routes>
                         <Route path="/" element={<App />} />
+                        <Route path="*" element={<App />} />
                     </Routes>
                 </BrowserRouter>
             </I18n>
