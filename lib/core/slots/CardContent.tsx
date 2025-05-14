@@ -1,7 +1,6 @@
 import {
     type CSSProperties,
-    type Ref,
-    type SyntheticEvent,
+    type MouseEvent,
     useEffect,
     useImperativeHandle,
     useMemo,
@@ -11,75 +10,36 @@ import {
 
 import { cn } from "../../lib/utils";
 
-import type { Booking } from "../../@types";
-import type { BookingDateAndTime } from "../../@types/booking";
-
-import type { DraggableAttributes } from "@dnd-kit/core";
-import type { SyntheticListenerMap } from "@dnd-kit/core/dist/hooks/utilities";
-
 import {
     Resizable,
     type ResizeCallbackData,
     type ResizeHandle,
 } from "react-resizable";
 
-import { BOOKING_VIEW_TYPE } from "../../constants";
-
 import useDragStore from "../../context/drag/dragStore";
-import useBookingModal from "../../hooks/useBookingModel";
+import useEmptySlotStore from "../../context/emptySlotsStore/useEmptySlotStore";
 
 import { useShallow } from "zustand/shallow";
-import type { BookingCardRef } from "../booking-card/BookingCard";
+
+import { BOOKING_VIEW_TYPE, DAY_TIME_STARTER } from "../../constants";
+
+import type { BookingCardRef } from "../../utils/forward";
+import type { CardContentProps } from "../../utils/props";
+
+import type { Booking } from "../../@types";
+import { useBookingModal } from "../../hooks";
+import { bookingUtils } from "../../utils/booking.utils";
+
+import buildEmptyTimeSlotKey from "../../context/emptySlotsStore/emptySlotKey";
+import { dateUtils } from "../../utils";
 import BookingCard from "../booking-card/BookingCard";
 import { InnerCardsHandle } from "./innerCardHandle/inner-card-handle";
-
-interface ResizableState {
-    height: number;
-    width: number;
-}
-export interface ResizableParam {
-    state: ResizableState;
-    customClass?: string;
-    onResize: (
-        event: SyntheticEvent<Element, Event>,
-        args_1: ResizeCallbackData,
-    ) => void;
-    onResizeStart?: (e: React.SyntheticEvent, data: ResizeCallbackData) => void;
-    onResizeStop?: (e: React.SyntheticEvent, data: ResizeCallbackData) => void;
-    resizeHandle?: ResizeHandle[];
-}
-
-interface CardContentProps {
-    bookingInit: Booking;
-    bookingViewType: string;
-    slotData: BookingDateAndTime;
-    heightStyle: number;
-    topHeightIncrement?: number;
-    listeners?: SyntheticListenerMap | undefined;
-    attributes?: DraggableAttributes;
-    onClick?: () => void;
-    customClasses?: string;
-    open?: boolean;
-    lastCard?: boolean;
-    half?: boolean;
-    cardsQuantity?: number;
-    cardIndex?: number;
-    resizableParam?: ResizableParam;
-    events?: {
-        onUnmount: () => void;
-    };
-    cardContentRef?: Ref<BookingCardRef>;
-    ref?: Ref<CardContentForward>;
-}
-
-type CardContentForward = HTMLDivElement;
 
 const CardContent = ({
     bookingInit,
     slotData,
     heightStyle,
     topHeightIncrement,
-    onClick,
     customClasses,
     bookingViewType,
     resizableParam,
@@ -90,10 +50,17 @@ const CardContent = ({
     cardContentRef: dataRef,
     cardsQuantity,
     cardIndex,
+    hoveringAdditionalCardId,
     ref,
 }: CardContentProps) => {
-    const updateIsDragging = useDragStore((state) => state.updateIsDragging);
-    const { bookings, onCardResizeEnd } = useBookingModal();
+    const updateIsDragging = useDragStore(
+        useShallow((state) => state.updateIsDragging),
+    );
+
+    const { emptySlotNodes } = useEmptySlotStore();
+
+    const { bookings, onCardResizeEnd: onCardResizeEndCallback } =
+        useBookingModal();
 
     const [customClass, setCustomClass] = useState<string>("");
     const bookingCardRef = useRef<BookingCardRef>(null);
@@ -108,8 +75,7 @@ const CardContent = ({
         e: React.SyntheticEvent,
         data: ResizeCallbackData,
     ) => {
-        setCustomClass("show-handle");
-        updateIsDragging(true);
+        onResizeEvent("show-handle", true);
 
         if (resizableParam?.onResizeStart) {
             resizableParam.onResizeStart(e, data);
@@ -118,19 +84,31 @@ const CardContent = ({
         bookingCardRef.current?.changeCurrentCardResize();
     };
 
+    const onResizeEvent = (customClass = "", isDragging = false) => {
+        setCustomClass(customClass);
+        updateIsDragging(isDragging);
+    };
+
     const onResizableStop = (
         e: React.SyntheticEvent,
         data: ResizeCallbackData,
     ) => {
         bookingCardRef.current?.changeCurrentCardResize();
-        setCustomClass("");
-        updateIsDragging(false);
+        onResizeEvent();
 
-        onCardResizeEnd(bookingInit);
-
-        if (resizableParam?.onResizeStop) {
-            resizableParam.onResizeStop(e, data);
+        if (data.handle.includes("n")) {
+            onCardResizeEndCallback(
+                bookingUtils.resizeBookingNorthId(bookingInit),
+            );
         }
+
+        if (data.handle.includes("s")) {
+            onCardResizeEndCallback(
+                bookingUtils.resizeBookingSouthId(bookingInit),
+            );
+        }
+
+        if (resizableParam?.onResizeStop) resizableParam.onResizeStop(e, data);
     };
 
     const layerCount = useMemo((): number => {
@@ -227,9 +205,77 @@ const CardContent = ({
         halfCardLastBooking,
     ]);
 
+    const hoveringAdditionalCard = (
+        booking: Booking,
+        emptySlotId: string,
+    ): void => {
+        const emptySlotNode = emptySlotNodes.get(emptySlotId);
+        emptySlotNode?.hoveringAdditionalCard(booking.id);
+    };
+
+    const clearingAdditionalCard = (emptySlotId: string): void => {
+        const emptySlotNode = emptySlotNodes.get(emptySlotId);
+        emptySlotNode?.clearHoveringCard();
+    };
+
+    const processSlotEvent = (emptySlotId: string, eventType: string): void => {
+        const eventHandlers: Record<string, () => void> = {
+            mouseenter: () => hoveringAdditionalCard(bookingInit, emptySlotId),
+            mouseleave: () => clearingAdditionalCard(emptySlotId),
+        };
+
+        const handler =
+            eventHandlers[eventType] ||
+            (() => console.warn(`Unhandled event type: ${eventType}`));
+
+        handler();
+    };
+
+    const getEmptySlotKey = (finishAt: Date) => {
+        const nextKeyDay = finishAt.toDateString();
+
+        return buildEmptyTimeSlotKey({
+            key: nextKeyDay,
+            time: DAY_TIME_STARTER,
+        });
+    };
+
+    const dispatchEventsForDaysDifference = (eventType: string): void => {
+        const daysDifference = dateUtils.calculateDaysDifference(
+            bookingInit.finishAt,
+            bookingInit.startAt,
+        );
+
+        if (daysDifference === 1) {
+            processSlotEvent(getEmptySlotKey(bookingInit.finishAt), eventType);
+            return;
+        }
+
+        const futureDateList = dateUtils.buildFutureDateList(
+            bookingInit,
+            daysDifference,
+        );
+
+        for (const dateList of futureDateList) {
+            processSlotEvent(getEmptySlotKey(dateList), eventType);
+        }
+    };
+
+    const handleOnHoverEvent = (event: MouseEvent<HTMLDivElement>): void => {
+        const eventType = event.type;
+
+        if (bookingInit?.nodes) {
+            for (const node of bookingInit.nodes) {
+                processSlotEvent(node, eventType);
+            }
+        }
+
+        dispatchEventsForDaysDifference(eventType);
+    };
+
     useEffect(() => {
         return () => {
-            if (events?.onUnmount) events?.onUnmount();
+            if (events?.onUnmount) events.onUnmount();
         };
     }, []);
 
@@ -242,7 +288,21 @@ const CardContent = ({
     if (!open && !bookingInit.finishAt) return null;
 
     if (resizableParam?.state?.height) {
-        const { state, onResize } = resizableParam;
+        const { state, onResize, resizeHandle = ["s", "n"] } = resizableParam;
+
+        const resizeHandleSet = (): ResizeHandle[] => {
+            switch (bookingInit?.disabledResize) {
+                case "full": {
+                    return [];
+                }
+                case "half": {
+                    return ["s"];
+                }
+                default: {
+                    return resizeHandle;
+                }
+            }
+        };
 
         return (
             <Resizable
@@ -252,7 +312,7 @@ const CardContent = ({
                 onResize={onResize}
                 onResizeStart={onResizableStart}
                 onResizeStop={onResizableStop}
-                resizeHandles={["s", "n"]}
+                resizeHandles={resizeHandleSet()}
                 draggableOpts={{ grid: [35, 35] }}
                 handleSize={[20, 20]}
                 maxConstraints={[
@@ -266,6 +326,9 @@ const CardContent = ({
                     style={{
                         ...insetCardHeight,
                     }}
+                    onMouseEnter={handleOnHoverEvent}
+                    onMouseLeave={handleOnHoverEvent}
+                    onBlur={() => {}}
                 >
                     <BookingCard
                         ref={bookingCardRef}
@@ -273,9 +336,10 @@ const CardContent = ({
                         heightStyle={heightStyle}
                         booking={bookingInit}
                         slotData={slotData}
-                        onClick={onClick}
                         layerCount={layerCount}
                         half={half}
+                        hoveringAdditionalCardId={hoveringAdditionalCardId}
+                        events={{ onClick: events?.onClick }}
                     />
                 </div>
             </Resizable>
@@ -297,7 +361,7 @@ const CardContent = ({
                 customClasses={customClasses}
                 booking={bookingInit}
                 slotData={slotData}
-                onClick={onClick}
+                events={{ onClick: events?.onClick }}
             />
         </div>
     );

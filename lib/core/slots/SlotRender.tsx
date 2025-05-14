@@ -1,7 +1,8 @@
-import { memo } from "react";
+import { memo, useMemo } from "react";
 import type { Booking, BookingDateAndTime } from "../../@types/booking";
-import { DateUtils } from "../../utils/date-utils";
-import EmptySlot, { type BlocksTimeStructure } from "./EmptySlot";
+import { dateUtils } from "../../utils/date.utils";
+import type { BlocksTimeStructure } from "../../utils/props";
+import EmptySlot from "./EmptySlot";
 
 interface SlotRenderProps {
     firstDay: boolean;
@@ -26,25 +27,28 @@ const SlotRender = memo(
     }: SlotRenderProps) => {
         const { day, hour } = dayHour;
 
-        const bookings = booking.filter((bookingEvent) => {
-            const bookingStartTime = DateUtils.dateAndHourDateToString(
-                bookingEvent.startAt,
-            );
+        const bookings = useMemo(() => {
+            return booking.filter((bookingEvent) => {
+                const bookingStartTime = dateUtils.dateAndHourDateToString(
+                    bookingEvent.startAt,
+                );
 
-            const bookingDay = new Date(bookingEvent.startAt).getDate();
-            const slotDay = new Date(day).getDate();
+                const bookingDay = new Date(bookingEvent.startAt).getDate();
+                const slotDay = new Date(day).getDate();
 
-            const slotHour = hour.split(":")[0];
-            const bookingHour = bookingStartTime.split(":")[0];
+                const slotHour = hour.split(":")[0];
+                const bookingHour = bookingStartTime.split(":")[0];
 
-            const isSameHour = bookingHour === slotHour;
-            const isSameDay = bookingDay === slotDay;
-            return isSameHour && isSameDay;
-        });
+                const isSameHour = bookingHour === slotHour;
+                const isSameDay = bookingDay === slotDay;
+                return isSameHour && isSameDay;
+            });
+        }, [booking, dayHour]);
 
         if (!bookings.length) {
             return (
                 <EmptySlot
+                    dayHour={dayHour}
                     first={firstBlockTimeData}
                     second={secondBlockTimeData}
                     third={thirdBlockTimeData}

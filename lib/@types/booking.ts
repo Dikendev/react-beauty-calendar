@@ -1,9 +1,14 @@
 import type { UserProfile } from "./user";
 
+type DisabledResize = "full" | "half";
+
 export interface Booking {
     id: string;
     startAt: Date;
     finishAt: Date;
+    disabledResize?: DisabledResize;
+    overflow?: boolean;
+    nodes?: string[];
 }
 
 export type Bookings = Booking[];

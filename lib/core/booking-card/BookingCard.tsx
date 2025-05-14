@@ -1,6 +1,5 @@
 import {
     type CSSProperties,
-    type Ref,
     useCallback,
     useEffect,
     useImperativeHandle,
@@ -8,32 +7,21 @@ import {
     useState,
 } from "react";
 
-import type { Booking, BookingDateAndTime } from "../../@types/booking";
+import type { Booking } from "../../@types/booking";
 import { cn } from "../../lib/utils";
-import { DateUtils } from "../../utils/date-utils";
+import { dateUtils } from "../../utils/date.utils";
 
 import { useDndMonitor, useDraggable } from "@dnd-kit/core";
 import { useShallow } from "zustand/shallow";
 import { BOOKING_VIEW_TYPE } from "../../constants";
+
 import useDragStore from "../../context/drag/dragStore";
 import useDragStartAtStore from "../../context/drag/useDragStateAtStore";
+
 import { useGlobalStore } from "../../hooks";
+import type { BookingCardProps } from "../../utils/props";
+
 import CardOverlay from "../slots/CardOverlay";
-
-export interface BookingCardRef {
-    changeCurrentCardResize: () => void;
-}
-
-interface BookingCardProps {
-    booking: Booking;
-    slotData: BookingDateAndTime;
-    customClasses?: string;
-    heightStyle: number;
-    layerCount?: number;
-    half?: boolean;
-    onClick?: () => void;
-    ref?: Ref<BookingCardRef>;
-}
 
 // const WIDTH_DECREMENT_STEP = 4;
 // const MAX_WIDTH_PERCENTAGE = 100;
@@ -43,9 +31,10 @@ const BookingCard = ({
     slotData,
     // layerCount,
     // half,
-    onClick,
+    events,
     heightStyle,
     customClasses,
+    hoveringAdditionalCardId = "",
     ref,
 }: BookingCardProps) => {
     const { day, hour } = slotData;
@@ -103,12 +92,12 @@ const BookingCard = ({
     }, [isDragging, bookingViewType]);
 
     const cardTodayCustomStyle = (booking: Booking, day: Date) => {
-        const normalizedBookingDate = DateUtils.dateAndHourDateToString(
+        const normalizedBookingDate = dateUtils.dateAndHourDateToString(
             new Date(booking.finishAt),
         );
 
         if (
-            DateUtils.isTodayDate(day) &&
+            dateUtils.isTodayDate(day) &&
             isBelowMaxTimeLimit(normalizedBookingDate)
         ) {
             return {
@@ -123,7 +112,7 @@ const BookingCard = ({
 
     useEffect(() => {
         if (dragStartAt.length) {
-            const result = DateUtils.bookingTimeRange(booking, dragStartAt);
+            const result = dateUtils.bookingTimeRange(booking, dragStartAt);
             setPrevBooking({
                 ...result,
             });
@@ -134,6 +123,11 @@ const BookingCard = ({
         changeCurrentCardResize: () => setIsResizingCard((prev) => !prev),
     }));
 
+    const isHovering = (id: string, targetId: string): boolean => {
+        if (!hoveringAdditionalCardId?.length) return false;
+        return id === targetId;
+    };
+
     if (!isResizing) {
         return (
             <div
@@ -141,7 +135,9 @@ const BookingCard = ({
                 ref={setNodeRef}
                 className={cn(
                     "cardContent_render",
-                    isResizingCard && "cardContent_render_dragging",
+                    (isResizingCard ||
+                        isHovering(hoveringAdditionalCardId, booking.id)) &&
+                        "cardContent_render_dragging",
                     customClasses,
                 )}
                 style={{
@@ -159,7 +155,7 @@ const BookingCard = ({
                         booking,
                         new Date(day.split(":")[1]),
                     )}
-                    onPointerUp={onClick}
+                    onPointerUp={events?.onClick}
                 >
                     <div
                         className={cn(
@@ -167,7 +163,7 @@ const BookingCard = ({
                         )}
                     >
                         <p style={{ height: "1.8rem", alignContent: "center" }}>
-                            {`${DateUtils.dateAndHourDateToString(booking.startAt)} - ${DateUtils.dateAndHourDateToString(
+                            {`${dateUtils.dateAndHourDateToString(booking.startAt)} - ${dateUtils.dateAndHourDateToString(
                                 booking.finishAt,
                             )}`}
                         </p>

@@ -1,6 +1,6 @@
 import { DndContext } from "@dnd-kit/core";
 import { type JSX, type Ref, useImperativeHandle, useState } from "react";
-import useBookingModal from "../../hooks/useBookingModel";
+import { useBookingModal } from "../../hooks";
 import type { Side } from "../booking-options/BookingInfoOptions";
 import EventTabs from "../slots/EventsTab";
 

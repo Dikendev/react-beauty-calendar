@@ -21,14 +21,17 @@ import type {
 } from "../../@types/booking";
 
 import { MonthDescriptionProvider } from "../../context";
+import buildEmptyTimeSlotKey from "../../context/emptySlotsStore/emptySlotKey";
+import useEmptySlotStore from "../../context/emptySlotsStore/useEmptySlotStore";
 import { initialMonthDescriptionState } from "../../context/month-description/month-description-store";
 
-import { useGlobalStore } from "../../hooks";
-import useBookingModal from "../../hooks/useBookingModel";
+import { useBookingModal, useGlobalStore } from "../../hooks";
 
 import { GridLoader } from "react-spinners";
+import { DAY_TIME_STARTER } from "../../constants";
+
 import { mockUser } from "../../mock/booking-mock";
-import { DateUtils } from "../../utils/date-utils";
+import { dateUtils } from "../../utils/date.utils";
 import CalendarView from "./CalendarView";
 
 interface CalendarHolderProps {
@@ -45,6 +48,8 @@ const CalendarHolder = ({ isLoading }: CalendarHolderProps) => {
     const { setBookingBulkData, optimisticCardUpdate } = useGlobalStore();
     const { onCardDropCallback } = useBookingModal();
 
+    const { emptySlotNodes } = useEmptySlotStore();
+
     const sensors = useSensors(
         useSensor(MouseSensor, { activationConstraint }),
         useSensor(TouchSensor, { activationConstraint }),
@@ -57,13 +62,48 @@ const CalendarHolder = ({ isLoading }: CalendarHolderProps) => {
         if (active.id === "booking_info") return;
     }, []);
 
+    const deleteOverFlowRender = useCallback(
+        (booking: Booking, finishAt: Date) => {
+            const keyToFind = buildEmptyTimeSlotKey({
+                key: finishAt.toDateString(),
+                time: DAY_TIME_STARTER,
+            });
+
+            const slotNode = emptySlotNodes.get(keyToFind);
+
+            if (!slotNode) {
+                console.warn("SlotNode not found:", keyToFind);
+                return;
+            }
+
+            slotNode.removeFromAdditionalBooking(booking);
+        },
+        [emptySlotNodes],
+    );
+
+    const clearOverflowCards = (booking: Booking) => {
+        const daysDifference = dateUtils.calculateDaysDifference(
+            booking.finishAt,
+            booking.startAt,
+        );
+
+        const futureDateList = dateUtils.buildFutureDateList(
+            booking,
+            daysDifference,
+        );
+
+        for (const cards of futureDateList) {
+            deleteOverFlowRender(booking, cards);
+        }
+    };
+
     const handleOnDrop = async (
         booking: Booking,
         overId: string,
         slotData: BookingDateAndTime,
     ) => {
         try {
-            const { startAt, finishAt } = DateUtils.bookingTimeRange(
+            const { startAt, finishAt } = dateUtils.bookingTimeRange(
                 booking,
                 overId,
             );
@@ -74,6 +114,8 @@ const CalendarHolder = ({ isLoading }: CalendarHolderProps) => {
                 startAt,
                 finishAt,
             });
+
+            clearOverflowCards(booking);
         } catch (error) {
             // TODO: implement the rollback if the update return error.
             console.warn(error);
@@ -93,8 +135,14 @@ const CalendarHolder = ({ isLoading }: CalendarHolderProps) => {
                 overCurrent.accepts.includes(activeCurrent.type)
             ) {
                 if (activeCurrent.booking.id && over.id) {
+                    const findRealBooking = bookings.find(
+                        (b) => b.id === activeCurrent.booking.id,
+                    );
+
+                    if (!findRealBooking) return;
+
                     handleOnDrop(
-                        activeCurrent.booking,
+                        findRealBooking,
                         String(over.id),
                         activeCurrent.slotData,
                     );

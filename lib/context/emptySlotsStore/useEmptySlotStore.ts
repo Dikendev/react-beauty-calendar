@@ -1,12 +1,12 @@
 import { differenceInHours } from "date-fns";
 import { create } from "zustand";
-import type { SlotTriggerForwardRef } from "../../core/card-slots/SlotTrigger";
-import type { BlockTimeData } from "../../core/slots/EmptySlot";
+import type { SlotTriggerForwardRef } from "../../utils/forward";
+import type { BlockTimeData } from "../../utils/props";
 import {
     END_24_HOUR_FORMAT,
     START_TIME,
 } from "../global/days-and-week/day-and-week-store";
-import setEmptySlotKey from "./emptySlotKey";
+import buildEmptyTimeSlotKey from "./emptySlotKey";
 
 export type EmptySlotNodes = Map<string, SlotTriggerForwardRef>;
 
@@ -63,7 +63,7 @@ const useEmptySlotStore = create<EmptySlotState>((set, get) => ({
             if (oldEmptySlotNodesSize > mapSizeLimit)
                 prevEmptySlotNodes.clear();
 
-            const key = setEmptySlotKey(slotData);
+            const key = buildEmptyTimeSlotKey(slotData);
             prevEmptySlotNodes.set(key, node);
 
             return {

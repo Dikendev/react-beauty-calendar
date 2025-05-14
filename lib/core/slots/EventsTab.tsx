@@ -8,6 +8,7 @@ import {
 
 import { X } from "lucide-react";
 
+import { useShallow } from "zustand/shallow";
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -24,6 +25,7 @@ interface EventTabsProps {
     onClose: (event: React.MouseEvent) => void;
     onOpenChange: (status: boolean) => void;
 }
+
 type EventTabsWithChildren = PropsWithChildren<EventTabsProps>;
 
 const EventTabs = ({
@@ -36,7 +38,9 @@ const EventTabs = ({
 }: EventTabsWithChildren) => {
     const [position, setPosition] = useState({ x: 0, y: 0 });
 
-    const updateIsDragging = useDragStore((state) => state.updateIsDragging);
+    const updateIsDragging = useDragStore(
+        useShallow((state) => state.updateIsDragging),
+    );
 
     const {
         attributes,

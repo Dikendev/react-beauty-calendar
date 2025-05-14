@@ -53,14 +53,13 @@ const App = () => {
         console.log("onHeaderDayClick", date);
     };
 
-    const updateBooking = (targetBooking: Booking) => {
+    const updateBooking = (targetBooking: Partial<Booking>) => {
         setBookings((prevBookings) => {
             const updatedBooking = prevBookings.map((localBooking) => {
                 if (localBooking.id === targetBooking.id) {
                     return {
+                        ...localBooking,
                         ...targetBooking,
-                        finishAt: targetBooking.finishAt,
-                        startAt: targetBooking.startAt,
                     };
                 }
                 return localBooking;
@@ -69,7 +68,9 @@ const App = () => {
         });
     };
 
-    const onCardResizeEnd = async (booking: Booking): Promise<void> => {
+    const onCardResizeEnd = async (
+        booking: Partial<Booking>,
+    ): Promise<void> => {
         console.log("onCardResizeEnd", booking);
         updateBooking(booking);
     };

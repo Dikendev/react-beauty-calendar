@@ -1,27 +1,24 @@
 import type { Booking } from "../@types";
 
-const sanitizeOverflowId = (id: string): string => {
-    return id.replace("overflow-", "");
-};
-
 export const bookingUtils = {
-    normalizeBookingNorthId: (booking: Booking): Partial<Booking> => {
-        if (!booking.id.includes("overflow-")) return booking;
+    resizeBookingNorthId: (booking: Booking): Partial<Booking> => {
+        if (!booking?.overflow) return booking;
 
         return {
             startAt: booking.startAt,
-            id: sanitizeOverflowId(booking.id),
+            id: booking.id,
         };
     },
 
-    normalizeBookingSouthId: (booking: Booking): Partial<Booking> => {
-        if (!booking.id.includes("overflow-")) return booking;
+    resizeBookingSouthId: (booking: Booking): Partial<Booking> => {
+        if (!booking?.overflow) return booking;
 
         return {
             finishAt: booking.finishAt,
-            id: sanitizeOverflowId(booking.id),
+            id: booking.id,
         };
     },
+
     resetToFirstHourNextDay: (booking: Booking) => {
         const startAtUpdated = new Date(booking.startAt);
         startAtUpdated.setHours(0, 0, 0, 0);

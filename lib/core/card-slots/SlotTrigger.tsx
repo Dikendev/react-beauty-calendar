@@ -1,6 +1,4 @@
 import {
-    type ReactNode,
-    type Ref,
     useCallback,
     useEffect,
     useImperativeHandle,
@@ -9,54 +7,37 @@ import {
     useState,
 } from "react";
 
-import CardContent from "../slots/CardContent";
-import type { BlocksTimeStructure } from "../slots/EmptySlot";
-import type { TimesBlock } from "../slots/Slots";
-import TimeInfo, { type TimeInfoRef } from "../slots/TimeInfo";
-import useResizableCardHook from "../slots/useResizableCardHook";
-
-import useDragStore from "../../context/drag/dragStore";
-import setEmptySlotKey from "../../context/emptySlotsStore.ts/emptySlotKey";
-import useEmptySlotStore from "../../context/emptySlotsStore.ts/useEmptySlotStore";
-
-import { useGlobalStore, useNewEventStore } from "../../hooks";
-import useBookingModal from "../../hooks/useBookingModel";
-
-import type { Booking } from "../../@types";
-
-import { BOOKING_VIEW_TYPE } from "../../constants";
-import { cn } from "../../lib/utils";
-import { DateUtils } from "../../utils/date-utils";
 import BookingCreate, {
     type BookingCreateRef,
 } from "../booking-create/BookingCreate";
+import CardBlockContent from "../slots/CardBlockContent";
+import CardContent from "../slots/CardContent";
+import TimeInfo from "../slots/TimeInfo";
+import useResizableCardHook from "../slots/useResizableCardHook";
 
-interface SlotEvents {
-    onMouseEnterEvent: () => string;
-}
+import useDragStore from "../../context/drag/dragStore";
+import buildEmptyTimeSlotKey from "../../context/emptySlotsStore/emptySlotKey";
+import useEmptySlotStore from "../../context/emptySlotsStore/useEmptySlotStore";
 
-interface SlotTriggerProps {
-    slotData: BlocksTimeStructure;
-    slotPosition: TimesBlock;
-    disabledCss: string;
-    events: SlotEvents;
-    children?: ReactNode;
-    actualTimerIndicatorChildren?: ReactNode;
-    ref: Ref<SlotTriggerForwardRef>;
-}
+import { useBookingModal, useGlobalStore, useNewEventStore } from "../../hooks";
 
-export interface SlotTriggerForwardRef {
-    showEvent: (slotNode: string) => void;
-    closeEvent: () => void;
-    onOpenCloseChange: (status: boolean) => void;
-}
+import type { Booking } from "../../@types";
+import { BOOKING_VIEW_TYPE } from "../../constants";
+
+import { cn } from "../../lib/utils";
+import { bookingUtils } from "../../utils";
+import { dateUtils } from "../../utils/date.utils";
+import type { TimeInfoRef } from "../../utils/forward";
+import type { SlotTriggerProps } from "../../utils/props";
 
 const SlotTrigger = ({
     slotData,
+    blockTimeString,
+    dayHour,
     slotPosition,
     disabledCss,
     events,
-    actualTimerIndicatorChildren,
+    bookings,
     children,
     ref,
 }: SlotTriggerProps) => {
@@ -81,9 +62,40 @@ const SlotTrigger = ({
     const [renderEvent, setRenderEvent] = useState<boolean>(false);
     const [isDraggingOnClick, setIsDraggingOnClick] = useState<boolean>(false);
 
+    const [additionalBookings, setAdditionalBookings] = useState<Booking[]>([]);
+    const [hoveringAdditionalCardId, setHoveringAdditionalCardId] =
+        useState<string>("");
+
     const renderedCardPreviewRef = useRef<HTMLDivElement>(null);
     const timeInfoRef = useRef<TimeInfoRef>(null);
     const bookingCreateRef = useRef<BookingCreateRef>(null);
+
+    const removeFromAdditionalBooking = (booking: Booking) => {
+        setAdditionalBookings((prev) => {
+            return prev.filter((prevBooking) => prevBooking.id !== booking.id);
+        });
+    };
+
+    const addAdditionalBooking = (
+        booking: Booking,
+        allEmptySlotNodesId: string[],
+        full = false,
+    ) => {
+        const fullFinishAtColumn = new Date(booking.finishAt);
+        fullFinishAtColumn.setHours(24, 0);
+
+        const additionalBookingDemo: Booking[] = [
+            {
+                id: booking.id,
+                finishAt: full ? fullFinishAtColumn : booking.finishAt,
+                overflow: true,
+                startAt: bookingUtils.resetToFirstHourNextDay(booking),
+                disabledResize: full ? "full" : "half",
+                nodes: allEmptySlotNodesId,
+            },
+        ];
+        setAdditionalBookings(additionalBookingDemo);
+    };
 
     const getBookingCreateModal = (): BookingCreateRef | null => {
         return bookingCreateRef.current;
@@ -111,8 +123,8 @@ const SlotTrigger = ({
     const bookingMock: Booking = useMemo(() => {
         return {
             id: "dragging_booking_preview",
-            startAt: DateUtils.convertStringTimeToDateFormat(startAt),
-            finishAt: DateUtils.convertStringTimeToDateFormat(finishAt),
+            startAt: dateUtils.convertStringTimeToDateFormat(startAt),
+            finishAt: dateUtils.convertStringTimeToDateFormat(finishAt),
         };
     }, [finishAt, startAt]);
 
@@ -121,54 +133,20 @@ const SlotTrigger = ({
     });
 
     const onMouseEnterEvent = useCallback((): void => {
-        if (!children || typeof children !== "object") return;
-
-        if (
-            "props" in children &&
-            children.props &&
-            typeof children.props === "object" &&
-            "bookings" in children.props
-        ) {
-            if (
-                Array.isArray(children.props.bookings) &&
-                children.props?.bookings.length &&
-                "slotData" in children.props
-            ) {
-                if (
-                    typeof children?.props?.slotData === "object" &&
-                    children?.props?.slotData &&
-                    "hour" in children.props.slotData &&
-                    typeof children.props.slotData.hour === "string" &&
-                    "blockTimeString" in children.props &&
-                    typeof children.props.blockTimeString === "string"
-                ) {
-                    const blockTime = children.props.blockTimeString;
-                    const slotBlock = children.props.slotData.hour;
-                    const bookings = children.props.bookings as Booking[];
-
-                    const sameHour = bookings.findIndex((booking) => {
-                        const slotHour = Number(slotBlock.split(":")[0]);
-                        const slotMinutes = Number(blockTime);
-
-                        const bookingHour = booking.startAt.getHours();
-                        const bookingMinutes = booking.startAt.getMinutes();
-
-                        const isSameHour = slotHour === bookingHour;
-                        const isSameMinutes = slotMinutes === bookingMinutes;
-                        if (isSameHour && isSameMinutes) return true;
-                        return false;
-                    });
-
-                    if (sameHour !== -1) return;
-                }
-            }
-        }
+        if (additionalBookings.length || bookings?.length) return;
 
         if (isDragging || isCustomModalVisible() || renderEvent) return;
 
         const result = events.onMouseEnterEvent();
         if (result === slotPosition) showTimeInfo();
-    }, [slotPosition, isDragging, renderEvent, children, events]);
+    }, [
+        slotPosition,
+        isDragging,
+        renderEvent,
+        events,
+        additionalBookings,
+        bookings,
+    ]);
 
     const resetDataAndDragging = () => {
         resetForm();
@@ -179,7 +157,7 @@ const SlotTrigger = ({
     const onCloseCreationModal = (event?: React.MouseEvent): void => {
         resetDataAndDragging();
 
-        const keyToFind = setEmptySlotKey(slotData);
+        const keyToFind = buildEmptyTimeSlotKey(slotData);
         const slot = emptySlotNodes?.get(keyToFind);
 
         if (slot) slot.closeEvent();
@@ -206,7 +184,7 @@ const SlotTrigger = ({
             updateIsDragging(false);
             const { time, key } = slotData;
 
-            const keyToFind = setEmptySlotKey({ key, time });
+            const keyToFind = buildEmptyTimeSlotKey({ key, time });
             const slot = emptySlotNodes?.get(keyToFind);
 
             setSelectedNode(keyToFind);
@@ -292,9 +270,9 @@ const SlotTrigger = ({
         if (!finishAt || !startAt) return;
 
         const finishAtConverted =
-            DateUtils.convertStringTimeToDateFormat(finishAt);
+            dateUtils.convertStringTimeToDateFormat(finishAt);
         const startAtConverted =
-            DateUtils.convertStringTimeToDateFormat(startAt);
+            dateUtils.convertStringTimeToDateFormat(startAt);
 
         if (
             Number.isNaN(finishAtConverted) ||
@@ -323,14 +301,12 @@ const SlotTrigger = ({
     }, [renderEvent]);
 
     useEffect(() => {
-        if (!children) hideTimeInfo();
+        if (bookings?.length) hideTimeInfo();
         if (isDraggingOnClick) showTimeInfo();
-    }, [children, isDraggingOnClick]);
+    }, [bookings, isDraggingOnClick]);
 
     useEffect(() => {
-        if (isDraggingOnClick) {
-            showTimeInfo();
-        }
+        if (isDraggingOnClick) showTimeInfo();
     }, [isDraggingOnClick]);
 
     useImperativeHandle(ref, () => ({
@@ -348,6 +324,14 @@ const SlotTrigger = ({
             changeIsOpen(status);
             setRenderEvent(status);
             resetPrevView();
+        },
+        addAdditionalBooking,
+        removeFromAdditionalBooking,
+        hoveringAdditionalCard: (hoveringCardId: string) => {
+            setHoveringAdditionalCardId(hoveringCardId);
+        },
+        clearHoveringCard: () => {
+            setHoveringAdditionalCardId("");
         },
     }));
 
@@ -383,7 +367,7 @@ const SlotTrigger = ({
                     }}
                 />
 
-                {actualTimerIndicatorChildren}
+                {children}
 
                 {renderEvent && (
                     <CardContent
@@ -394,10 +378,24 @@ const SlotTrigger = ({
                             day: new Date().toISOString(),
                             hour: "09:00",
                         }}
+                        hoveringAdditionalCardId={hoveringAdditionalCardId}
                         heightStyle={heightStyle}
                     />
                 )}
-                {children}
+
+                <CardBlockContent
+                    hoveringAdditionalCardId={hoveringAdditionalCardId}
+                    bookings={additionalBookings}
+                    blockTimeString="00"
+                    slotData={dayHour}
+                />
+
+                <CardBlockContent
+                    hoveringAdditionalCardId={hoveringAdditionalCardId}
+                    bookings={bookings}
+                    blockTimeString={blockTimeString}
+                    slotData={dayHour}
+                />
             </div>
 
             <BookingCreate

@@ -47,7 +47,7 @@ export interface RootEventsProps {
         slotData: BookingDateAndTime,
         newBooking: Booking,
     ) => Promise<void>;
-    onCardResizeEnd: (booking: Booking) => Promise<void>;
+    onCardResizeEnd: (booking: Partial<Booking>) => Promise<void>;
     onDayChange: (date: Date[], actionType: ActionType) => void;
     onModalClose: () => void;
     onSlotClick: (slot: OnSlotClick) => void;

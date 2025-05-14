@@ -1,38 +1,17 @@
-import { type CSSProperties, useCallback } from "react";
+import { useCallback, useEffect } from "react";
+
+import buildEmptyTimeSlotKey from "../../context/emptySlotsStore/emptySlotKey";
+import useEmptySlotStore from "../../context/emptySlotsStore/useEmptySlotStore";
+
+import { DAY_TIME_STARTER } from "../../constants";
+
+import { dateUtils } from "../../utils";
+import type { BlockTimeData, EmptySlotProps } from "../../utils/props";
+
 import type { Booking } from "../../@types";
-import type { BookingDateAndTime } from "../../@types/booking";
-
-import setEmptySlotKey from "../../context/emptySlotsStore.ts/emptySlotKey";
-import useEmptySlotStore from "../../context/emptySlotsStore.ts/useEmptySlotStore";
-
-import SlotTrigger, {
-    type SlotTriggerForwardRef,
-} from "../card-slots/SlotTrigger";
-import CardBlockContent from "./CardBlockContent";
+import type { SlotTriggerForwardRef } from "../../utils/forward";
+import SlotTrigger from "../card-slots/SlotTrigger";
 import ActualTimerIndicator from "./actualTimeIndicator/ActualTimeIndicator";
-
-export interface BlockTimeRef {
-    ref: (element: HTMLElement | null) => void;
-    style: CSSProperties;
-}
-
-export interface BlockTimeData {
-    key: string;
-    time: string;
-}
-
-export type BlocksTimeStructure = BlockTimeRef & BlockTimeData;
-
-export interface EmptySlotProps {
-    bookings?: Booking[];
-    dayHour?: BookingDateAndTime;
-    first: BlocksTimeStructure;
-    second: BlocksTimeStructure;
-    third: BlocksTimeStructure;
-    fourth: BlocksTimeStructure;
-    disabledCss: string;
-    firstDay: boolean;
-}
 
 const EmptySlot = ({
     bookings,
@@ -50,13 +29,108 @@ const EmptySlot = ({
         (node: SlotTriggerForwardRef | null, blockTimeData: BlockTimeData) => {
             if (!node) return;
 
-            const emptyTimeBlockKey = setEmptySlotKey(blockTimeData);
+            const emptyTimeBlockKey = buildEmptyTimeSlotKey(blockTimeData);
             const emptySlotNode = emptySlotNodes.get(emptyTimeBlockKey);
 
             if (!emptySlotNode) setEmptySlotNode(node, blockTimeData);
         },
         [setEmptySlotNode, emptySlotNodes],
     );
+
+    const buildEmptySlotIdentifier = (
+        finishAt: Date,
+        bookingStartAt?: Date,
+    ) => {
+        const nextKeyDay = finishAt.toDateString();
+
+        return buildEmptyTimeSlotKey({
+            key: nextKeyDay,
+            time: bookingStartAt
+                ? dateUtils.dateTimeAsString(bookingStartAt)
+                : DAY_TIME_STARTER,
+        });
+    };
+
+    const findNextDaySlotNode = useCallback(
+        (finishAt: Date) => {
+            const emptySlotId = buildEmptySlotIdentifier(finishAt);
+            return emptySlotNodes.get(emptySlotId);
+        },
+        [emptySlotNodes],
+    );
+
+    const processFutureBookingSlots = (
+        booking: Booking,
+        daysDifference: number,
+        allEmptySlotNodes: string[],
+    ) => {
+        const futureDateList = dateUtils.buildFutureDateList(
+            booking,
+            daysDifference,
+        );
+
+        for (let i = 0; i < futureDateList.length; i++) {
+            const nextDaySlotNode = findNextDaySlotNode(futureDateList[i]);
+
+            if (!nextDaySlotNode) return;
+
+            nextDaySlotNode.addAdditionalBooking(
+                booking,
+                allEmptySlotNodes,
+                i !== futureDateList.length - 1,
+            );
+        }
+    };
+
+    const handleCardAdditionalExec = useCallback((): void => {
+        if (!bookings?.length) return;
+
+        for (const booking of bookings) {
+            const daysDifference = dateUtils.calculateDaysDifference(
+                booking.finishAt,
+                booking.startAt,
+            );
+
+            const futureDateListIncludingToday = dateUtils.buildFutureDateList(
+                booking,
+                daysDifference + 1,
+                0,
+            );
+
+            const allEmptySlotNodes = futureDateListIncludingToday
+                .map((dateList, index) => {
+                    return buildEmptySlotIdentifier(
+                        dateList,
+                        index === 0 ? booking.startAt : undefined,
+                    );
+                })
+                .filter((el) => el !== undefined);
+
+            if (daysDifference === 1) {
+                const nextDaySlotNode = findNextDaySlotNode(booking.finishAt);
+                if (!nextDaySlotNode) return;
+
+                nextDaySlotNode.addAdditionalBooking(
+                    booking,
+                    allEmptySlotNodes,
+                );
+                return;
+            }
+
+            processFutureBookingSlots(
+                booking,
+                daysDifference,
+                allEmptySlotNodes,
+            );
+        }
+    }, [bookings, findNextDaySlotNode, processFutureBookingSlots]);
+
+    useEffect(() => {
+        // TODO: Add custom ref methods to additional cards rendered
+        if (bookings?.length) {
+            handleCardAdditionalExec();
+        }
+    }, [bookings, emptySlotNodes, handleCardAdditionalExec]);
 
     return (
         <>
@@ -73,18 +147,11 @@ const EmptySlot = ({
                     onMouseEnterEvent: () => "first",
                 }}
                 slotPosition="first"
-                actualTimerIndicatorChildren={
-                    <ActualTimerIndicator
-                        isFirstDay={firstDay}
-                        slotData={first}
-                    />
-                }
+                dayHour={dayHour}
+                bookings={bookings}
+                blockTimeString="00"
             >
-                <CardBlockContent
-                    bookings={bookings}
-                    blockTimeString={"00"}
-                    slotData={dayHour}
-                />
+                <ActualTimerIndicator isFirstDay={firstDay} slotData={first} />
             </SlotTrigger>
             <SlotTrigger
                 ref={(node) =>
@@ -99,18 +166,11 @@ const EmptySlot = ({
                     onMouseEnterEvent: () => "second",
                 }}
                 slotPosition="second"
-                actualTimerIndicatorChildren={
-                    <ActualTimerIndicator
-                        isFirstDay={firstDay}
-                        slotData={second}
-                    />
-                }
+                dayHour={dayHour}
+                bookings={bookings}
+                blockTimeString="15"
             >
-                <CardBlockContent
-                    bookings={bookings}
-                    blockTimeString="15"
-                    slotData={dayHour}
-                />
+                <ActualTimerIndicator isFirstDay={firstDay} slotData={second} />
             </SlotTrigger>
             <SlotTrigger
                 ref={(node) =>
@@ -125,18 +185,11 @@ const EmptySlot = ({
                     onMouseEnterEvent: () => "third",
                 }}
                 slotPosition="third"
-                actualTimerIndicatorChildren={
-                    <ActualTimerIndicator
-                        isFirstDay={firstDay}
-                        slotData={third}
-                    />
-                }
+                dayHour={dayHour}
+                bookings={bookings}
+                blockTimeString="30"
             >
-                <CardBlockContent
-                    bookings={bookings}
-                    blockTimeString="30"
-                    slotData={dayHour}
-                />
+                <ActualTimerIndicator isFirstDay={firstDay} slotData={third} />
             </SlotTrigger>
             <SlotTrigger
                 ref={(node) =>
@@ -151,18 +204,11 @@ const EmptySlot = ({
                     onMouseEnterEvent: () => "fourth",
                 }}
                 slotPosition="fourth"
-                actualTimerIndicatorChildren={
-                    <ActualTimerIndicator
-                        isFirstDay={firstDay}
-                        slotData={fourth}
-                    />
-                }
+                dayHour={dayHour}
+                bookings={bookings}
+                blockTimeString="45"
             >
-                <CardBlockContent
-                    bookings={bookings}
-                    blockTimeString="45"
-                    slotData={dayHour}
-                />
+                <ActualTimerIndicator isFirstDay={firstDay} slotData={fourth} />
             </SlotTrigger>
         </>
     );

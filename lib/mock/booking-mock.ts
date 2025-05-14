@@ -16,7 +16,12 @@ const mockBooking: Booking[] = [
     {
         id: "666",
         startAt: new Date("2025-05-13T23:00:00Z"),
-        finishAt: new Date("2025-05-14T05:45:00Z"),
+        finishAt: new Date("2025-05-14T22:45:00Z"),
+    },
+    {
+        id: "6666",
+        startAt: new Date("2025-05-15T22:00:00Z"),
+        finishAt: new Date("2025-05-17T22:45:00Z"),
     },
     {
         id: "1",

@@ -1,9 +1,14 @@
 import type { DraggableAttributes } from "@dnd-kit/core";
 import type { SyntheticListenerMap } from "@dnd-kit/core/dist/hooks/utilities";
-import type { Ref } from "react";
-import type { Booking, BookingDateAndTime } from "../@types";
-import type { BlocksTimeStructure } from "../core/slots/EmptySlot";
-import type { BookingCardRef, CardContentRef } from "./forward";
+import type { ReactNode, Ref } from "react";
+import type { Booking, BookingDateAndTime, Bookings } from "../@types";
+import type { TimesBlock } from "../core/slots/Slots";
+import type {
+    BlockTimeRef,
+    BookingCardRef,
+    CardContentRef,
+    SlotTriggerForwardRef,
+} from "./forward";
 import type { ResizableParam } from "./types";
 
 export interface CardContentProps {
@@ -53,4 +58,38 @@ export interface TimeInfoProps {
     isDragging: boolean;
     slotData: BlocksTimeStructure;
     events: TimeInfoEvents;
+}
+
+export interface BlockTimeData {
+    key: string;
+    time: string;
+}
+
+export type BlocksTimeStructure = BlockTimeRef & BlockTimeData;
+
+export interface EmptySlotProps {
+    bookings?: Booking[];
+    dayHour?: BookingDateAndTime;
+    first: BlocksTimeStructure;
+    second: BlocksTimeStructure;
+    third: BlocksTimeStructure;
+    fourth: BlocksTimeStructure;
+    disabledCss: string;
+    firstDay: boolean;
+}
+
+export interface SlotEvents {
+    onMouseEnterEvent: () => string;
+}
+
+export interface SlotTriggerProps {
+    slotData: BlocksTimeStructure;
+    blockTimeString?: string;
+    dayHour?: BookingDateAndTime;
+    slotPosition: TimesBlock;
+    disabledCss: string;
+    events: SlotEvents;
+    bookings?: Bookings;
+    children?: ReactNode;
+    ref: Ref<SlotTriggerForwardRef>;
 }

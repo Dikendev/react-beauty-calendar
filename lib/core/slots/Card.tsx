@@ -1,4 +1,10 @@
-import { type Ref, useImperativeHandle, useRef, useState } from "react";
+import {
+    type Ref,
+    useEffect,
+    useImperativeHandle,
+    useRef,
+    useState,
+} from "react";
 
 import type { Booking, BookingDateAndTime } from "../../@types/booking";
 
@@ -19,6 +25,7 @@ interface CardProps {
     half?: boolean;
     cardsQuantity?: number;
     cardIndex?: number;
+    hoveringAdditionalCardId?: string;
     ref?: Ref<CardRef>;
 }
 
@@ -33,11 +40,19 @@ const Card = ({
     cardIndex = 0,
     lastCard = false,
     half = false,
+    hoveringAdditionalCardId,
     ref,
 }: CardProps) => {
     const { bookingViewType } = useGlobalStore();
 
-    const [bookingInit, setBookingInit] = useState<Booking>({ ...booking });
+    const [bookingInit, setBookingInit] = useState<Booking>({
+        ...booking,
+    });
+
+    useEffect(() => {
+        if (booking) setBookingInit(booking);
+    }, [booking]);
+
     const [isEditingOpen, setIsEditingOpen] = useState<boolean>(false);
 
     const sideOption = useRef<Side>("left");
@@ -166,11 +181,12 @@ const Card = ({
                 slotData={slotData}
                 topHeightIncrement={topHeightIncrement}
                 heightStyle={heightStyle}
-                onClick={openEditingModal}
+                events={{ onClick: openEditingModal }}
                 half={half}
                 lastCard={lastCard}
                 cardsQuantity={cardsQuantity}
                 cardIndex={cardIndex}
+                hoveringAdditionalCardId={hoveringAdditionalCardId}
                 // style={ backgroundColor: "black" }
             />
         </BookingInfoOptions>
