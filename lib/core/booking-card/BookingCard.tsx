@@ -52,6 +52,10 @@ const BookingCard = ({
             booking: booking,
             slotData,
         },
+        disabled:
+            booking.disabledResize === "full" ||
+            booking.disabledResize === "half" ||
+            booking.startAt.getDate() !== booking.finishAt.getDate(),
     });
 
     const style = transform
