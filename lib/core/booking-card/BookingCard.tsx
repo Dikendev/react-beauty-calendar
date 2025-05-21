@@ -1,27 +1,22 @@
 import {
     type CSSProperties,
+    type PropsWithChildren,
     useCallback,
-    useEffect,
     useImperativeHandle,
     useMemo,
     useState,
 } from "react";
 
-import type { Booking } from "../../@types/booking";
 import { cn } from "../../lib/utils";
-import { dateUtils } from "../../utils/date.utils";
 
 import { useDndMonitor, useDraggable } from "@dnd-kit/core";
 import { useShallow } from "zustand/shallow";
 import { BOOKING_VIEW_TYPE } from "../../constants";
 
 import useDragStore from "../../context/drag/dragStore";
-import useDragStartAtStore from "../../context/drag/useDragStateAtStore";
 
 import { useGlobalStore } from "../../hooks";
 import type { BookingCardProps } from "../../utils/props";
-
-import CardOverlay from "../slots/CardOverlay";
 
 // const WIDTH_DECREMENT_STEP = 4;
 // const MAX_WIDTH_PERCENTAGE = 100;
@@ -31,13 +26,11 @@ const BookingCard = ({
     slotData,
     // layerCount,
     // half,
-    events,
-    heightStyle,
     customClasses,
     hoveringAdditionalCardId = "",
+    children,
     ref,
-}: BookingCardProps) => {
-    const { day, hour } = slotData;
+}: PropsWithChildren<BookingCardProps>) => {
     const [isResizingCard, setIsResizingCard] = useState<boolean>(false);
 
     const bookingViewType = useGlobalStore(
@@ -45,8 +38,6 @@ const BookingCard = ({
     );
 
     const { updateIsDragging, isDragging } = useDragStore((state) => state);
-
-    const dragStartAt = useDragStartAtStore((state) => state.startAt);
 
     const {
         attributes,
@@ -70,19 +61,19 @@ const BookingCard = ({
         : undefined;
 
     useDndMonitor({
-        onDragStart: () => updateIsDragging(true),
+        onDragStart: () => startDraggingState(),
         onDragAbort: () => handlePendingEnd(),
         onDragCancel: () => handlePendingEnd(),
         onDragEnd: () => handlePendingEnd(),
     });
 
+    const startDraggingState = useCallback(() => {
+        updateIsDragging(true);
+    }, []);
+
     const handlePendingEnd = useCallback(() => {
         updateIsDragging(false);
     }, []);
-
-    const isBelowMaxTimeLimit = (normalizedBookingDate: string): boolean => {
-        return normalizedBookingDate <= "11:30";
-    };
 
     const cardContextStyle: CSSProperties = useMemo(() => {
         return {
@@ -91,42 +82,14 @@ const BookingCard = ({
         };
     }, [isDragging, bookingViewType]);
 
-    const cardTodayCustomStyle = (booking: Booking, day: Date) => {
-        const normalizedBookingDate = dateUtils.dateAndHourDateToString(
-            new Date(booking.finishAt),
-        );
-
-        if (
-            dateUtils.isTodayDate(day) &&
-            isBelowMaxTimeLimit(normalizedBookingDate)
-        ) {
-            return {
-                backgroundColor: "#000000c0",
-            };
-        }
-
-        return { backgroundColor: "#000456c0" };
-    };
-
-    const [prevBooking, setPrevBooking] = useState<Booking>(booking);
-
-    useEffect(() => {
-        if (dragStartAt.length) {
-            const result = dateUtils.bookingTimeRange(booking, dragStartAt);
-            setPrevBooking({
-                ...result,
-            });
-        }
-    }, [dragStartAt]);
-
-    useImperativeHandle(ref, () => ({
-        changeCurrentCardResize: () => setIsResizingCard((prev) => !prev),
-    }));
-
     const isHovering = (id: string, targetId: string): boolean => {
         if (!hoveringAdditionalCardId?.length) return false;
         return id === targetId;
     };
+
+    useImperativeHandle(ref, () => ({
+        changeCurrentCardResize: () => setIsResizingCard((prev) => !prev),
+    }));
 
     if (!isResizing) {
         return (
@@ -143,44 +106,14 @@ const BookingCard = ({
                 style={{
                     ...style,
                     ...cardContextStyle,
-                    // width: calculateCardWidth,
                 }}
                 {...listeners}
                 {...attributes}
             >
-                <div
-                    className="relative w-full h-full"
-                    key={`${day}-${hour}`}
-                    style={cardTodayCustomStyle(
-                        booking,
-                        new Date(day.split(":")[1]),
-                    )}
-                    onPointerUp={events?.onClick}
-                >
-                    <div
-                        className={cn(
-                            "flex flex-col h-full text-white pl-2 lg:pl-2 justify-start items-start",
-                        )}
-                    >
-                        <p style={{ height: "1.8rem", alignContent: "center" }}>
-                            {`${dateUtils.dateAndHourDateToString(booking.startAt)} - ${dateUtils.dateAndHourDateToString(
-                                booking.finishAt,
-                            )}`}
-                        </p>
-                        <span className="flex flex-row items-center justify-center" />
-                    </div>
-                </div>
+                {children}
             </div>
         );
     }
-
-    return (
-        <CardOverlay
-            bookingInit={prevBooking}
-            slotData={slotData}
-            heightStyle={heightStyle}
-        />
-    );
 };
 
 export default BookingCard;

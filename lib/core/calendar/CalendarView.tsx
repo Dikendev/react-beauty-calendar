@@ -3,18 +3,27 @@ import {
     useCallback,
     useEffect,
     useMemo,
+    useRef,
     useState,
 } from "react";
-
-import Slots from "../slots/Slots";
-
 import { useShallow } from "zustand/shallow";
+
 import { Table, TableCell } from "../../components/ui/Table";
+import BookingCardContent from "../booking-card/BookingCardContent";
+import CardOverlay from "../slots/CardOverlay";
+import Slots from "../slots/Slots";
+import HourWithActions from "./HourWithActions";
+import type { HourWithActionsRef } from "./HourWithActions";
+
+import { cn } from "../../lib/utils";
+import { dateUtils } from "../../utils";
+import type { BookingCardContentRef } from "../../utils/forward";
+
 import { BOOKING_VIEW_TYPE } from "../../constants";
+
+import useDragStartAtStore from "../../context/drag/useDragStateAtStore";
 import useEmptySlotStore from "../../context/emptySlotsStore/useEmptySlotStore";
 import { useGlobalStore, useNewEventStore } from "../../hooks";
-import { cn } from "../../lib/utils";
-import HourWithActions, { type HourWithActionsRef } from "./HourWithActions";
 
 const CalendarView = () => {
     const {
@@ -36,7 +45,12 @@ const CalendarView = () => {
     );
 
     const { selectedNode, emptySlotNodes } = useEmptySlotStore();
+
     const { finishAt, updateFinishAtWithOffset } = useNewEventStore(
+        (state) => state,
+    );
+
+    const { booking, slotData, startAt } = useDragStartAtStore(
         (state) => state,
     );
 
@@ -44,6 +58,8 @@ const CalendarView = () => {
         startAt: "12:00",
         finishAt: "12:30",
     });
+
+    const currentBookingCardRef = useRef<BookingCardContentRef>(null);
 
     const addTimeRenderedStore = useCallback(
         (node: HourWithActionsRef | null, hourKey: string) => {
@@ -74,6 +90,19 @@ const CalendarView = () => {
         return selectedNode.split(";")[1];
     }, [selectedNode]);
 
+    const bookingOverlayCard = useMemo(() => {
+        if (booking && slotData) {
+            return (
+                <BookingCardContent
+                    ref={currentBookingCardRef}
+                    style={{ borderRadius: "0.25rem" }}
+                    booking={booking}
+                    slotData={slotData}
+                />
+            );
+        }
+    }, [booking, slotData]);
+
     useEffect(() => {
         if (selectedNode) {
             const emptySlotNode = emptySlotNodes.get(selectedNode);
@@ -86,6 +115,13 @@ const CalendarView = () => {
             updateFinishAtWithOffset(selectedTimeHour);
         }
     }, [selectedNode, finishAt]);
+
+    useEffect(() => {
+        if (booking && startAt && currentBookingCardRef?.current) {
+            const result = dateUtils.bookingTimeRange(booking, startAt);
+            currentBookingCardRef.current.updateBooking(result);
+        }
+    }, [booking, startAt]);
 
     const tableContent = useMemo(() => {
         const isFistDay = (dayOfWeekIndex: number) => dayOfWeekIndex === 0;
@@ -142,6 +178,8 @@ const CalendarView = () => {
                         ))}
                     </tbody>
                 </Table>
+
+                <CardOverlay>{bookingOverlayCard}</CardOverlay>
             </div>
         );
     }, [
@@ -153,6 +191,7 @@ const CalendarView = () => {
         bookingViewType,
         daysOfWeek,
         daysOfWeek.length,
+        bookingOverlayCard,
     ]);
 
     return tableContent;

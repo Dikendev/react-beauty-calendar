@@ -33,6 +33,7 @@ import { bookingUtils } from "../../utils/booking.utils";
 import buildEmptyTimeSlotKey from "../../context/emptySlotsStore/emptySlotKey";
 import { dateUtils } from "../../utils";
 import BookingCard from "../booking-card/BookingCard";
+import BookingCardContent from "../booking-card/BookingCardContent";
 import { InnerCardsHandle } from "./innerCardHandle/inner-card-handle";
 
 const CardContent = ({
@@ -333,14 +334,18 @@ const CardContent = ({
                     <BookingCard
                         ref={bookingCardRef}
                         key={bookingInit.id}
-                        heightStyle={heightStyle}
                         booking={bookingInit}
                         slotData={slotData}
                         layerCount={layerCount}
                         half={half}
                         hoveringAdditionalCardId={hoveringAdditionalCardId}
-                        events={{ onClick: events?.onClick }}
-                    />
+                    >
+                        <BookingCardContent
+                            booking={bookingInit}
+                            slotData={slotData}
+                            events={{ onClick: events?.onClick }}
+                        />
+                    </BookingCard>
                 </div>
             </Resizable>
         );
@@ -357,12 +362,16 @@ const CardContent = ({
             }}
         >
             <BookingCard
-                heightStyle={heightStyle}
                 customClasses={customClasses}
                 booking={bookingInit}
                 slotData={slotData}
-                events={{ onClick: events?.onClick }}
-            />
+            >
+                <BookingCardContent
+                    booking={bookingInit}
+                    slotData={slotData}
+                    events={{ onClick: events?.onClick }}
+                />
+            </BookingCard>
         </div>
     );
 };

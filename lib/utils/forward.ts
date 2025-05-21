@@ -31,3 +31,7 @@ export interface SlotTriggerForwardRef {
     hoveringAdditionalCard: (hoveringCardId: string) => void;
     clearHoveringCard: () => void;
 }
+
+export interface BookingCardContentRef {
+    updateBooking: (booking: Booking) => void;
+}

@@ -1,10 +1,11 @@
 import type { DraggableAttributes } from "@dnd-kit/core";
 import type { SyntheticListenerMap } from "@dnd-kit/core/dist/hooks/utilities";
-import type { ReactNode, Ref } from "react";
+import type { CSSProperties, ReactNode, Ref } from "react";
 import type { Booking, BookingDateAndTime, Bookings } from "../@types";
 import type { TimesBlock } from "../core/slots/Slots";
 import type {
     BlockTimeRef,
+    BookingCardContentRef,
     BookingCardRef,
     CardContentRef,
     SlotTriggerForwardRef,
@@ -38,12 +39,9 @@ export interface BookingCardProps {
     booking: Booking;
     slotData: BookingDateAndTime;
     customClasses?: string;
-    heightStyle: number;
     layerCount?: number;
     half?: boolean;
     hoveringAdditionalCardId?: string;
-
-    events?: { onClick?: () => void };
     ref?: Ref<BookingCardRef>;
 }
 
@@ -92,4 +90,17 @@ export interface SlotTriggerProps {
     bookings?: Bookings;
     children?: ReactNode;
     ref: Ref<SlotTriggerForwardRef>;
+}
+
+export interface CardOverlayProps {
+    bookingInit?: Booking;
+    slotData?: BookingDateAndTime;
+}
+
+export interface BookingCarContextProps {
+    booking?: Booking;
+    style?: CSSProperties;
+    slotData?: BookingDateAndTime;
+    events?: { onClick?: () => void };
+    ref?: Ref<BookingCardContentRef>;
 }

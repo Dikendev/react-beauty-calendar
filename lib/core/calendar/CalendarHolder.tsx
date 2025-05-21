@@ -9,9 +9,12 @@ import {
     useSensor,
     useSensors,
 } from "@dnd-kit/core";
+import { GridLoader } from "react-spinners";
 
 import DaysWeek from "../header-calendar/DaysOfWeek";
 import Header from "../header-calendar/Header";
+import CalendarView from "./CalendarView";
+
 import HandleViewType from "./ViewTypes";
 
 import type {
@@ -21,46 +24,61 @@ import type {
 } from "../../@types/booking";
 
 import { MonthDescriptionProvider } from "../../context";
+import useDragStartAtStore from "../../context/drag/useDragStateAtStore";
 import buildEmptyTimeSlotKey from "../../context/emptySlotsStore/emptySlotKey";
 import useEmptySlotStore from "../../context/emptySlotsStore/useEmptySlotStore";
 import { initialMonthDescriptionState } from "../../context/month-description/month-description-store";
 
-import { useBookingModal, useGlobalStore } from "../../hooks";
-
-import { GridLoader } from "react-spinners";
 import { DAY_TIME_STARTER } from "../../constants";
 
-import { mockUser } from "../../mock/booking-mock";
+import { useBookingModal, useGlobalStore } from "../../hooks";
 import { dateUtils } from "../../utils/date.utils";
-import CalendarView from "./CalendarView";
+
+import { mockUser } from "../../mock/booking-mock";
 
 interface CalendarHolderProps {
     isLoading: boolean;
 }
 
+const activationConstraint = {
+    distance: 5,
+};
+
 const CalendarHolder = ({ isLoading }: CalendarHolderProps) => {
     const { bookings } = useBookingModal();
-
-    const activationConstraint = {
-        distance: 5,
-    };
-
-    const { setBookingBulkData, optimisticCardUpdate } = useGlobalStore();
-    const { onCardDropCallback } = useBookingModal();
-
-    const { emptySlotNodes } = useEmptySlotStore();
 
     const sensors = useSensors(
         useSensor(MouseSensor, { activationConstraint }),
         useSensor(TouchSensor, { activationConstraint }),
     );
 
-    const { bookingViewType, daysOfWeek } = useGlobalStore();
+    const {
+        setBookingBulkData,
+        optimisticCardUpdate,
+        bookingViewType,
+        daysOfWeek,
+    } = useGlobalStore();
+    const { onCardDropCallback } = useBookingModal();
 
-    const onDragStart = useCallback((event: DragStartEvent) => {
-        const { active } = event;
-        if (active.id === "booking_info") return;
-    }, []);
+    const { emptySlotNodes } = useEmptySlotStore();
+
+    const { updateBooking, updateSlotData } = useDragStartAtStore(
+        (state) => state,
+    );
+
+    const onDragStart = useCallback(
+        (event: DragStartEvent) => {
+            const { active } = event;
+
+            if (active.data.current) {
+                updateBooking(active.data.current.booking);
+                updateSlotData(active.data.current.slotData);
+            }
+
+            if (active.id === "booking_info") return;
+        },
+        [updateBooking, updateSlotData],
+    );
 
     const deleteOverFlowRender = useCallback(
         (booking: Booking, finishAt: Date) => {
@@ -146,6 +164,9 @@ const CalendarHolder = ({ isLoading }: CalendarHolderProps) => {
                         String(over.id),
                         activeCurrent.slotData,
                     );
+
+                    updateSlotData(null);
+                    updateBooking(null);
                 }
             }
         }
